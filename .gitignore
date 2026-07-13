@@ -1,0 +1,12 @@
+.DS_Store
+.env*
+!.env.example
+.context/
+.migration/
+.next/
+.vercel/
+coverage/
+node_modules/
+source-theme/
+test-results/
+
