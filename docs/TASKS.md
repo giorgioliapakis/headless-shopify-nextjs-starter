@@ -38,7 +38,7 @@ active implementation detail lives in `docs/plans/2026-07-13-001-feat-autonomous
       permissions, and generate release SBOM/provenance.
 - [ ] Quarantine generated code in a credential-free, broker-free, network/filesystem-restricted sandbox
       before install/build/test/preview.
-- [ ] Keep untrusted PR CI secretless; isolate credentialed checks to protected/manual environments.
+- [x] Keep untrusted PR CI secretless; isolate credentialed checks to protected/manual environments.
 
 ## Phase 3 — Thin vertical migration proof
 

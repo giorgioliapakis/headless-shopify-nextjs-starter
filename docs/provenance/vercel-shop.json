@@ -771,8 +771,8 @@
     {
       "path": "package.json",
       "sourceSha256": "ae662f2818fe83f3a91d3eabe6bedee2709d5703b11d7e2bdc26e4bd151fd85e",
-      "currentSha256": "66cd085f10c210d33b5a4b7079261392af502098bde0843d558a6867c88b4ed6",
-      "modification": "Pin the stable platform, remove excluded assistant/Hydrogen dependencies, and add deterministic type/provenance/skill checks."
+      "currentSha256": "5a70b9c1a709e1a0e6566eb65bfe0008398d8315499a1239780440ab8a39c647",
+      "modification": "Pin the stable platform, exclude preview dependencies, and enforce type, unit, provenance, skill, and clean-room checks."
     },
     {
       "path": "postcss.config.mjs",

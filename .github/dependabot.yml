@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      runtime:
+        patterns: ["next", "react", "react-dom", "@base-ui/*", "tailwindcss", "@tailwindcss/*"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
