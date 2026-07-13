@@ -7,6 +7,7 @@
 .vercel/
 coverage/
 node_modules/
+next-env.d.ts
 source-theme/
 test-results/
-
+*.tsbuildinfo

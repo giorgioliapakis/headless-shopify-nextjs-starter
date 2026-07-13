@@ -1,0 +1,764 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/vercel/shop.git",
+  "commit": "04a29f8276598e58ec28e74218f38601f6203470",
+  "sourceSubtree": "apps/template",
+  "license": "MIT",
+  "importPolicy": "explicit-root-files-and-directories-with-denylist",
+  "excludedPrefixes": [
+    "app/account/",
+    "app/api/chat/",
+    "components/account/",
+    "components/agent/",
+    "lib/agent/",
+    "lib/auth/",
+    "lib/customer/"
+  ],
+  "excludedFiles": [
+    "app/favicon.ico",
+    "app/layout.tsx",
+    "components/action-bar/index.tsx",
+    "components/footer/index.tsx",
+    "components/nav/account.tsx",
+    "components/nav/index.tsx",
+    "lib/shopify/customer-account.ts",
+    "lib/shopify/operations/customer.ts",
+    "lib/shopify/transforms/customer.ts",
+    "public/og-default.png",
+    "shop.config.ts"
+  ],
+  "files": [
+    {
+      "path": ".env.example",
+      "sourceSha256": "1152af1b90677027c7ea1de3d771e7b43d47aef4006d8fcc36d0f0af25802a11"
+    },
+    {
+      "path": ".graphqlrc.ts",
+      "sourceSha256": "85ccec1ac6b6da6285c8f8a4aca6dc495d6a8a5e13770b516a8f2ea1bd5736b3"
+    },
+    {
+      "path": ".npmrc",
+      "sourceSha256": "b98ff9fec5131f365691f7942c54781ba8baf9948b43210b77edf6ef2d3b5fe5"
+    },
+    {
+      "path": ".nvmrc",
+      "sourceSha256": "68ca3fba3b7e864770cb61aeb306d4bd4354b68ab4dd38450860c5d823e42a53"
+    },
+    {
+      "path": ".oxfmtrc.json",
+      "sourceSha256": "164fd37ebce3da5a97b53a37798e84d94848013c39ef7a08eaa11683d00e2a19"
+    },
+    {
+      "path": ".oxlintrc.json",
+      "sourceSha256": "6820a4d27b5e5440d90f6dc21b4b4cf5f137839e15a0a57487a7275711efe0bf"
+    },
+    {
+      "path": "app/api/draft/route.ts",
+      "sourceSha256": "9331becb91568c6fcf8a64e175e67ca4b7641ddde13508f552d1aea3b12b0499"
+    },
+    {
+      "path": "app/api/webhooks/shopify/route.ts",
+      "sourceSha256": "1215c8bd54c72c8e588afa07cc31c93b1f2279d94d2e53d11c47792400374a6a"
+    },
+    {
+      "path": "app/cart/error.tsx",
+      "sourceSha256": "26d6ac843e682f1182eef7af544950b48534f80c1e933caf7059e7ae78523219"
+    },
+    {
+      "path": "app/cart/page.tsx",
+      "sourceSha256": "1322c90599bdb846e43f352062f1ce6213d2e03e5fc44d03ac9d7a696d92407c"
+    },
+    {
+      "path": "app/collections/[handle]/error.tsx",
+      "sourceSha256": "fa6dddf1d2d377aec1cbdb197c28d1ea764caeb57343638f5d8677e755e308c5"
+    },
+    {
+      "path": "app/collections/[handle]/page.tsx",
+      "sourceSha256": "adf1d05b2e56f30996475b61ec707de38e65c683ec8b3daa6efef43ab0f449fb"
+    },
+    {
+      "path": "app/collections/all/page.tsx",
+      "sourceSha256": "c1a2856016a687513eb1f454895d739eb77e9f5830f1e83528b5f880b008bd1f"
+    },
+    {
+      "path": "app/collections/page.tsx",
+      "sourceSha256": "4441496a11dd9be949021e71d5ae933475223e99a9652f2383b330e722f39279"
+    },
+    {
+      "path": "app/error.tsx",
+      "sourceSha256": "6e7cc294e8232d4bdf6c6d7883e98d355434630a4432e24b508e3f208a1912a7"
+    },
+    {
+      "path": "app/global-error.tsx",
+      "sourceSha256": "bf43dd228ea8fe7023358d34e439cadf1c4a8399d776aa431ede3c3b21b58541"
+    },
+    {
+      "path": "app/globals.css",
+      "sourceSha256": "54324c3eec08af906a48df5e5596d63886eecd28c49b141230398086961993f4"
+    },
+    {
+      "path": "app/llms.txt/route.ts",
+      "sourceSha256": "14664c5ac250f4ef9b82bda69cc2615c7db332fe3b0a5ffedff3f4113c27bca3"
+    },
+    {
+      "path": "app/md/collections/[handle]/route.ts",
+      "sourceSha256": "e586bb5e142029dc6f3495b1cbfbbf3c4715a63ac461aaea64d9c32fa90e71b7"
+    },
+    {
+      "path": "app/md/products/[handle]/route.ts",
+      "sourceSha256": "a0d2ae319f930c243cfb54f607cb88d2a70ae7b2b550d054ea8ed029f6364d3c"
+    },
+    {
+      "path": "app/md/search/route.ts",
+      "sourceSha256": "991f1e92b5217df143933d5172d7e5ba53d49a6fed35af7f12d03983bc649a62"
+    },
+    {
+      "path": "app/not-found.tsx",
+      "sourceSha256": "df85edab8681292e2172fa691b26d98069f9df56146633c066212d3a1b6cf470"
+    },
+    {
+      "path": "app/page.tsx",
+      "sourceSha256": "a45216a9b1d538641b0df22656ecde859d58300bf1caee3bc364ba5a74b46c1a"
+    },
+    {
+      "path": "app/pages/[handle]/page.tsx",
+      "sourceSha256": "236d212d80fbfb8c683f4a1d3139600a936c0c414fc3e86622c957b2daf2aa3a"
+    },
+    {
+      "path": "app/policies/[handle]/page.tsx",
+      "sourceSha256": "1159680d8cb1dde3471453999cf8ce1433cc68deb357c05a7a1241a76f8257ab"
+    },
+    {
+      "path": "app/products/[handle]/error.tsx",
+      "sourceSha256": "3fe16f538911e4eff6d9fe755ea19fd9c9a2caa31ee45722c2a2a821da2ab84b"
+    },
+    {
+      "path": "app/products/[handle]/page.tsx",
+      "sourceSha256": "20a887ff81c9fc97207387239ffc0e1939ef34366add1e9c71018beaed983866"
+    },
+    {
+      "path": "app/robots.ts",
+      "sourceSha256": "7f47adcdcab9df8f1c7423137178097a03028269cffa685641a8f679b5743f56"
+    },
+    {
+      "path": "app/search/error.tsx",
+      "sourceSha256": "954b8160935dd772732b76b1e17772f0ad7d487aa078a00c8afcbba25e7e0d35"
+    },
+    {
+      "path": "app/search/page.tsx",
+      "sourceSha256": "7ef869fc10f4ca32941a9f4cb3d1dd62194091eb93fef8b0592116196cea7c37"
+    },
+    {
+      "path": "app/sitemap.xml/route.ts",
+      "sourceSha256": "55fc940a5c1ae1770e4687fa044cf8e016be8cf71577f388036382df414a0773"
+    },
+    {
+      "path": "app/sitemap/[shard]/route.ts",
+      "sourceSha256": "6d91305268942847e89556ff687fd43f6f89eab2cf3f11ab8b95d58afa20fc4c"
+    },
+    {
+      "path": "components.json",
+      "sourceSha256": "dae8539fa006e9a5d68384748dba5a7bd32d9d873e7fada36f22a72965dddeb9"
+    },
+    {
+      "path": "components/action-bar/predictive-search-results.tsx",
+      "sourceSha256": "9b3f944d038f8234c1b521aa98245b1e94f225f114bbc59aa80283ed147922e0"
+    },
+    {
+      "path": "components/analytics.tsx",
+      "sourceSha256": "170860ed18dda8671445869333fbba57c84d70d404e5638955cda107f362801c"
+    },
+    {
+      "path": "components/cart-page/cart-items-list.tsx",
+      "sourceSha256": "4e925db8b98c8b093942e0474791b5731b992c63cbbfc31ba79392bfdb0bd946"
+    },
+    {
+      "path": "components/cart-page/empty-cart.tsx",
+      "sourceSha256": "4d0e0d3c1c65896fe246745ced099259543f4526ef2a3e8fce8cc76a66ff6b8b"
+    },
+    {
+      "path": "components/cart-page/header.tsx",
+      "sourceSha256": "1553e15099c4d5f5ee5bfbc27bc43e57b7c40d62bfb80997ad5367551723d307"
+    },
+    {
+      "path": "components/cart-page/skeletons.tsx",
+      "sourceSha256": "29a56557fc972650add2eb53af39b77867a3eac74b15bae503e733679be41aef"
+    },
+    {
+      "path": "components/cart-page/summary.tsx",
+      "sourceSha256": "849d4674dec8e431b6e43675bdac705ec7f1ed76f4bae7cb3bf8e42ca726cebb"
+    },
+    {
+      "path": "components/cart/context-sync.tsx",
+      "sourceSha256": "7482f4e6b562d110b8813c1e5ebe2da5add3c5ba13fa461c447b6c06f08a8e92"
+    },
+    {
+      "path": "components/cart/context.tsx",
+      "sourceSha256": "55c6b3827ee4fb3d9844861a346e1f8296cdd8a9d2cb0bcaad32c9360b046549"
+    },
+    {
+      "path": "components/cart/discount-form.tsx",
+      "sourceSha256": "798a0bbce9d54ee302ef9dc0c44f2da465af35cb000396c1ed45ba2e6d05d2d7"
+    },
+    {
+      "path": "components/cart/overlay-content.tsx",
+      "sourceSha256": "a6a4f195e22e4b6666e7d6329dab9258b9809862ba63d4fe2afad306bce58632"
+    },
+    {
+      "path": "components/cart/overlay-item.tsx",
+      "sourceSha256": "d25b1d08f435733da2313e6ff5086188db6d70e374fb09c8ff99b1354fb33237"
+    },
+    {
+      "path": "components/cart/overlay-summary.tsx",
+      "sourceSha256": "958a7624a94831592413012159751fc76801d4b990f37b357b8040b7497ec9a4"
+    },
+    {
+      "path": "components/cart/overlay.tsx",
+      "sourceSha256": "b006d165ed9d4a771c93b2ef77d7e1d5a71862d577fb509688c817125ba9bccf"
+    },
+    {
+      "path": "components/cart/warnings.tsx",
+      "sourceSha256": "f91ee27fb66f6a539a79d6361d2282e0a468db5db914ffd2f414d555ae9f97ef"
+    },
+    {
+      "path": "components/collections/collection-card.tsx",
+      "sourceSha256": "ecd6dc4af0f10b4983fedb82141a9829cf346103a9f40151ccd0dfc7fc91827f"
+    },
+    {
+      "path": "components/collections/collection-page.tsx",
+      "sourceSha256": "142e5a5bcb6f8afd2e172749e162990a49a5d75fb1248e0a843cf5196bf50f91"
+    },
+    {
+      "path": "components/collections/filter-pending-context.tsx",
+      "sourceSha256": "f769b9c42784812f349f13e7aa7d1adce2fdf12938b4cb40e8887f8595eb73b1"
+    },
+    {
+      "path": "components/collections/filter-primitives.tsx",
+      "sourceSha256": "456fed3f572cabaeef20b7d5dbbdfd8876d9c9686e8f438126ec800931e95d13"
+    },
+    {
+      "path": "components/collections/filter-sidebar-sheet.tsx",
+      "sourceSha256": "baa26ff7c70cb744c0d04d3e4e226fb12676e0261990c75a17d42d94a9f1c856"
+    },
+    {
+      "path": "components/collections/filter-sidebar-skeleton.tsx",
+      "sourceSha256": "064a54d673b6a12eb64306d47895e477629d13182c574903778600100152a9ca"
+    },
+    {
+      "path": "components/collections/filter-sidebar.tsx",
+      "sourceSha256": "ef6aa0946ce9a6fb8e4f8a3dcf0844eb770666e075aceb820cc10a708a2931c5"
+    },
+    {
+      "path": "components/collections/filters.tsx",
+      "sourceSha256": "ecaa63b4002f54ca3e031d624f4ec45a249b3a1f6743b6592db3bab83d411d34"
+    },
+    {
+      "path": "components/collections/infinite-product-grid.tsx",
+      "sourceSha256": "ccd03086e8be8607527e206173d6545e07d85a010a8b03572d8f4e59c75cce8f"
+    },
+    {
+      "path": "components/collections/results-grid.tsx",
+      "sourceSha256": "a354bac819797fd2dc9df0b9d5008ea9cb21b26152ad9c3eef9fa9ebe65a9629"
+    },
+    {
+      "path": "components/collections/sort-select-fallback.tsx",
+      "sourceSha256": "efd1def8fb2e2117d67a25f955631b6760120f17722c7662c5925a543f5efcd0"
+    },
+    {
+      "path": "components/collections/sort-select.tsx",
+      "sourceSha256": "9b239abca07bfbd2eccc4a95dc65fda532d0676b79e992f68fd682c8dff83cb3"
+    },
+    {
+      "path": "components/collections/toolbar.tsx",
+      "sourceSha256": "eb30f67f86f9a2d127178805022167990f3fd37085eef38a7133be3de44e30d1"
+    },
+    {
+      "path": "components/content/rich-text-page.tsx",
+      "sourceSha256": "769c8015df57314074c1aa74b640a8e5984d351d9aae266e0596b759c76a34cf"
+    },
+    {
+      "path": "components/footer/social-links.tsx",
+      "sourceSha256": "d8c2c163c9893c4c873fcf6110e3c9d9e2e768b8567210a3c8bdb7faa7682ea9"
+    },
+    {
+      "path": "components/nav/cart-client.tsx",
+      "sourceSha256": "dd8eefbf0551d6bb9980040b0cc80545b06675949899174235f42da48cab5d45"
+    },
+    {
+      "path": "components/nav/cart.tsx",
+      "sourceSha256": "47e6cc47476cc915ec9ba6256f539a281a044728198158f27f7453eb561f7785"
+    },
+    {
+      "path": "components/nav/mobile-menu.tsx",
+      "sourceSha256": "a6e4fdba7412306b5ef5b9d7f7c20802d03df987db4941a8a3d66faef03b44c0"
+    },
+    {
+      "path": "components/nav/quick-links.tsx",
+      "sourceSha256": "f9a380c848c78e8d0d3a8def64295e27abbb2cd367b4f2d7e5d3f4cd4dc84d03"
+    },
+    {
+      "path": "components/nav/search-client.tsx",
+      "sourceSha256": "ebab942fdfafde32b30f22a26cb83150eacb705ef0f2e75b22ae3c5c17f6ef50"
+    },
+    {
+      "path": "components/nav/search-modal.tsx",
+      "sourceSha256": "bdc0f232609d4e18d3f2f362801564ed0e45dac285ec4c6fad95daf69f8bb74d"
+    },
+    {
+      "path": "components/product-card/components.tsx",
+      "sourceSha256": "7dd05fccac82a67f101883a0a6451e3d24653a93b4ef49fe509a95ddd22b54c1"
+    },
+    {
+      "path": "components/product-card/product-card.tsx",
+      "sourceSha256": "7d93fa59a82f40d6faf94edb2de9b26d38c2c425f0868103d6e621533940d78d"
+    },
+    {
+      "path": "components/product-detail/about-item.tsx",
+      "sourceSha256": "9dab114b23b3a2615ef7038596aa7909671f0f241e1f261c8997686a60ab4396"
+    },
+    {
+      "path": "components/product-detail/bundle-components.tsx",
+      "sourceSha256": "2a81c7f7e432fcfcdf99876de9979f326b0fa7f7e92322329f9095ac08ee6cd6"
+    },
+    {
+      "path": "components/product-detail/buy-buttons.tsx",
+      "sourceSha256": "d26c43fcc8c0fa2a2ea62e22fdd0752554a4036db0e7159490f477047647a29f"
+    },
+    {
+      "path": "components/product-detail/color-picker.tsx",
+      "sourceSha256": "d3cc974a72ab0ca241c883793a0a3e4faee1839b55ccf2683ef228330a06cfcf"
+    },
+    {
+      "path": "components/product-detail/complementary-products.tsx",
+      "sourceSha256": "fc5150994bfe0be4bebf527ea7b62dc712b304368d0ad98616666ac2351638f8"
+    },
+    {
+      "path": "components/product-detail/lightbox.tsx",
+      "sourceSha256": "40b80279928ecffc98577dd38bd64f339b4b49c24bb85fcec3c7bb6297ffd4ab"
+    },
+    {
+      "path": "components/product-detail/open-graph.tsx",
+      "sourceSha256": "a5017c6d7628f837b414bf59e6322a84fa2fa114911679f35c0a98d6ca5ba1a0"
+    },
+    {
+      "path": "components/product-detail/option-picker.tsx",
+      "sourceSha256": "14f75876bb67f6d5ec5671b1f494be8868d29b35fbe160657fdf27b4a760f0a2"
+    },
+    {
+      "path": "components/product-detail/product-detail-section.tsx",
+      "sourceSha256": "35bdb0c886a18e9c97c330005cf1a99e81d4e4e432ca465c5f4a050759ba8464"
+    },
+    {
+      "path": "components/product-detail/product-info.tsx",
+      "sourceSha256": "99e828cc6a6cfe3fbd3c1b79d9e20bdabdb5009ab4c88929250e1866502ae610"
+    },
+    {
+      "path": "components/product-detail/product-media.tsx",
+      "sourceSha256": "4f95221492fd8f87a7965d4f65aea1a5ed2864ffee893171d16f7bdd9306d0ef"
+    },
+    {
+      "path": "components/product-detail/product-price.tsx",
+      "sourceSha256": "a7dbe9d0c2f80754a673bc0d976cb17454ef458730d412b832607ccb700ee4b8"
+    },
+    {
+      "path": "components/product-detail/schema.tsx",
+      "sourceSha256": "35b89cc65cfc201270623dc8abb268305654d7669d00076811f0dc822befbdd7"
+    },
+    {
+      "path": "components/product-detail/shop-logo.tsx",
+      "sourceSha256": "48815842ad59dda01105bd44c76fe3e9689536c2c306b1f3427c3330f66e905d"
+    },
+    {
+      "path": "components/product/discount-badge.tsx",
+      "sourceSha256": "e35ad31159d6f6f002dc22a5a52fd7d348f03d15533e79db672658ce16fabf11"
+    },
+    {
+      "path": "components/product/price.tsx",
+      "sourceSha256": "7ce3017f11130863c8d66b398872b4077f19f1a0ed4b9926a4c2d6cba73dd60e"
+    },
+    {
+      "path": "components/product/products-grid.tsx",
+      "sourceSha256": "84ebc2bee25e3a87e498fd0f311bfe8df936a5431de6682b33542e76af59ed3c"
+    },
+    {
+      "path": "components/product/products-slider.tsx",
+      "sourceSha256": "783e04c3c8b9e8944069694c239a8e7946dcd615bb583e11e38dcff77343fb84"
+    },
+    {
+      "path": "components/product/related-products-section.tsx",
+      "sourceSha256": "85f5f1a6cb239a7bd2d2997e0a56a34886c6df55550ece252a924849c920dc5b"
+    },
+    {
+      "path": "components/schema/breadcrumb-schema.tsx",
+      "sourceSha256": "7a2e6656fac9eaf7a7ddb48973399edfc5122bb05a14f9f1778776f7610cfa77"
+    },
+    {
+      "path": "components/schema/collection-schema.tsx",
+      "sourceSha256": "462ee11e766796d1b9b2eebf52447ed4d05fdffce1125e270d5a7b8c4c63dbc5"
+    },
+    {
+      "path": "components/schema/site-schema.tsx",
+      "sourceSha256": "5ebb680eda604b381f30df063b4024e46f9b066a802c7b3533ed6439fed5e940"
+    },
+    {
+      "path": "components/search/results.tsx",
+      "sourceSha256": "c85da3767b3b0adf19750b023c065583a9a7686a6c21fd4c92544efe42882958"
+    },
+    {
+      "path": "components/sections/banner-section.tsx",
+      "sourceSha256": "90d8f3a4fc3539a93afbcd33f84715e22c083d80b2e8a7e53e257104feac4797"
+    },
+    {
+      "path": "components/ui/accordion.tsx",
+      "sourceSha256": "0e9065cd3e5e66d98a4c2dc7ad0747a4a40d9a256ae1eea180cbc86290e7d402"
+    },
+    {
+      "path": "components/ui/auto-play-video.tsx",
+      "sourceSha256": "e47871eefa4d889169009a2865589bc68469b2dff055c2aa6e3dc718da364cb5"
+    },
+    {
+      "path": "components/ui/badge.tsx",
+      "sourceSha256": "7d7439b2da5e4d39320d7e3dd3e00cc861ded7c5f787d2fb4ad94dac99ed6981"
+    },
+    {
+      "path": "components/ui/breadcrumb.tsx",
+      "sourceSha256": "535996cf865712d6cec5cbd781ac4ef750b95010af0003ff4726a9f1edb2dc72"
+    },
+    {
+      "path": "components/ui/bubble.tsx",
+      "sourceSha256": "27c9b6bcbf6bea71080e005f953f7ace067a11d2662956f329837193d75880c4"
+    },
+    {
+      "path": "components/ui/button-group.tsx",
+      "sourceSha256": "d901e6797bac96540897e8af2095e9d9df3031bc47575ea8d316799b02bab5c1"
+    },
+    {
+      "path": "components/ui/button.tsx",
+      "sourceSha256": "59b63f4f2ca9d362454a86a35e83e1ca8875c2e8583755a7217e807074a5ba9c"
+    },
+    {
+      "path": "components/ui/card.tsx",
+      "sourceSha256": "7403cbdaeace713163434c704cbc0c5d606b43805f5584771ded1c46f2d914ce"
+    },
+    {
+      "path": "components/ui/collapsible.tsx",
+      "sourceSha256": "861c377c6b18e8c188dbafce128345f15c3a54b695913430a90a5a22aa72c29a"
+    },
+    {
+      "path": "components/ui/command.tsx",
+      "sourceSha256": "3bddaa85ffe4434c98a819d4c4d4fec1d0aee94714379ebf41467d9b940e9517"
+    },
+    {
+      "path": "components/ui/container.tsx",
+      "sourceSha256": "04b3587ff8c6df0ad227c14139b04fa9c8ad61987a314f64251ce25bab90a4a2"
+    },
+    {
+      "path": "components/ui/country-flag.tsx",
+      "sourceSha256": "e9324687ef6e6a82e126a664cbb1dc9ed78bd91ae7b522121daf5e9411e8d621"
+    },
+    {
+      "path": "components/ui/dialog.tsx",
+      "sourceSha256": "3e5dd7f00b2d3371a0eb0f08e43dcafdaf388b9795f54c855d94769c1c57c6ef"
+    },
+    {
+      "path": "components/ui/dropdown-menu.tsx",
+      "sourceSha256": "dde2a022fff7d22a06dfa98f677f79ca918dd3d7a5ce0e0083d4f9281b26aa02"
+    },
+    {
+      "path": "components/ui/error-boundary-content.tsx",
+      "sourceSha256": "f0f1a240d9c3ef4c2b23eb2c17be70388c9be85b20f4af6b6d2e91e549e9c586"
+    },
+    {
+      "path": "components/ui/hover-card.tsx",
+      "sourceSha256": "49d9cc5c86fe0d0b43163929e435b0a9d76990509d9e7f91299d5e827f43ad49"
+    },
+    {
+      "path": "components/ui/image-placeholder.tsx",
+      "sourceSha256": "8ff248e05c1a6351e6d948c72006c7bdfaa4cc5a40dcd92217a6e8f805728f18"
+    },
+    {
+      "path": "components/ui/input-group.tsx",
+      "sourceSha256": "99218fe7d6bcdaaff2a4caa8b5e333eddd02465c9aa0569bbb50bab792fd5e11"
+    },
+    {
+      "path": "components/ui/input.tsx",
+      "sourceSha256": "fe6c85f735c75c88bd13cada5c02fe77e343fa385559fd12b44a39572e70217b"
+    },
+    {
+      "path": "components/ui/label.tsx",
+      "sourceSha256": "930242b6bd8f4ae248443bb2cb6263e85ce7f314ee4a680e3cc9bf937bb2f12a"
+    },
+    {
+      "path": "components/ui/marker.tsx",
+      "sourceSha256": "482b59c13e95a8323fd8fb1b343e5c6d91ba32e9bff70842443ad39466d165d1"
+    },
+    {
+      "path": "components/ui/native-select.tsx",
+      "sourceSha256": "a53104c7d88d86f72173d672771ca6cbfc0853a02361c6ddf9c7f692b91d7372"
+    },
+    {
+      "path": "components/ui/page.tsx",
+      "sourceSha256": "58b41cf0435ee2b07ac2e71158525384c93a3c9eeddaaf4c053f853aa047fb2d"
+    },
+    {
+      "path": "components/ui/popover.tsx",
+      "sourceSha256": "1e87e6dd5a63c5a911b355e5732ce1d7b96b703be1b466e44598c994155a7e86"
+    },
+    {
+      "path": "components/ui/prose.tsx",
+      "sourceSha256": "6852050f8fcc1349d47de999eb5bf5d9db620e93ec124e2a59eed7c0729915d2"
+    },
+    {
+      "path": "components/ui/sections.tsx",
+      "sourceSha256": "1cc07414831ff166a93a1abc7852fce486299d029ebbaccc1d0a205412f017a1"
+    },
+    {
+      "path": "components/ui/select.tsx",
+      "sourceSha256": "e0b42054111677f326e5441decc41512869c6b96c9c26a92c8b283cacf5561b1"
+    },
+    {
+      "path": "components/ui/separator.tsx",
+      "sourceSha256": "e20c17ecebb84cee1d07a897eb61bbb974d78e37e1530671c753532800207829"
+    },
+    {
+      "path": "components/ui/sheet.tsx",
+      "sourceSha256": "67818d111e1ca8f6c164a5378d0d34a6c12498577bee4ea3b8dab2154d7a4998"
+    },
+    {
+      "path": "components/ui/skeleton.tsx",
+      "sourceSha256": "1f75b999a5ad2f65e8fb807faa2b3fccef9eb333996fb4c9030575dac7393091"
+    },
+    {
+      "path": "components/ui/slider.tsx",
+      "sourceSha256": "f2b52b1ce2dce39f0f1cc17ed429328de5435c0e53238b52529b59dc012626e1"
+    },
+    {
+      "path": "components/ui/spinner.tsx",
+      "sourceSha256": "ecd836d476573adb4403747c3457339276805433c20eacf3408303b76ec283ff"
+    },
+    {
+      "path": "components/ui/swatch.tsx",
+      "sourceSha256": "3837540584ac21b645a24d6217d945dfcd039f5ec0c506aa930702a6f9c9918a"
+    },
+    {
+      "path": "components/ui/switch.tsx",
+      "sourceSha256": "06d3162dcbf7dee5fd37f60334a8fb61617e137ad39b0e4b0d21ad8f219ac52d"
+    },
+    {
+      "path": "components/ui/textarea.tsx",
+      "sourceSha256": "39342356818b322f4759c73eb2ec30db9e03ac6d5536a937f3d23f458af42e8c"
+    },
+    {
+      "path": "components/ui/tooltip.tsx",
+      "sourceSha256": "888e58c2fb97e33adc1dcdbcc7413e808a4f10dde4cbd234c64a232fbe72dc0c"
+    },
+    {
+      "path": "global.ts",
+      "sourceSha256": "fb6c403de020a8fa6cfc27f5ae968c45067a11188d139aa276e309b4289be59c"
+    },
+    {
+      "path": "hooks/use-controllable-state.ts",
+      "sourceSha256": "917c8407676171b2f84976114e09c5d478992df8b478131572292040522b2f20"
+    },
+    {
+      "path": "hooks/use-media-query.ts",
+      "sourceSha256": "56563909ec7a3076c39c74e0c5a7327086dc1ea0ddc95b275d71e6bcb16e8161"
+    },
+    {
+      "path": "hooks/use-predictive-search.ts",
+      "sourceSha256": "decfda523456ec2ecfa5b63a88650c57c51a61274649075fd080417c02c671f8"
+    },
+    {
+      "path": "hooks/use-scroll-contain.ts",
+      "sourceSha256": "30c5588e035aec993a37a741d89db7ee02ce91fd46bedacdd1aa1aebbb6b154e"
+    },
+    {
+      "path": "lib/cart/action.ts",
+      "sourceSha256": "3d373ddbf5469c7a29b2ec2551e0ab863042c05d5885a0e2b0f9ebe20f60402c"
+    },
+    {
+      "path": "lib/cart/index.ts",
+      "sourceSha256": "0009722760e937ba6c96e24f264f7f048242f73b6c45500b2769d2a9943b6a5e"
+    },
+    {
+      "path": "lib/cart/server.ts",
+      "sourceSha256": "414436a44256231c10fb13d416af0ff3560f0e34ecb5fce1e18751e9db24ed8f"
+    },
+    {
+      "path": "lib/collections/action.ts",
+      "sourceSha256": "e0fb47508717e8c6511ec359ac948baa40a798fd9055cba0def9f6e9b386be2b"
+    },
+    {
+      "path": "lib/collections/server.ts",
+      "sourceSha256": "3f8f0a4d88b1da39520c49b7632cafd24f2c97054f37b6867fa21424504aa80d"
+    },
+    {
+      "path": "lib/i18n/index.ts",
+      "sourceSha256": "5db53f951c092766bf97739d11511ea242207c0e43c402ad0d00ae8de466541c"
+    },
+    {
+      "path": "lib/i18n/messages/en.json",
+      "sourceSha256": "1c6c710e305fb380212f2bf0cac55e355a6613d90668f7809108114662c7c9c3"
+    },
+    {
+      "path": "lib/i18n/request.ts",
+      "sourceSha256": "5640465b3525ca4e82941e50102a6094bb1ffca6f3f3616f10de22579bbfd2a5"
+    },
+    {
+      "path": "lib/markdown/catalog.ts",
+      "sourceSha256": "9e2188cf5a55f494b2a6b2b636a331327e753f9af938427da124f7e987200893"
+    },
+    {
+      "path": "lib/markdown/collection.ts",
+      "sourceSha256": "ad0065778bf138eafa0d7a8c793e33f12dccab773c3e88b87a8d3d5d75b664fc"
+    },
+    {
+      "path": "lib/markdown/llms.ts",
+      "sourceSha256": "c9988a49aba6270de00155df038bc9d7cae1ce23ae62235de655482e38676155"
+    },
+    {
+      "path": "lib/markdown/product.ts",
+      "sourceSha256": "0861b272d557b646909fc39affe9ed7d2669128ff5abcc393936c0f090edefba"
+    },
+    {
+      "path": "lib/markdown/search.ts",
+      "sourceSha256": "75dd3c759050021811f84b3dc735183788893fe4b8e63448b6c039c4854c1e94"
+    },
+    {
+      "path": "lib/markdown/utils.ts",
+      "sourceSha256": "a57782cf958d23ee986e141b667dbb0d353cbea7639fdc7cf05ef709958494e1"
+    },
+    {
+      "path": "lib/params.ts",
+      "sourceSha256": "ad84e18cd38d09b903ab269e7e40ac85a988035d8e8e1327dbfb5ee24fbaca81"
+    },
+    {
+      "path": "lib/product.ts",
+      "sourceSha256": "fcf14616dd4dd31460f747650fd9b72c3955f539568bede438eb3e58068efec4"
+    },
+    {
+      "path": "lib/search/action.ts",
+      "sourceSha256": "0ebd4eb50ddfb507099bf8024399dc16a53b8c298bc9d8f2a1136d6417e0fb2a"
+    },
+    {
+      "path": "lib/seo.ts",
+      "sourceSha256": "fcdcc65c7c4c42de99939f8fdacbd3b85a2e545355ca7ddaf1217a9e93a82782"
+    },
+    {
+      "path": "lib/shopify/discovery.ts",
+      "sourceSha256": "d7ce2acaa9057a647dd34207cfb1090ce1afa86372117211a4f69acdf3459bac"
+    },
+    {
+      "path": "lib/shopify/encoded-variants.ts",
+      "sourceSha256": "a5630879256770e7b4dce4219df638366678f12b0fe9c3a9dbaa4bbb3ab077ef"
+    },
+    {
+      "path": "lib/shopify/errors.ts",
+      "sourceSha256": "d6c8c98a41c38724324f447c48cbbb22e5a78fe1e472680540d72d5d46c2d222"
+    },
+    {
+      "path": "lib/shopify/fetch.ts",
+      "sourceSha256": "9ea8c8fea450cbd64084a34041541f6c6d425027657e704ecec609a24008321f"
+    },
+    {
+      "path": "lib/shopify/fragments.ts",
+      "sourceSha256": "c83878f0dac9165482fd63a918f48b0faae59851a47feca24e2ae87ddc3e75a6"
+    },
+    {
+      "path": "lib/shopify/operations/cart.ts",
+      "sourceSha256": "5e6eb091193b8f3452fa0aa55fece637c23a62077a45d01428925ffbdb57253c"
+    },
+    {
+      "path": "lib/shopify/operations/collections.ts",
+      "sourceSha256": "963b21dcb20b362f49cce059a012edd117ac56b43675d6c4972cae7ec1e26d98"
+    },
+    {
+      "path": "lib/shopify/operations/menu.ts",
+      "sourceSha256": "348145b13f237af05b4bd465e5cc3e5c9fa95809bc825dd4ac7fa3668b43252c"
+    },
+    {
+      "path": "lib/shopify/operations/pages.ts",
+      "sourceSha256": "34b8ee8e25d7a80d4dab8e43726d236da096761c3c432a8b8c59c26c0e4e8f79"
+    },
+    {
+      "path": "lib/shopify/operations/policies.ts",
+      "sourceSha256": "9cb730ea057eba3e295151a2fb4c0a5b9670048d3d7b43d22d6f908ab1dc0639"
+    },
+    {
+      "path": "lib/shopify/operations/products.ts",
+      "sourceSha256": "031f67444cb2c6282647dc0801885283cb96b5c8b44c638815954219fccd76d5"
+    },
+    {
+      "path": "lib/shopify/operations/search.ts",
+      "sourceSha256": "c5b861a6629f89ad12c27a55c49b550c63da3fdb24bc92b6a4b56bbf05ec5242"
+    },
+    {
+      "path": "lib/shopify/operations/sitemap.ts",
+      "sourceSha256": "5c6dc4e01af8136fe2b92edbb5effe6bf21869d6b420c752b8a84d537ddf07cf"
+    },
+    {
+      "path": "lib/shopify/storefront.ts",
+      "sourceSha256": "0329a52ff2066d1200c235165519dc3a7d4ad56129e1cb4e3a28fe6e652447d1"
+    },
+    {
+      "path": "lib/shopify/transforms/cart.ts",
+      "sourceSha256": "c8a21dd04dfd780f0e2a3713135b7bca30e18526328333bc7dcfdde7a4b20ef9"
+    },
+    {
+      "path": "lib/shopify/transforms/collection.ts",
+      "sourceSha256": "a97ae4bcb0f2aa55702fb8634ea1a3ca69b15bd8fe436ead03e76958aa9c65b8"
+    },
+    {
+      "path": "lib/shopify/transforms/filters.ts",
+      "sourceSha256": "6f9b335b301ec8ec90d63f046cdd857fa122d751eb4b6dd847f44c7443e2f5f1"
+    },
+    {
+      "path": "lib/shopify/transforms/menu.ts",
+      "sourceSha256": "d7a570fe45e3c9f05cc0fbc3bf996479e63cb7fddefd9580aaaa2ecb2c101388"
+    },
+    {
+      "path": "lib/shopify/transforms/product.ts",
+      "sourceSha256": "4456fee3e45bb31c0fe5cc49c09ff4dc9de40324f828f2f903ea58fe8cda3def"
+    },
+    {
+      "path": "lib/shopify/transforms/search.ts",
+      "sourceSha256": "f581225771473ab272e77572362c319f2514cc4656e7355ee732dbd9b128f44f"
+    },
+    {
+      "path": "lib/shopify/types/filters.ts",
+      "sourceSha256": "4acaff69f2054179827b142c8b66c75d8a5e19061c71d230981c19c2d6523979"
+    },
+    {
+      "path": "lib/shopify/types/menu.ts",
+      "sourceSha256": "356fb7c664242418c76cd7e2db7fe0a407325c0adcca2cdd10af64c78c0e94c4"
+    },
+    {
+      "path": "lib/shopify/utils.ts",
+      "sourceSha256": "a65b156261cd92260ccefcc273781faec5f66da8f1425632dad09bed3254ef7e"
+    },
+    {
+      "path": "lib/types.ts",
+      "sourceSha256": "ce8c5d1200434827b94bf447824cc2e7f276e62280abdae60d13c9fd2034c6fe"
+    },
+    {
+      "path": "lib/utils.ts",
+      "sourceSha256": "40cda8ec0a6bbb8cff6bbc8a41e9a45b5eca443d65e463e5eaae85f399cb9168"
+    },
+    {
+      "path": "next.config.ts",
+      "sourceSha256": "46e1f4b08ae4f3d951af147c2f5eb7d10d2642d4b7e47e5c2c08f9a2413d4f5f"
+    },
+    {
+      "path": "package.json",
+      "sourceSha256": "ae662f2818fe83f3a91d3eabe6bedee2709d5703b11d7e2bdc26e4bd151fd85e"
+    },
+    {
+      "path": "postcss.config.mjs",
+      "sourceSha256": "dfac7ac2d86d326a0e5adb024e7943c181393ed17a5fcb8f0315b24c7da6ddde"
+    },
+    {
+      "path": "tsconfig.json",
+      "sourceSha256": "c5805d483585cee002979ca95018b75f6f9e9fe57ef540c765b931fc58dd03fc"
+    }
+  ]
+}

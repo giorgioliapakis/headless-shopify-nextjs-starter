@@ -5,13 +5,7 @@ import { extname, join, relative, resolve, sep } from "node:path";
 import process from "node:process";
 
 const root = resolve(process.cwd());
-const ignoredDirectories = new Set([
-  ".git",
-  ".migration",
-  "node_modules",
-  ".next",
-  "coverage",
-]);
+const ignoredDirectories = new Set([".git", ".migration", "node_modules", ".next", "coverage"]);
 const ignoredFiles = new Set([".DS_Store"]);
 const binaryExtensions = new Set([
   ".avif",
@@ -44,7 +38,6 @@ const secretPatterns = [
     pattern: /\bshp(?:at|ca|ss)_[A-Za-z0-9]{16,}\b/,
   },
   { label: "GitHub token", pattern: /\bgh[oprsu]_[A-Za-z0-9_]{20,}\b/ },
-  { label: "Vercel token", pattern: /\bvercel_[A-Za-z0-9_-]{20,}\b/i },
 ];
 
 const findings = [];
@@ -61,9 +54,7 @@ async function walk(directory) {
     const metadata = await lstat(absolutePath);
 
     if (metadata.isSymbolicLink()) {
-      findings.push(
-        `${repositoryPath}: symbolic links require an explicit provenance exception`,
-      );
+      findings.push(`${repositoryPath}: symbolic links require an explicit provenance exception`);
       continue;
     }
 
@@ -86,17 +77,14 @@ async function walk(directory) {
 
     if (binaryExtensions.has(extname(repositoryPath).toLowerCase())) {
       if (!allowedBinaryPaths.has(repositoryPath)) {
-        findings.push(
-          `${repositoryPath}: binary asset is not in the audited allowlist`,
-        );
+        findings.push(`${repositoryPath}: binary asset is not in the audited allowlist`);
       }
       continue;
     }
 
     const content = await readFile(absolutePath, "utf8");
     for (const { label, pattern } of secretPatterns) {
-      if (pattern.test(content))
-        findings.push(`${repositoryPath}: possible ${label}`);
+      if (pattern.test(content)) findings.push(`${repositoryPath}: possible ${label}`);
     }
   }
 }

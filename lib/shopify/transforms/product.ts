@@ -1,0 +1,386 @@
+import { getNumericShopifyId } from "@/lib/shopify/utils";
+import { flattenEdges, type ShopifyEdges } from "@/lib/shopify/utils";
+import type {
+  Category,
+  Image,
+  OptionValue,
+  OptionValueSwatch,
+  ProductCard,
+  ProductDetails,
+  ProductOption,
+  ProductVariant,
+  ProductVariantComponent,
+  ProductVariantReference,
+  Video,
+} from "@/lib/types";
+
+interface ShopifyImage {
+  url: string;
+  altText: string | null;
+  width: number;
+  height: number;
+}
+
+interface ShopifyMoney {
+  amount: string;
+  currencyCode: string;
+}
+
+interface ShopifyBundleComponentVariant {
+  id: string;
+  title: string;
+  image: ShopifyImage | null;
+  product: {
+    id: string;
+    title: string;
+    handle: string;
+    featuredImage: ShopifyImage | null;
+  };
+}
+
+export interface ShopifyVariant {
+  id: string;
+  title: string;
+  availableForSale: boolean;
+  price: ShopifyMoney;
+  compareAtPrice: ShopifyMoney | null;
+  selectedOptions: Array<{ name: string; value: string }>;
+  image: ShopifyImage | null;
+  requiresComponents?: boolean;
+  groupedBy?: { nodes: ShopifyBundleComponentVariant[] };
+  components?: {
+    nodes: Array<{ quantity: number; productVariant: ShopifyBundleComponentVariant }>;
+  };
+}
+
+interface ShopifyOptionValueSwatch {
+  color: string | null;
+  image: { previewImage: { url: string } } | null;
+}
+
+interface ShopifyOptionValue {
+  id: string;
+  name: string;
+  swatch: ShopifyOptionValueSwatch | null;
+  firstSelectableVariant?: { image: ShopifyImage | null } | null;
+}
+
+interface ShopifyOption {
+  id: string;
+  name: string;
+  values: string[];
+  optionValues?: ShopifyOptionValue[];
+}
+
+interface ShopifyCategory {
+  id: string;
+  name: string;
+  ancestors: Array<{ id: string; name: string }>;
+}
+
+interface ShopifyVideoSource {
+  url: string;
+  mimeType: string;
+  width: number;
+  height: number;
+}
+
+interface ShopifyMediaImageNode {
+  mediaContentType: "IMAGE";
+  image: ShopifyImage | null;
+}
+
+interface ShopifyVideoNode {
+  mediaContentType: "VIDEO";
+  previewImage: ShopifyImage | null;
+  sources: ShopifyVideoSource[];
+}
+
+interface ShopifyOtherMediaNode {
+  mediaContentType: "EXTERNAL_VIDEO" | "MODEL_3D";
+}
+
+type ShopifyMediaNode = ShopifyMediaImageNode | ShopifyVideoNode | ShopifyOtherMediaNode;
+
+export interface ShopifyProduct {
+  id: string;
+  title: string;
+  handle: string;
+  description: string;
+  descriptionHtml: string;
+  vendor: string;
+  tags: string[];
+  updatedAt: string;
+  availableForSale: boolean;
+  featuredImage: ShopifyImage | null;
+  media?: ShopifyEdges<ShopifyMediaNode>;
+  /** @deprecated Kept for stale cache compatibility — new queries use `media` */
+  images?: ShopifyEdges<ShopifyImage>;
+  priceRange: {
+    minVariantPrice: ShopifyMoney;
+    maxVariantPrice: ShopifyMoney;
+  };
+  compareAtPriceRange: {
+    minVariantPrice: ShopifyMoney;
+    maxVariantPrice: ShopifyMoney;
+  } | null;
+  encodedVariantAvailability?: string | null;
+  encodedVariantExistence?: string | null;
+  variantsCount: { count: number };
+  selectedOrFirstAvailableVariant?: ShopifyVariant | null;
+  variants?: ShopifyEdges<ShopifyVariant>;
+  options: ShopifyOption[];
+  seo: {
+    title: string | null;
+    description: string | null;
+  };
+  category?: ShopifyCategory | null;
+  collections?: ShopifyEdges<{ handle: string }>;
+}
+
+export interface ShopifyProductCard {
+  id: string;
+  title: string;
+  handle: string;
+  vendor: string;
+  availableForSale: boolean;
+  featuredImage: ShopifyImage | null;
+  priceRange: {
+    minVariantPrice: ShopifyMoney;
+    maxVariantPrice: ShopifyMoney;
+  };
+  compareAtPriceRange?: {
+    minVariantPrice: ShopifyMoney;
+  } | null;
+  selectedOrFirstAvailableVariant?: {
+    id: string;
+    availableForSale: boolean;
+    image?: { url: string } | null;
+    selectedOptions: Array<{ name: string; value: string }>;
+  } | null;
+}
+
+function transformImage(image: ShopifyImage | null): Image | null {
+  if (!image) return null;
+  return {
+    url: image.url,
+    altText: image.altText ?? "",
+    width: image.width,
+    height: image.height,
+  };
+}
+
+function extractMediaFromProduct(product: ShopifyProduct): {
+  images: Image[];
+  videos: Video[];
+} {
+  // Handle stale cached responses that still use the old `images` field
+  if (!product.media && product.images) {
+    return {
+      images: flattenEdges(product.images)
+        .map((img) => transformImage(img))
+        .filter(Boolean) as Image[],
+      videos: [],
+    };
+  }
+
+  if (!product.media) {
+    return { images: [], videos: [] };
+  }
+
+  const images: Image[] = [];
+  const videos: Video[] = [];
+
+  for (const node of flattenEdges(product.media)) {
+    if (node.mediaContentType === "IMAGE") {
+      const img = transformImage(node.image);
+      if (img) images.push(img);
+    } else if (node.mediaContentType === "VIDEO") {
+      const mp4Sources = node.sources.filter((s) => s.mimeType.startsWith("video/mp4"));
+      const bestSource = mp4Sources.sort((a, b) => b.width - a.width)[0] ?? node.sources[0];
+      if (bestSource) {
+        videos.push({
+          url: bestSource.url,
+          previewImage: transformImage(node.previewImage),
+          width: bestSource.width,
+          height: bestSource.height,
+        });
+      }
+    }
+  }
+
+  return { images, videos };
+}
+
+function transformCategory(category: ShopifyCategory | null | undefined): Category | null {
+  if (!category) return null;
+  const cappedAncestors = category.ancestors.slice(-2);
+  return {
+    id: category.id,
+    name: category.name,
+    ancestors: cappedAncestors.map((a) => ({
+      id: a.id,
+      name: a.name,
+      ancestors: [],
+    })),
+  };
+}
+
+function transformVariantReference(
+  variant: ShopifyBundleComponentVariant,
+): ProductVariantReference {
+  return {
+    id: variant.id,
+    image: transformImage(variant.image),
+    product: {
+      featuredImage: transformImage(variant.product.featuredImage),
+      handle: variant.product.handle,
+      id: variant.product.id,
+      title: variant.product.title,
+    },
+    title: variant.title,
+  };
+}
+
+function transformBundleComponent(component: {
+  quantity: number;
+  productVariant: ShopifyBundleComponentVariant;
+}): ProductVariantComponent {
+  return {
+    quantity: component.quantity,
+    variant: transformVariantReference(component.productVariant),
+  };
+}
+
+export function transformVariant(variant: ShopifyVariant): ProductVariant {
+  return {
+    id: variant.id,
+    title: variant.title,
+    availableForSale: variant.availableForSale,
+    price: variant.price,
+    compareAtPrice: variant.compareAtPrice ?? undefined,
+    selectedOptions: variant.selectedOptions,
+    image: transformImage(variant.image),
+    bundleParents: variant.groupedBy?.nodes.map(transformVariantReference) ?? [],
+    components: variant.components?.nodes.map(transformBundleComponent) ?? [],
+    requiresComponents: variant.requiresComponents ?? false,
+  };
+}
+
+function transformSwatch(swatch: ShopifyOptionValueSwatch | null): OptionValueSwatch | undefined {
+  if (!swatch) return undefined;
+  const result: OptionValueSwatch = {};
+  if (swatch.color) result.color = swatch.color;
+  if (swatch.image?.previewImage?.url) result.image = swatch.image.previewImage.url;
+  if (!result.color && !result.image) return undefined;
+  return result;
+}
+
+function transformOption(option: ShopifyOption): ProductOption {
+  const swatchLookup = new Map<string, OptionValueSwatch | undefined>();
+  const imageLookup = new Map<string, string | undefined>();
+  if (option.optionValues) {
+    for (const ov of option.optionValues) {
+      swatchLookup.set(ov.name, transformSwatch(ov.swatch));
+      imageLookup.set(ov.name, ov.firstSelectableVariant?.image?.url);
+    }
+  }
+
+  return {
+    id: option.id,
+    name: option.name,
+    values: option.values.map(
+      (value): OptionValue => ({
+        id: value,
+        image: imageLookup.get(value),
+        name: value,
+        swatch: swatchLookup.get(value),
+      }),
+    ),
+  };
+}
+
+export function transformShopifyProductCard(product: ShopifyProductCard): ProductCard {
+  const defaultVariant = product.selectedOrFirstAvailableVariant;
+  return {
+    id: product.id,
+    handle: product.handle,
+    title: product.title,
+    featuredImage: transformImage(product.featuredImage),
+    price: product.priceRange.minVariantPrice,
+    maxPrice: product.priceRange.maxVariantPrice,
+    compareAtPrice: product.compareAtPriceRange?.minVariantPrice ?? undefined,
+    vendor: product.vendor || undefined,
+    availableForSale: product.availableForSale,
+    defaultVariantId: defaultVariant?.id,
+    defaultVariantNumericId: defaultVariant
+      ? (getNumericShopifyId(defaultVariant.id) ?? undefined)
+      : undefined,
+    defaultVariantSelectedOptions: defaultVariant?.selectedOptions ?? [],
+  };
+}
+
+function hasUniformPriceRange(product: ShopifyProduct): boolean {
+  const { compareAtPriceRange, priceRange } = product;
+  if (priceRange.minVariantPrice.amount !== priceRange.maxVariantPrice.amount) return false;
+  if (priceRange.minVariantPrice.currencyCode !== priceRange.maxVariantPrice.currencyCode) {
+    return false;
+  }
+  if (!compareAtPriceRange) return true;
+  return compareAtPriceRange.minVariantPrice.amount === compareAtPriceRange.maxVariantPrice.amount;
+}
+
+export function transformShopifyProductDetails(product: ShopifyProduct): ProductDetails {
+  const variants = product.variants
+    ? flattenEdges(product.variants).map(transformVariant)
+    : undefined;
+  const defaultVariant = product.selectedOrFirstAvailableVariant
+    ? transformVariant(product.selectedOrFirstAvailableVariant)
+    : (variants?.find((v) => v.availableForSale) ?? variants?.[0]);
+  return {
+    id: product.id,
+    handle: product.handle,
+    title: product.title,
+    featuredImage: transformImage(product.featuredImage),
+    price: product.priceRange.minVariantPrice,
+    maxPrice: product.priceRange.maxVariantPrice,
+    compareAtPrice: product.compareAtPriceRange?.minVariantPrice ?? undefined,
+    vendor: product.vendor || undefined,
+    availableForSale: product.availableForSale,
+    allVariantsInStock:
+      !product.encodedVariantExistence ||
+      product.encodedVariantExistence === product.encodedVariantAvailability,
+    hasUniformPricing: hasUniformPriceRange(product),
+    variantsCount: product.variantsCount.count,
+    defaultVariant,
+    defaultVariantId: defaultVariant?.id,
+    defaultVariantNumericId: defaultVariant
+      ? (getNumericShopifyId(defaultVariant.id) ?? undefined)
+      : undefined,
+    defaultVariantSelectedOptions: defaultVariant?.selectedOptions ?? [],
+    description: product.description,
+    descriptionHtml: product.descriptionHtml,
+    encodedVariantAvailability: product.encodedVariantAvailability ?? undefined,
+    encodedVariantExistence: product.encodedVariantExistence ?? undefined,
+    ...extractMediaFromProduct(product),
+    variants,
+    options: product.options.map(transformOption),
+    tags: product.tags,
+    seo: {
+      title: product.seo.title || product.title,
+      description: product.seo.description || product.description,
+    },
+    category: transformCategory(product.category),
+    updatedAt: product.updatedAt,
+    priceRange: product.priceRange,
+    compareAtPriceRange: product.compareAtPriceRange ?? undefined,
+    currencyCode: product.priceRange.minVariantPrice.currencyCode,
+    manufacturerName: product.vendor,
+    categoryId: product.category?.id,
+    collectionHandles: flattenEdges(product.collections ?? { edges: [] }).map((c) => c.handle),
+  };
+}
+
+export function transformShopifyProductCards(products: ShopifyProductCard[]): ProductCard[] {
+  return products.map(transformShopifyProductCard);
+}

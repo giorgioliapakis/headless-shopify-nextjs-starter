@@ -270,7 +270,7 @@ flowchart TB
     U7 --> U8[8. Independent proof and alpha release]
 ```
 
-- [ ] **Unit 0: Establish the repository and trust boundary**
+- [x] **Unit 0: Establish the repository and trust boundary**
 
 **Goal:** Make the fresh repository, remote and security topology real before application code arrives.
 
@@ -291,7 +291,7 @@ flowchart TB
 **Verification:** The repository has an uncontaminated private default branch and implementable trust
 boundaries that an ordinary coding agent cannot bypass by editing workspace files.
 
-- [ ] **Unit 1: Import an audited Vercel Shop baseline**
+- [x] **Unit 1: Import an audited Vercel Shop baseline**
 
 **Goal:** Establish a reproducible clean-room application baseline without merchant history or mutable
 upstream inputs.
