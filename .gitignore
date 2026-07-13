@@ -2,12 +2,15 @@
 .env*
 !.env.example
 .context/
+.claude/skills/
 .migration/
 .next/
 .vercel/
 coverage/
 node_modules/
 next-env.d.ts
+lib/shopify/types/generated/
+lib/i18n/messages/*.d.json.ts
 source-theme/
 test-results/
 *.tsbuildinfo

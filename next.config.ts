@@ -6,8 +6,6 @@ import {
   PHASE_PRODUCTION_SERVER,
 } from "next/constants";
 
-import { shopConfig } from "./shop.config";
-
 function assertRequiredEnv() {
   const missingShopify = ["SHOPIFY_STORE_DOMAIN", "SHOPIFY_STOREFRONT_ACCESS_TOKEN"].filter(
     (key) => !process.env[key],
@@ -17,20 +15,6 @@ function assertRequiredEnv() {
     throw new Error(
       `Missing required Shopify environment variables: ${missingShopify.join(", ")}. See .env.example.`,
     );
-  }
-
-  if (shopConfig.auth.enabled) {
-    const missing = [
-      "CUSTOMER_ACCOUNT_SESSION_SECRET",
-      "SHOPIFY_CUSTOMER_ACCOUNT_API_CLIENT_ID",
-    ].filter((key) => !process.env[key]);
-
-    if (missing.length > 0) {
-      throw new Error(
-        `Enabled auth requires: ${missing.join(", ")}. ` +
-          `Set the missing variables or disable auth in shop.config.ts or NEXT_PUBLIC_ENABLE_AUTH.`,
-      );
-    }
   }
 }
 
@@ -49,6 +33,7 @@ const nextConfig: NextConfig = {
     unoptimized: !!process.env.V0_CALLBACK_URL,
   },
   reactCompiler: true,
+  turbopack: { root: process.cwd() },
   async rewrites() {
     return {
       beforeFiles: [

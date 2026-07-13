@@ -1,5 +1,4 @@
-import type { GraphQLFormattedError } from "@shopify/hydrogen";
-
+import type { GraphQLFormattedError } from "@/lib/shopify/types/graphql";
 import type { CartWarning } from "@/lib/types";
 
 interface StorefrontResponse<T> {

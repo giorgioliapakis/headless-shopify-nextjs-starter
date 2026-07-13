@@ -1,17 +1,9 @@
-import {
-  createShopifyRequestContext,
-  createStorefrontClient,
-  type GraphQLFormattedError,
-  type I18nConfig,
-  type StorefrontClient,
-  type StorefrontQueryString,
-} from "@shopify/hydrogen";
-
 import { defaultLocale, getCountryCode, getLanguageCode } from "@/lib/i18n";
+import type { GraphQLFormattedError } from "@/lib/shopify/types/graphql";
 
 const SHOPIFY_STORE_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN as string;
 const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN as string;
-const SHOPIFY_API_VERSION = process.env.SHOPIFY_API_VERSION ?? "unstable";
+const SHOPIFY_API_VERSION = process.env.SHOPIFY_API_VERSION ?? "2026-07";
 const DEBUG = process.env.DEBUG_SHOPIFY === "true";
 
 function operationName(body: RequestInit["body"]): string {
@@ -24,47 +16,6 @@ function operationName(body: RequestInit["body"]): string {
   }
 }
 
-// Hydrogen lacks operation URL annotations and debug timing, so custom fetch preserves them.
-const customFetchApi: typeof fetch = async (input, init) => {
-  const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
-  const operation = operationName(init?.body);
-  const annotated = `${url}${url.includes("?") ? "&" : "?"}operation=${operation}`;
-  const headers = new Headers(init?.headers);
-  headers.set("Accept-Encoding", "gzip, br");
-
-  const start = DEBUG ? performance.now() : 0;
-  const response = await fetch(annotated, { ...init, headers });
-  if (DEBUG) {
-    console.log(`[shopify] ${operation} ${(performance.now() - start).toFixed(0)}ms`);
-  }
-  return response;
-};
-
-// Hydrogen overrides locale variables from client config, requiring a client per locale pair.
-export function createRequestStorefrontClient(
-  requestContext: ReturnType<typeof createShopifyRequestContext>,
-): StorefrontClient {
-  return createStorefrontClient({
-    config: {
-      apiVersion: SHOPIFY_API_VERSION,
-      fetch: customFetchApi,
-      publicStorefrontToken: SHOPIFY_ACCESS_TOKEN,
-      storeDomain: SHOPIFY_STORE_DOMAIN,
-    },
-    requestContext,
-    type: "public",
-  });
-}
-
-function getClient(country: string, language: string): StorefrontClient {
-  return createRequestStorefrontClient(
-    createShopifyRequestContext({
-      i18n: { country, language } as I18nConfig,
-      request: new Request(`https://${SHOPIFY_STORE_DOMAIN}`),
-    }),
-  );
-}
-
 interface StorefrontRequestOptions {
   variables?: Record<string, unknown>;
 }
@@ -74,21 +25,61 @@ interface StorefrontResponse<T> {
   errors?: GraphQLFormattedError[];
 }
 
+export class StorefrontApiError extends Error {
+  constructor(
+    message: string,
+    public readonly status: number,
+    public readonly requestId: string | null,
+  ) {
+    super(message);
+    this.name = "StorefrontApiError";
+  }
+}
+
 export const storefront = {
   async request<T>(
     query: string,
     options?: StorefrontRequestOptions,
   ): Promise<StorefrontResponse<T>> {
-    const variables = options?.variables;
-    const country =
-      typeof variables?.country === "string" ? variables.country : getCountryCode(defaultLocale);
-    const language =
-      typeof variables?.language === "string" ? variables.language : getLanguageCode(defaultLocale);
+    const variables = {
+      country: getCountryCode(defaultLocale),
+      language: getLanguageCode(defaultLocale),
+      ...options?.variables,
+    };
+    const body = JSON.stringify({ query, variables });
+    const operation = operationName(body);
+    const endpoint = `https://${SHOPIFY_STORE_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json?operation=${encodeURIComponent(operation)}`;
+    const start = DEBUG ? performance.now() : 0;
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Storefront-Access-Token": SHOPIFY_ACCESS_TOKEN,
+      },
+      body,
+    });
 
-    // Brand runtime strings so Hydrogen does not infer `never` variables.
-    const doc = query as StorefrontQueryString<T, Record<string, unknown>>;
-    const { data, errors } = await getClient(country, language).graphql(doc, { variables });
-    return { data, errors };
+    if (DEBUG) console.log(`[shopify] ${operation} ${(performance.now() - start).toFixed(0)}ms`);
+
+    const requestId = response.headers.get("x-request-id");
+    if (!response.ok) {
+      throw new StorefrontApiError(
+        `Shopify ${operation} failed with HTTP ${response.status}`,
+        response.status,
+        requestId,
+      );
+    }
+
+    const observedVersion = response.headers.get("x-shopify-api-version");
+    if (observedVersion && observedVersion !== SHOPIFY_API_VERSION) {
+      throw new StorefrontApiError(
+        `Shopify served API ${observedVersion}; configured ${SHOPIFY_API_VERSION}`,
+        response.status,
+        requestId,
+      );
+    }
+
+    return (await response.json()) as StorefrontResponse<T>;
   },
 };
 

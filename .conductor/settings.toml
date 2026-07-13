@@ -1,0 +1,14 @@
+"$schema" = "https://conductor.build/schemas/settings.repo.schema.json"
+
+[scripts]
+setup = "pnpm install --frozen-lockfile && pnpm typegen && node scripts/agents/sync-claude-skills.mjs"
+run_mode = "concurrent"
+
+[scripts.run.dev]
+command = "pnpm dev --port $CONDUCTOR_PORT"
+default = true
+icon = "play"
+
+[scripts.run.check]
+command = "pnpm check"
+icon = "test-tube"

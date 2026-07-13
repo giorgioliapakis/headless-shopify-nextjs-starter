@@ -17,12 +17,10 @@ export interface SocialLink {
 
 export interface ShopConfig {
   accounts: { url: string | null };
-  agent: { enabled: false };
   analytics: {
     speedInsights: { enabled: boolean };
     vercel: { enabled: boolean };
   };
-  auth: { enabled: false };
   navigation: { footer: MenuItem[]; nav: MenuItem[] };
   pdp: {
     bundles: { enabled: boolean };
@@ -46,12 +44,10 @@ export const shopConfig = {
       ? trimTrailingSlash(process.env.NEXT_PUBLIC_SHOPIFY_ACCOUNT_URL)
       : null,
   },
-  agent: { enabled: false },
   analytics: {
     speedInsights: { enabled: false },
     vercel: { enabled: false },
   },
-  auth: { enabled: false },
   navigation: {
     footer: [],
     nav: [

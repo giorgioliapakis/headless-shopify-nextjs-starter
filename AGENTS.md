@@ -18,6 +18,9 @@ direct coding agents.
 - Shopify remains the system of record for catalogue, cart, accounts, and hosted checkout.
 - Use pnpm for JavaScript dependencies and commands.
 - Prefer Server Components and current Next.js conventions.
+- Before changing Next.js behavior, search the version-matched documentation in
+  `node_modules/next/dist/docs`. The former `next-best-practices` and `next-upgrade` skills moved into
+  bundled Next.js documentation; do not rely on a stale vendored copy.
 - Use shadcn source-owned components, Base UI, Tailwind CSS, and semantic tokens. Do not support two
   primitive bases.
 - Build invariant commerce capabilities first. Add optional primitives and recipes only when a proving
@@ -28,6 +31,8 @@ direct coding agents.
 ## Workflow
 
 - Use `docs/TASKS.md` as the durable backlog.
+- Use the pinned repository skills for React performance, composition, shadcn, and web-interface review
+  whenever their trigger applies. `.agents/skills` is canonical; setup mirrors it for Claude Code.
 - Work in small, reviewable units with tests and verification proportional to risk.
 - Record research and architectural decisions in `docs/`.
 - A task is complete only when its acceptance checks pass and no merchant-specific material is tracked.

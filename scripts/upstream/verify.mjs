@@ -61,6 +61,12 @@ for (const entry of manifest.files) {
   if (!entry.path || !/^[a-f0-9]{64}$/.test(entry.sourceSha256)) {
     fail(`invalid provenance entry for ${entry.path || "unknown path"}`);
   }
+  if (entry.currentSha256 && !/^[a-f0-9]{64}$/.test(entry.currentSha256)) {
+    fail(`invalid current checksum for ${entry.path}`);
+  }
+  if (entry.currentSha256 && !entry.modification) {
+    fail(`modified file has no rationale: ${entry.path}`);
+  }
 
   const absolutePath = resolve(root, entry.path);
   if (!absolutePath.startsWith(`${root}/`)) fail(`path escapes repository: ${entry.path}`);
@@ -74,7 +80,8 @@ for (const entry of manifest.files) {
 
   if (!metadata.isFile()) fail(`imported path is not a regular file: ${entry.path}`);
   const actual = sha256(await readFile(absolutePath));
-  if (actual !== entry.sourceSha256) fail(`checksum mismatch: ${entry.path}`);
+  const expected = entry.currentSha256 ?? entry.sourceSha256;
+  if (actual !== expected) fail(`checksum mismatch: ${entry.path}`);
 }
 
 await readFile(resolve(root, "UPSTREAM.md"), "utf8").catch(() => fail("missing UPSTREAM.md"));

@@ -337,7 +337,7 @@ the subtree. Move the same assertions into Vitest after Unit 3 establishes the h
 - Repository contains a runnable generic baseline, complete MIT attribution and no merchant-specific
   material or inherited Git history.
 
-- [ ] **Unit 2: Stabilize the platform and agent environment**
+- [x] **Unit 2: Stabilize the platform and agent environment**
 
 **Goal:** Convert the upstream lab template into a pinned, supported, reproducible foundation for
 non-technical users and coding agents.

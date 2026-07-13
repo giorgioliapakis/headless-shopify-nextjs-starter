@@ -30,11 +30,15 @@
   "files": [
     {
       "path": ".env.example",
-      "sourceSha256": "1152af1b90677027c7ea1de3d771e7b43d47aef4006d8fcc36d0f0af25802a11"
+      "sourceSha256": "1152af1b90677027c7ea1de3d771e7b43d47aef4006d8fcc36d0f0af25802a11",
+      "currentSha256": "cbe7fa4ab6a2aa05d4bb8a691d80ef3c4c11460f70e85a54a8a6a41f9c915766",
+      "modification": "Remove excluded assistant/account setup and pin dated Storefront API configuration."
     },
     {
       "path": ".graphqlrc.ts",
-      "sourceSha256": "85ccec1ac6b6da6285c8f8a4aca6dc495d6a8a5e13770b516a8f2ea1bd5736b3"
+      "sourceSha256": "85ccec1ac6b6da6285c8f8a4aca6dc495d6a8a5e13770b516a8f2ea1bd5736b3",
+      "currentSha256": "6e1965038b78f85682298814422f4b9ff8f2cfae87d7736eb29b6936978657b3",
+      "modification": "Generate against the dated Shopify 2026-07 Storefront schema."
     },
     {
       "path": ".npmrc",
@@ -46,7 +50,9 @@
     },
     {
       "path": ".oxfmtrc.json",
-      "sourceSha256": "164fd37ebce3da5a97b53a37798e84d94848013c39ef7a08eaa11683d00e2a19"
+      "sourceSha256": "164fd37ebce3da5a97b53a37798e84d94848013c39ef7a08eaa11683d00e2a19",
+      "currentSha256": "1925cd38379bfaa73623c1c6e42fb52ce9513324d927a312eb3d350ef629db39",
+      "modification": "Ignore generated declarations and checksum-pinned vendored skills in deterministic formatting checks."
     },
     {
       "path": ".oxlintrc.json",
@@ -374,7 +380,9 @@
     },
     {
       "path": "components/product/price.tsx",
-      "sourceSha256": "7ce3017f11130863c8d66b398872b4077f19f1a0ed4b9926a4c2d6cba73dd60e"
+      "sourceSha256": "7ce3017f11130863c8d66b398872b4077f19f1a0ed4b9926a4c2d6cba73dd60e",
+      "currentSha256": "7dc9302a445f5c1838a09b09b83c3931ea1e4e4872468ba7a8d3bf81191196c7",
+      "modification": "Replace Hydrogen money formatting with the platform Intl implementation."
     },
     {
       "path": "components/product/products-grid.tsx",
@@ -598,7 +606,9 @@
     },
     {
       "path": "lib/i18n/messages/en.json",
-      "sourceSha256": "1c6c710e305fb380212f2bf0cac55e355a6613d90668f7809108114662c7c9c3"
+      "sourceSha256": "1c6c710e305fb380212f2bf0cac55e355a6613d90668f7809108114662c7c9c3",
+      "currentSha256": "808f5ac65aa4cd947b5c60400576399c788e06e8d04c7853994b62e3f147528b",
+      "modification": "Remove excluded assistant/headless-account copy from runtime messages."
     },
     {
       "path": "lib/i18n/request.ts",
@@ -626,7 +636,9 @@
     },
     {
       "path": "lib/markdown/utils.ts",
-      "sourceSha256": "a57782cf958d23ee986e141b667dbb0d353cbea7639fdc7cf05ef709958494e1"
+      "sourceSha256": "a57782cf958d23ee986e141b667dbb0d353cbea7639fdc7cf05ef709958494e1",
+      "currentSha256": "e4e871a81f05b8e5df699a5fb1f700e80a67fc400ab906e3113eab6b8276eae4",
+      "modification": "Replace Hydrogen money formatting with the platform Intl implementation."
     },
     {
       "path": "lib/params.ts",
@@ -654,7 +666,9 @@
     },
     {
       "path": "lib/shopify/errors.ts",
-      "sourceSha256": "d6c8c98a41c38724324f447c48cbbb22e5a78fe1e472680540d72d5d46c2d222"
+      "sourceSha256": "d6c8c98a41c38724324f447c48cbbb22e5a78fe1e472680540d72d5d46c2d222",
+      "currentSha256": "640c1e251e9dfd33960c7fc15a4a91ecc3e85d32950f1930fd80e6ac870ad989",
+      "modification": "Own the GraphQL error contract instead of importing Hydrogen types."
     },
     {
       "path": "lib/shopify/fetch.ts",
@@ -698,7 +712,9 @@
     },
     {
       "path": "lib/shopify/storefront.ts",
-      "sourceSha256": "0329a52ff2066d1200c235165519dc3a7d4ad56129e1cb4e3a28fe6e652447d1"
+      "sourceSha256": "0329a52ff2066d1200c235165519dc3a7d4ad56129e1cb4e3a28fe6e652447d1",
+      "currentSha256": "782b5994c32f09acee217cbc66e86d8b581dbac2bf35280d56088e8cd4be93f9",
+      "modification": "Use a direct dated Storefront GraphQL transport and remove Hydrogen preview coupling."
     },
     {
       "path": "lib/shopify/transforms/cart.ts",
@@ -742,15 +758,21 @@
     },
     {
       "path": "lib/utils.ts",
-      "sourceSha256": "40cda8ec0a6bbb8cff6bbc8a41e9a45b5eca443d65e463e5eaae85f399cb9168"
+      "sourceSha256": "40cda8ec0a6bbb8cff6bbc8a41e9a45b5eca443d65e463e5eaae85f399cb9168",
+      "currentSha256": "90034a812f81d59980164584a32b5ad3d44142edcc8eedf251532d33969e6d22",
+      "modification": "Replace Hydrogen money formatting with the platform Intl implementation."
     },
     {
       "path": "next.config.ts",
-      "sourceSha256": "46e1f4b08ae4f3d951af147c2f5eb7d10d2642d4b7e47e5c2c08f9a2413d4f5f"
+      "sourceSha256": "46e1f4b08ae4f3d951af147c2f5eb7d10d2642d4b7e47e5c2c08f9a2413d4f5f",
+      "currentSha256": "b143040e3ac85f2ef29d304e751d5bb39bd0946c906d8cbe40002c461c5324da",
+      "modification": "Remove excluded auth checks and scope Turbopack to this workspace."
     },
     {
       "path": "package.json",
-      "sourceSha256": "ae662f2818fe83f3a91d3eabe6bedee2709d5703b11d7e2bdc26e4bd151fd85e"
+      "sourceSha256": "ae662f2818fe83f3a91d3eabe6bedee2709d5703b11d7e2bdc26e4bd151fd85e",
+      "currentSha256": "66cd085f10c210d33b5a4b7079261392af502098bde0843d558a6867c88b4ed6",
+      "modification": "Pin the stable platform, remove excluded assistant/Hydrogen dependencies, and add deterministic type/provenance/skill checks."
     },
     {
       "path": "postcss.config.mjs",

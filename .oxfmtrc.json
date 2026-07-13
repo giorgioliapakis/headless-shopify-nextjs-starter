@@ -4,9 +4,11 @@
     ".next/**",
     "dist/**",
     "build/**",
+    ".agents/**",
     ".claude/**",
     "app/.well-known/**",
-    "lib/shopify/types/generated/**"
+    "lib/shopify/types/generated/**",
+    "lib/i18n/messages/*.d.json.ts"
   ],
   "semi": true,
   "singleQuote": false,

@@ -10,7 +10,7 @@ active implementation detail lives in `docs/plans/2026-07-13-001-feat-autonomous
 - [x] Write sanitized product requirements with no merchant-specific material.
 - [x] Select MIT, inventory upstream licenses, and add initial contamination/provenance checks.
 - [x] Specify the OS-keychain credential broker and human-signed approval service outside the
-  agent-writable workspace.
+      agent-writable workspace.
 - [x] Define untrusted PR, protected CI, preview, release, and production secret boundaries.
 - [x] Create the audited initial commit, private GitHub repository, and default `main` branch.
 - [ ] Add the repository to Conductor after the remote default branch exists.
@@ -18,15 +18,15 @@ active implementation detail lives in `docs/plans/2026-07-13-001-feat-autonomous
 ## Phase 1 — Audited runtime foundation
 
 - [x] Import `vercel/shop` from exact commit `04a29f8276598e58ec28e74218f38601f6203470` through an
-  allowlist, checksums, MIT attribution, and provenance manifest.
+      allowlist, checksums, MIT attribution, and provenance manifest.
 - [x] Exclude the shopper assistant and preview headless accounts; replace upstream generic branding
-  with explicitly licensed neutral metadata assets or generated metadata routes.
-- [ ] Pin Node, pnpm, stable Next/React/Base UI/Tailwind, Shopify API, TypeScript, and codegen versions.
-- [ ] Replace Hydrogen's preview transport with a stable typed Storefront GraphQL transport before
+      with explicitly licensed neutral metadata assets or generated metadata routes.
+- [x] Pin Node, pnpm, stable Next/React/Base UI/Tailwind, Shopify API, TypeScript, and codegen versions.
+- [x] Replace Hydrogen's preview transport with a stable typed Storefront GraphQL transport before
       removing Hydrogen, or record a dated removal-bound exception.
-- [ ] Configure shadcn Base UI, semantic Tailwind tokens, Cache Components, and hosted account/checkout
+- [x] Configure shadcn Base UI, semantic Tailwind tokens, Cache Components, and hosted account/checkout
       handoffs.
-- [ ] Add canonical agent instructions, pinned skill metadata, Codex/Claude adapters, and Conductor
+- [x] Add canonical agent instructions, pinned skill metadata, Codex/Claude adapters, and Conductor
       setup/run scripts with isolated ports.
 
 ## Phase 2 — Minimum safe test platform
