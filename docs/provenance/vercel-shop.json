@@ -883,8 +883,8 @@
     {
       "path": "package.json",
       "sourceSha256": "ae662f2818fe83f3a91d3eabe6bedee2709d5703b11d7e2bdc26e4bd151fd85e",
-      "currentSha256": "96aa34dd08b02410fa7fc16c773b875e28579ab13a0cb5b156c6914707eac4ab",
-      "modification": "Add redacted first-run Shopify diagnostics, generated-code quarantine commands and the pinned self-hosted neutral font package."
+      "currentSha256": "caced4da09a074a174820010eee09f15a1f8e82ee9b8789d7b1ea424a58b311c",
+      "modification": "Add deterministic agent-host qualification and fail-closed alpha qualification commands."
     },
     {
       "path": "postcss.config.mjs",

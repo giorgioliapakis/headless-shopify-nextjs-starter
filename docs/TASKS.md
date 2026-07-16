@@ -83,6 +83,11 @@ The storefront-runtime track is defined in
   - [ ] Verify externally signed privileged approvals; repository decision/ledger files remain non-authoritative.
 - [ ] Define mocked PR and authenticated scheduled/release host runners plus an expiring
       host/model/skill qualification matrix.
+  - [x] Bind a deterministic credential-free PR protocol runner to exact workflow, skill-manifest and
+        Codex/Claude adapter hashes.
+  - [x] Publish a 30-day authenticated evidence contract and fail-closed alpha qualification gate.
+  - [ ] Run protected authenticated Codex and Claude Code qualifications and verify their external
+        attestations before alpha release.
 - [x] Implement typed Shopify products, variants, collections, menus, pages, policies, search, cart,
       hosted accounts, hosted checkout, cache tagging, and API-version enforcement.
 - [ ] Implement cart recovery/concurrency, cursor pagination, Shopify warnings/user errors, locale state,

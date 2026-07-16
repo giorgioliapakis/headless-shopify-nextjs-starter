@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "request": {
+    "storeUrl": "<STORE_URL>",
+    "themeSource": "<THEME_SOURCE>",
+    "seededSetupFailure": "pnpm-version"
+  },
+  "expected": {
+    "authority": "migration-review-only",
+    "commands": [
+      "pnpm migrate doctor --store-url <STORE_URL> --theme-source <THEME_SOURCE> --theme-rights-confirmed",
+      "corepack prepare pnpm@11.5.0 --activate",
+      "pnpm migrate doctor --store-url <STORE_URL> --theme-source <THEME_SOURCE> --theme-rights-confirmed",
+      "pnpm migrate capability",
+      "pnpm migrate snapshot",
+      "pnpm migrate review",
+      "pnpm migrate verify --production",
+      "pnpm migrate resume --json"
+    ],
+    "blockedActions": ["admin-write", "deploy", "dns", "cutover", "launch"]
+  }
+}
