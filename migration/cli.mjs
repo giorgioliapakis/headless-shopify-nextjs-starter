@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFile } from "node:child_process";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import { basename, join, resolve } from "node:path";
 import { promisify } from "node:util";
 
@@ -10,6 +10,7 @@ import { buildReconstructionModel } from "./lib/model.mjs";
 import { validatePublicStoreUrl } from "./lib/network.mjs";
 import { buildReviewManifest, renderReviewHtml } from "./lib/review-package.mjs";
 import { capturePublicSnapshot } from "./lib/snapshot.mjs";
+import { buildThemeRightsInventory, buildThemeRightsStatus } from "./lib/theme-rights.mjs";
 import { inspectThemeSource } from "./lib/theme.mjs";
 import {
   appendLedger,
@@ -86,6 +87,7 @@ async function dispatch(parsed, cwd) {
     "capability",
     "snapshot",
     "review",
+    "rights",
     "decision",
     "verify",
     "resume",
@@ -160,6 +162,13 @@ const handlers = {
     }
     const reportPath = join(run.runDirectory, "reports", "preflight.json");
     const inventoryPath = join(run.runDirectory, "snapshots", "theme-inventory-v1.json");
+    const rightsPath = join(run.runDirectory, "reports", "theme-rights-inventory-v1.json");
+    const rightsStatusPath = join(run.runDirectory, "reports", "theme-rights-status-v1.json");
+    const rightsInventory = buildThemeRightsInventory(inventory);
+    const rightsStatus = buildThemeRightsStatus(
+      rightsInventory,
+      await readThemeRightsDecisions(join(run.runDirectory, "decisions", "theme-rights")),
+    );
     await writeJsonAtomic(reportPath, {
       schemaVersion: 1,
       checkedAt: new Date().toISOString(),
@@ -172,6 +181,8 @@ const handlers = {
       },
     });
     await writeJsonAtomic(inventoryPath, inventory);
+    await writeJsonAtomic(rightsPath, rightsInventory);
+    await writeJsonAtomic(rightsStatusPath, rightsStatus);
     let state = await setPhase(run.runDirectory, run.state, "preflight", "completed");
     state = await recordArtifact(run.runDirectory, state, {
       id: "preflight",
@@ -183,10 +194,28 @@ const handlers = {
       path: inventoryPath,
       kind: "snapshot",
     });
+    state = await recordArtifact(run.runDirectory, state, {
+      id: "theme-rights-inventory",
+      path: rightsPath,
+      kind: "report",
+    });
+    state = await recordArtifact(run.runDirectory, state, {
+      id: "theme-rights-status",
+      path: rightsStatusPath,
+      kind: "report",
+    });
+    const preflightNextActions = [
+      ...(rightsStatus.summary.unresolved
+        ? ["Review every unresolved item in reports/theme-rights-inventory-v1.json"]
+        : []),
+      ...(inventory.requiresArchiveInspection
+        ? ["Inspect the theme archive in an isolated archive-safe sandbox"]
+        : []),
+      "Run public snapshot",
+      "Review the capability map",
+    ];
     state = await updateState(run.runDirectory, state, {
-      nextActions: inventory.requiresArchiveInspection
-        ? ["Inspect the theme archive in an isolated archive-safe sandbox", "Run public snapshot"]
-        : ["Run public snapshot", "Review the capability map"],
+      nextActions: preflightNextActions,
     });
     await appendLedger(run.runDirectory, {
       event: "preflight.completed",
@@ -194,6 +223,7 @@ const handlers = {
         checks: checks.length,
         themeKind: inventory.kind,
         themeFiles: inventory.fileCount ?? null,
+        themeRightsItems: rightsInventory.summary.itemCount,
       },
     });
     return {
@@ -201,6 +231,8 @@ const handlers = {
       runId: state.runId,
       checks,
       theme: summarizeTheme(inventory),
+      themeRights: rightsInventory.summary,
+      themeRightsStatus: rightsStatus.summary,
       nextActions: state.nextActions,
     };
   },
@@ -252,6 +284,8 @@ const handlers = {
         join(run.runDirectory, "snapshots", "theme-inventory-v1.json"),
         "Run preflight before public snapshot",
       );
+      await assertRecordedArtifactCurrent(run, "theme-inventory");
+      await assertRecordedArtifactCurrent(run, "theme-rights-status");
       const currentTheme = await inspectThemeSource(state.themeSource);
       if (
         currentTheme.manifestSha256 !== theme.manifestSha256 ||
@@ -356,24 +390,34 @@ const handlers = {
         kind: "model",
       });
       let readiness = buildReconstructionReadiness(model, captureManifest);
+      const themeRightsStatus = await readRequiredJson(
+        join(run.runDirectory, "reports", "theme-rights-status-v1.json"),
+        "Run preflight again to generate the per-asset rights status",
+      );
+      if (themeRightsStatus.summary.unresolved) {
+        readiness = setRequiredReview(
+          readiness,
+          {
+            code: "THEME_ASSET_RIGHTS_REVIEW",
+            count: themeRightsStatus.summary.unresolved,
+          },
+          "Resolve every font, media, script and app-output license decision before copying downstream",
+        );
+      }
       if (drift.status === "changed") {
+        readiness = setRequiredReview(
+          readiness,
+          { code: "SOURCE_DRIFT_REVIEW", count: drift.affectedPaths.length },
+          "Review source drift and revalidate affected routes before reconstruction",
+        );
         readiness = {
           ...readiness,
-          status: readiness.blockers.length ? "blocked" : "needs-review",
           sourceDrift: {
             status: drift.status,
             previousSnapshotId: drift.previousSnapshotId,
             currentSnapshotId: drift.currentSnapshotId,
             affectedPaths: drift.affectedPaths,
           },
-          decisions: [
-            { code: "SOURCE_DRIFT_REVIEW", count: drift.affectedPaths.length },
-            ...readiness.decisions,
-          ],
-          nextActions: [
-            "Review source drift and revalidate affected routes before reconstruction",
-            ...readiness.nextActions,
-          ],
         };
       }
       const readinessPath = join(run.runDirectory, "reports", "reconstruction-readiness-v1.json");
@@ -516,6 +560,109 @@ const handlers = {
     };
   },
 
+  async rights(options, positionals, cwd) {
+    rejectPositionals(positionals);
+    rejectUnknown(options, ["json", "item", "status", "basis", "summary"]);
+    const run = await requireRun(cwd, "preflight");
+    const inventory = await readRequiredJson(
+      join(run.runDirectory, "reports", "theme-rights-inventory-v1.json"),
+      "Run preflight before recording an asset rights decision",
+    );
+    await assertRecordedArtifactCurrent(run, "theme-rights-inventory");
+    const itemId = requiredString(options, "item");
+    const item = inventory.items.find((candidate) => candidate.id === itemId);
+    if (!item) throw new Error("--item must match an item in theme-rights-inventory-v1.json");
+    const status = requiredString(options, "status");
+    if (!new Set(["approved-downstream", "excluded"]).has(status)) {
+      throw new Error("--status must be approved-downstream or excluded");
+    }
+    const basis = requiredString(options, "basis");
+    const approvedBases = new Set(["merchant-owned", "license-reviewed", "app-terms-reviewed"]);
+    if (
+      (status === "excluded" && basis !== "excluded-from-migration") ||
+      (status === "approved-downstream" && !approvedBases.has(basis))
+    ) {
+      throw new Error(
+        "Use excluded-from-migration for excluded items, or merchant-owned, license-reviewed, or app-terms-reviewed for approved downstream use",
+      );
+    }
+    const summary = requiredString(options, "summary");
+    if (summary.length > 500) throw new Error("--summary may not exceed 500 characters");
+    if (containsSecret(summary))
+      throw new Error("--summary appears to contain a secret and was rejected");
+    const decision = {
+      schemaVersion: 1,
+      itemId: item.id,
+      category: item.category,
+      status,
+      basis,
+      summary,
+      recordedAt: new Date().toISOString(),
+      themeSourceIdentity: inventory.themeSourceIdentity,
+      themeManifestSha256: inventory.themeManifestSha256,
+      authority: "downstream-asset-use-review-only",
+      foundationRedistribution: false,
+    };
+    const decisionPath = join(run.runDirectory, "decisions", "theme-rights", `${item.id}.json`);
+    await writeJsonAtomic(decisionPath, decision);
+    let state = await recordArtifact(run.runDirectory, run.state, {
+      id: `theme-rights-decision-${item.id}`,
+      path: decisionPath,
+      kind: "decision",
+    });
+    const decisions = await readThemeRightsDecisions(
+      join(run.runDirectory, "decisions", "theme-rights"),
+    );
+    const rightsStatus = buildThemeRightsStatus(inventory, decisions);
+    const statusPath = join(run.runDirectory, "reports", "theme-rights-status-v1.json");
+    await writeJsonAtomic(statusPath, rightsStatus);
+    state = await recordArtifact(run.runDirectory, state, {
+      id: "theme-rights-status",
+      path: statusPath,
+      kind: "report",
+    });
+    const readinessPath = join(run.runDirectory, "reports", "reconstruction-readiness-v1.json");
+    const readiness = await readOptionalJson(readinessPath);
+    if (readiness) {
+      const nextReadiness = setRequiredReview(
+        readiness,
+        {
+          code: "THEME_ASSET_RIGHTS_REVIEW",
+          count: rightsStatus.summary.unresolved,
+        },
+        "Resolve every font, media, script and app-output license decision before copying downstream",
+      );
+      await writeJsonAtomic(readinessPath, nextReadiness);
+      state = await recordArtifact(run.runDirectory, state, {
+        id: "reconstruction-readiness",
+        path: readinessPath,
+        kind: "report",
+      });
+      state = await updateState(run.runDirectory, state, {
+        nextActions: nextReadiness.nextActions,
+      });
+    } else {
+      state = await updateState(run.runDirectory, state, {
+        nextActions: rightsStatus.summary.unresolved
+          ? ["Resolve the remaining theme asset rights items", "Run public snapshot"]
+          : ["Run public snapshot", "Review the capability map"],
+      });
+    }
+    await appendLedger(run.runDirectory, {
+      event: "theme-rights.decision-recorded",
+      details: { itemId: item.id, status, basis, remaining: rightsStatus.summary.unresolved },
+    });
+    return {
+      ok: true,
+      runId: state.runId,
+      decision,
+      summary: rightsStatus.summary,
+      warning:
+        "Downstream asset-use review only. This does not grant foundation redistribution or production approval.",
+      nextActions: state.nextActions,
+    };
+  },
+
   async decision(options, positionals, cwd) {
     rejectPositionals(positionals);
     rejectUnknown(options, ["json", "id", "status", "summary"]);
@@ -523,6 +670,11 @@ const handlers = {
     const id = requiredString(options, "id");
     if (!/^[a-z0-9][a-z0-9-]{0,79}$/.test(id))
       throw new Error("--id must be a lowercase kebab-case identifier");
+    if (id === "theme-asset-rights-review") {
+      throw new Error(
+        "Theme rights cannot be approved in bulk; use pnpm migrate rights for every inventory item",
+      );
+    }
     const status = requiredString(options, "status");
     if (!["pending", "accepted", "rejected"].includes(status))
       throw new Error("--status must be pending, accepted, or rejected");
@@ -822,6 +974,22 @@ async function readRequiredJson(path, remediation) {
   }
 }
 
+async function assertRecordedArtifactCurrent(run, id) {
+  const artifact = run.state.artifacts.find((candidate) => candidate.id === id);
+  if (!artifact) throw new Error(`Required recorded artifact is missing: ${id}`);
+  const path = resolve(run.runDirectory, artifact.path);
+  if (!path.startsWith(`${resolve(run.runDirectory)}/`)) {
+    throw new Error(`Required artifact escaped its run directory: ${id}`);
+  }
+  const observed = await sha256File(path).catch((error) => {
+    if (error?.code === "ENOENT") return null;
+    throw error;
+  });
+  if (observed !== artifact.sha256) {
+    throw new Error(`Required artifact failed its integrity check: ${id}`);
+  }
+}
+
 async function verifyArtifactIntegrity(runDirectory, artifacts, excludedIds = []) {
   return Promise.all(
     artifacts
@@ -866,7 +1034,6 @@ async function verifyArtifactIntegrity(runDirectory, artifacts, excludedIds = []
 }
 
 async function readDecisionSummaries(directory) {
-  const { readdir } = await import("node:fs/promises");
   const entries = await readdir(directory).catch((error) =>
     error?.code === "ENOENT" ? [] : Promise.reject(error),
   );
@@ -909,6 +1076,41 @@ function countBy(values, key) {
   return values.reduce(
     (result, item) => ({ ...result, [item[key]]: (result[item[key]] ?? 0) + 1 }),
     {},
+  );
+}
+function setRequiredReview(readiness, decision, action) {
+  const blockerCount = readiness.blockers?.length ?? 0;
+  const currentDecisions = readiness.decisions ?? [];
+  const existingIndex = currentDecisions.findIndex((item) => item.code === decision.code);
+  const nextActions = [...(readiness.nextActions ?? [])];
+  if (existingIndex >= 0) nextActions.splice(blockerCount + existingIndex, 1);
+  const decisions = currentDecisions.filter((item) => item.code !== decision.code);
+  if (decision.count > 0) {
+    decisions.unshift(decision);
+    nextActions.splice(blockerCount, 0, action);
+  }
+  return {
+    ...readiness,
+    status: blockerCount
+      ? "blocked"
+      : decisions.length
+        ? "needs-review"
+        : "ready-for-reconstruction",
+    decisions,
+    nextActions,
+  };
+}
+
+async function readThemeRightsDecisions(directory) {
+  const entries = await readdir(directory).catch((error) => {
+    if (error?.code === "ENOENT") return [];
+    throw error;
+  });
+  return Promise.all(
+    entries
+      .filter((name) => name.endsWith(".json"))
+      .sort()
+      .map(async (name) => JSON.parse(await readFile(join(directory, name), "utf8"))),
   );
 }
 function optionalInteger(options, key, fallback) {
@@ -955,7 +1157,7 @@ function formatResult(command, result) {
 }
 
 function usage() {
-  return `Usage: pnpm migrate <command> [options]\n\nCommands:\n  doctor|preflight --store-url <https-url> --theme-source <path> --theme-rights-confirmed [--new-run]\n  capability\n  snapshot [--max-pages 100]\n  status\n  review\n  decision --id <id> --status <pending|accepted|rejected> --summary <text>\n  verify [--production]\n  resume\n\nAdd --json for machine-readable output. Secret-bearing flags are forbidden.`;
+  return `Usage: pnpm migrate <command> [options]\n\nCommands:\n  doctor|preflight --store-url <https-url> --theme-source <path> --theme-rights-confirmed [--new-run]\n  capability\n  rights --item <id> --status <approved-downstream|excluded> --basis <basis> --summary <text>\n  snapshot [--max-pages 100]\n  status\n  review\n  decision --id <id> --status <pending|accepted|rejected> --summary <text>\n  verify [--production]\n  resume\n\nAdd --json for machine-readable output. Secret-bearing flags are forbidden.`;
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

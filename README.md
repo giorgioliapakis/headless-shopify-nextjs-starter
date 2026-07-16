@@ -51,6 +51,7 @@ pnpm migrate doctor \
   --theme-source /absolute/path/to/published-theme \
   --theme-rights-confirmed \
   --new-run
+pnpm migrate rights --item <inventory-item-id> --status <approved-downstream|excluded> --basis <basis> --summary <review-note>
 pnpm migrate capability
 pnpm migrate snapshot --max-pages 100
 pnpm migrate status
@@ -76,6 +77,12 @@ source/preview capture manifest and a readiness report that keeps unknown routes
 explicitly blocking instead of silently treating a successful crawl as parity. Recaptures are
 content-addressed, retain immutable originals, report route-level source drift and stale earlier review
 decisions instead of overwriting their evidence silently.
+
+Preflight also emits a hash/reference-only rights inventory for observed fonts, media, client scripts and
+app output. The initial theme-source assertion permits inspection; it never grants automatic copying or
+foundation redistribution. `pnpm migrate rights` records an approved-downstream or excluded outcome for
+one exact source-bound item at a time; bulk approval is refused and unresolved items remain visible in
+reconstruction readiness. These local records do not replace external signed launch approval.
 
 Use `--json` for agent-readable success and failure reports. Failed prerequisite checks include a bounded
 remediation and never create a partially initialized run.

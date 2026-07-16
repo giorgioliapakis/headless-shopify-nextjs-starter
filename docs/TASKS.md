@@ -97,7 +97,9 @@ The storefront-runtime track is defined in
   - [x] Bind ordinary clean local Git worktrees to HEAD with controlled metadata; reject hooks/filters,
         submodules, alternates, nested repositories and worktree indirection.
   - [x] Revalidate the theme manifest/source identity before public capture and require a new run on drift.
-  - [ ] Inventory downstream per-asset license/redistribution decisions beyond the merchant rights assertion.
+  - [x] Inventory risky font, media, script and app-output files/references without copying content or
+        inferring redistribution rights from the source-use assertion.
+  - [x] Record and bind downstream per-item license/use decisions before asset copying is allowed.
 - [ ] Implement credential-free preliminary compatibility, then brokered allowlisted Storefront/Admin
       reads with exact scopes and removal guidance.
 - [ ] Reconcile sitemaps, navigation, links, redirects, templates, assets, apps, metadata, analytics,

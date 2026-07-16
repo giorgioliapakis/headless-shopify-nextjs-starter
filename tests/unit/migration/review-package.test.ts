@@ -179,6 +179,40 @@ describe("local migration review package", () => {
     });
   });
 
+  it("keeps theme asset rights review explicit until per-item decisions exist", () => {
+    const report = buildReviewManifest({
+      state,
+      model,
+      readiness: {
+        ...readiness,
+        decisions: [{ code: "THEME_ASSET_RIGHTS_REVIEW", count: 3 }],
+        nextActions: ["Resolve every observed asset"],
+      },
+      captureManifest,
+      decisions: [
+        {
+          id: "theme-asset-rights-review",
+          status: "accepted",
+          summary: "A blanket decision must not clear per-item review",
+          recordedAt: state.updatedAt,
+        },
+      ],
+      decisionValidity: {
+        decisions: [{ id: "theme-asset-rights-review", validity: "current-review-only" }],
+      },
+      sourceDrift: null,
+      artifactIntegrity: [],
+    });
+
+    expect(report.requiredReviews).toEqual([
+      expect.objectContaining({
+        code: "THEME_ASSET_RIGHTS_REVIEW",
+        count: 3,
+        resolutionDecisionId: null,
+      }),
+    ]);
+  });
+
   it("generates ignored review artifacts through the public CLI command", async () => {
     const cwd = await mkdtemp(join(tmpdir(), "migration-review-"));
     const run = await createRun({

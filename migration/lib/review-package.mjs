@@ -7,6 +7,7 @@ const ISSUE_LABELS = {
   MAP_AND_VERIFY_BRAND_OBSERVATIONS: "Brand observations need mapping and visual review",
   CAPTURE_SOURCE_AND_PREVIEW: "Source and preview captures are pending",
   SOURCE_DRIFT_REVIEW: "Observed source drift needs review",
+  THEME_ASSET_RIGHTS_REVIEW: "Theme asset licenses and downstream use need review",
 };
 const RESOLVABLE_REVIEW_DECISIONS = { SOURCE_DRIFT_REVIEW: "source-drift-review" };
 

@@ -38,6 +38,14 @@ not production authority.
    pnpm migrate preflight --store-url https://shop.example --theme-source /absolute/path/to/theme --theme-rights-confirmed
    ```
 
+   Review `reports/theme-rights-inventory-v1.json`, then record every item individually. Never invent a
+   legal basis or approve in bulk:
+
+   ```bash
+   pnpm migrate rights --item <item-id> --status approved-downstream --basis <merchant-owned|license-reviewed|app-terms-reviewed> --summary <review-note>
+   pnpm migrate rights --item <item-id> --status excluded --basis excluded-from-migration --summary <replacement-note>
+   ```
+
 3. Inspect the target platform's versioned capability truth:
 
    ```bash
@@ -68,6 +76,12 @@ not production authority.
    rejected submodule, filter, alternate object database, nested repository or worktree indirection. The
    command re-hashes and revalidates the supplied theme immediately before public capture; source changes
    require `--new-run` so theme and storefront evidence cannot be silently mixed.
+
+   Read `reports/theme-rights-inventory-v1.json`. Do not copy a font, image, video, client script or app
+   output merely because source inspection was authorized. Each observed item starts unresolved; keep
+   `THEME_ASSET_RIGHTS_REVIEW` open until bounded per-item decisions approve downstream use or exclude the
+   item. Local rights records are review state, not signed production authority.
+   No merchant asset may enter the distributable foundation.
 
 5. Inspect progress at any time. Never infer completion from files or agent silence:
 

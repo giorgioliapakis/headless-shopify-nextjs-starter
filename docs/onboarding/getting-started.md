@@ -67,6 +67,28 @@ pnpm migrate doctor \
   --new-run
 ```
 
+Open `reports/theme-rights-inventory-v1.json` in the new ignored run. Resolve every listed item using its
+generated `id`; approve it only for this downstream storefront after checking ownership/license/app
+terms, or exclude it and plan a replacement:
+
+```bash
+pnpm migrate rights \
+  --item font-file-0123456789abcdef \
+  --status approved-downstream \
+  --basis license-reviewed \
+  --summary "Merchant confirmed the storefront font license"
+
+pnpm migrate rights \
+  --item client-script-file-fedcba9876543210 \
+  --status excluded \
+  --basis excluded-from-migration \
+  --summary "Replace this theme script with a native primitive"
+```
+
+The command rejects bulk approval, binds each outcome to the exact theme source/manifest, never grants
+foundation redistribution and leaves reconstruction review open until all items are resolved. These are
+local review records, not signed launch approvals.
+
 ## 3. Generate the credential-free migration model
 
 ```bash
@@ -81,6 +103,11 @@ Review these ignored artifacts before allowing an agent to rebuild pages:
 - `snapshots/public-v1.json` — bounded public route/content metadata;
 - `snapshots/theme-inventory-v1.json` — hashes, immutable archive/Git identity, safe JSON structure and
   brand observations;
+- `reports/theme-rights-inventory-v1.json` — every observed font, media, client-script and app-output
+  licensing risk. It contains references and hashes, not raw assets; every item remains unresolved until
+  the merchant reviews its ownership/license and permitted downstream use;
+- `reports/theme-rights-status-v1.json` — source-bound resolved/unresolved totals from per-item `rights`
+  decisions;
 - `model/reconstruction-plan-v1.json` — route/section candidates and explicit unknowns;
 - `model/capture-manifest-v1.json` — required source/preview viewports and interaction states;
 - `reports/reconstruction-readiness-v1.json` — blockers, review decisions and next actions.
@@ -91,7 +118,8 @@ Review these ignored artifacts before allowing an agent to rebuild pages:
   artifact integrity and provenance. It contains no raw scraped HTML and grants no launch authority.
 
 A password gate, unknown revenue route, unknown section or app block is not parity. Resolve it or retain
-it as an explicit blocker.
+it as an explicit blocker. The initial `--theme-rights-confirmed` assertion permits bounded source
+inspection only; it does not clear the per-item rights review or grant foundation redistribution.
 
 ## 4. Migration-only Admin discovery
 

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-shopify-starter.invalid/schemas/theme-rights-inventory-v1.json",
+  "title": "Theme rights inventory v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "themeSourceIdentity",
+    "themeManifestSha256",
+    "sourceRightsAssertion",
+    "requiredDecisionId",
+    "items",
+    "summary",
+    "policy"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "themeSourceIdentity": { "type": "string", "minLength": 40 },
+    "themeManifestSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "sourceRightsAssertion": {
+      "type": "object",
+      "required": ["asserted", "scope", "grantsPerAssetRedistribution"],
+      "properties": {
+        "asserted": { "const": true },
+        "scope": { "const": "downstream-migration-source-inspection" },
+        "grantsPerAssetRedistribution": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "requiredDecisionId": { "type": ["string", "null"] },
+    "items": {
+      "type": "array",
+      "maxItems": 5000,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "category",
+          "reference",
+          "sourcePath",
+          "contentSha256",
+          "observation",
+          "rightsStatus",
+          "downstreamUse",
+          "foundationRedistribution",
+          "copyAuthority"
+        ],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "category": { "type": "string", "minLength": 1 },
+          "reference": { "type": "string", "minLength": 1, "maxLength": 500 },
+          "sourcePath": { "type": "string", "minLength": 1 },
+          "contentSha256": {
+            "anyOf": [{ "type": "string", "pattern": "^[0-9a-f]{64}$" }, { "type": "null" }]
+          },
+          "observation": { "type": "string", "minLength": 1 },
+          "rightsStatus": { "const": "requires-merchant-license-review" },
+          "downstreamUse": { "const": "not-determined" },
+          "foundationRedistribution": { "const": false },
+          "copyAuthority": { "const": "none-from-automated-inspection" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "summary": { "type": "object" },
+    "policy": {
+      "type": "object",
+      "required": [
+        "rawAssetsIncluded",
+        "automaticCopyAllowed",
+        "foundationRedistributionAllowed",
+        "resolution"
+      ],
+      "properties": {
+        "rawAssetsIncluded": { "const": false },
+        "automaticCopyAllowed": { "const": false },
+        "foundationRedistributionAllowed": { "const": false },
+        "resolution": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
