@@ -1,14 +1,11 @@
-import { execFile } from "node:child_process";
-import { mkdtemp, mkdir, symlink, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, readFile, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { promisify } from "node:util";
 
 import { describe, expect, it } from "vitest";
 
 import { inspectThemeSource } from "../../../migration/lib/theme.mjs";
-
-const execFileAsync = promisify(execFile);
+import { writeStoredZip } from "../../helpers/zip";
 
 describe("theme source inventory", () => {
   it("creates a deterministic read-only inventory", async () => {
@@ -39,9 +36,19 @@ describe("theme source inventory", () => {
   it("lazily inventories zip files without extracting them", async () => {
     const root = await mkdtemp(join(tmpdir(), "theme-zip-"));
     const archive = join(root, "theme.zip");
-    await execFileAsync("zip", ["-q", "-r", archive, "config", "sections", "templates"], {
-      cwd: "tests/fixtures/migration/theme",
-    });
+    const fixtureRoot = "tests/fixtures/migration/theme";
+    const paths = [
+      "config/settings_data.json",
+      "sections/image-banner.liquid",
+      "sections/novel-orbit.liquid",
+      "templates/index.json",
+    ];
+    await writeStoredZip(
+      archive,
+      await Promise.all(
+        paths.map(async (name) => ({ name, data: await readFile(join(fixtureRoot, name)) })),
+      ),
+    );
     const theme = await inspectThemeSource(archive);
     expect(theme).toMatchObject({
       kind: "zip",
@@ -63,7 +70,9 @@ describe("theme source inventory", () => {
     await writeFile(join(root, "target.liquid"), "synthetic");
     await symlink("target.liquid", join(root, "linked.liquid"));
     const archive = join(root, "linked.zip");
-    await execFileAsync("zip", ["-q", "-y", archive, "linked.liquid"], { cwd: root });
+    await writeStoredZip(archive, [
+      { name: "linked.liquid", data: "target.liquid", unixMode: 0o120777 },
+    ]);
     await expect(inspectThemeSource(archive)).rejects.toThrow(/symbolic link/);
   });
 

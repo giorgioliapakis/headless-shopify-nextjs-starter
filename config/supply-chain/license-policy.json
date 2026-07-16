@@ -16,6 +16,11 @@
       "license": "CC-BY-4.0",
       "packagePattern": "^caniuse-lite$",
       "reason": "Browserslist consumes the Can I Use compatibility dataset as an unmodified dependency. Distribution must preserve attribution and the upstream license notice."
+    },
+    {
+      "license": "SIL OPEN FONT LICENSE",
+      "packagePattern": "^geist$",
+      "reason": "The neutral starter self-hosts the unmodified Geist font package so production builds never fetch Google Fonts. Distribution must retain the SIL Open Font License notice; merchants may replace the font through the theme system."
     }
   ]
 }

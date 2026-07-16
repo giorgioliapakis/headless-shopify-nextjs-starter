@@ -53,7 +53,7 @@ The storefront-runtime track is defined in
       and release scans.
 - [x] Freeze lockfile installs, audit lifecycle scripts, pin Actions by commit, minimize workflow
       permissions, and generate release SBOM/provenance.
-- [ ] Quarantine generated code in a credential-free, broker-free, network/filesystem-restricted sandbox
+- [x] Quarantine generated code in a credential-free, broker-free, network/filesystem-restricted sandbox
       before install/build/test/preview.
 - [x] Keep untrusted PR CI secretless; isolate credentialed checks to protected/manual environments.
 

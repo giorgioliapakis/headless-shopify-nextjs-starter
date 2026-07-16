@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "baseImage": "node:24-bookworm-slim@sha256:6f7b03f7c2c8e2e784dcf9295400527b9b1270fd37b7e9a7285cf83b6951452d",
+  "packageManager": "pnpm@11.5.0",
+  "limits": {
+    "maxFiles": 5000,
+    "maxTotalBytes": 262144000,
+    "maxFileBytes": 26214400,
+    "timeoutMs": 1200000,
+    "memory": "4g",
+    "cpus": "2",
+    "pids": 256,
+    "workTmpfs": "6g"
+  },
+  "ignoredDirectories": [".git", ".migration", ".next", ".release", "coverage", "node_modules"],
+  "ignoredFiles": [".DS_Store", "tsconfig.tsbuildinfo"],
+  "immutablePaths": [
+    ".npmrc",
+    "app/api",
+    "lib/security",
+    "next.config.ts",
+    "package.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    "agent-workflows/manifest.json",
+    "agent-workflows/skills.json",
+    "config/supply-chain",
+    "docs/provenance",
+    "scripts/agents",
+    "scripts/clean-room",
+    "scripts/performance",
+    "scripts/security",
+    "proxy.ts",
+    "scripts/upstream",
+    "scripts/verify"
+  ],
+  "commands": [
+    "trusted dependency layer from immutable manifests",
+    "trusted quality gate without package-manager script dispatch",
+    "neutral production build and bundle budgets"
+  ]
+}

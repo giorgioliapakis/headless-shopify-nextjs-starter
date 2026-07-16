@@ -81,7 +81,21 @@ not production authority.
    novel merchant patterns in merchant-owned recipes/components. Do not copy Liquid, scripts, brand
    assets or editorial content into the foundation. Preserve URLs, approved content, SEO and behavior
    unless a documented security, accessibility, correctness, platform or performance exception applies.
-8. Record bounded review choices without representing them as approval, then regenerate the review
+8. Before install, build, test or preview, invoke the quarantine tool from a separate clean foundation
+   checkout—not from the generated repository:
+
+   ```bash
+   node /absolute/path/to/clean-foundation/scripts/security/quarantine.mjs \
+     --workspace "$PWD" \
+     --foundation /absolute/path/to/clean-foundation \
+     --prove-boundary \
+     --json
+   ```
+
+   Do not substitute Node permissions or an unsandboxed local command. Read
+   `docs/security/generated-code-quarantine.md`. A static-review failure has no agent-writable bypass.
+
+9. Record bounded review choices without representing them as approval, then regenerate the review
    package so it includes the latest decision state:
 
    ```bash
@@ -89,14 +103,10 @@ not production authority.
    pnpm migrate review
    ```
 
-9. Run deterministic verification. Add `--production` for the credential-free neutral production build
-   and asset budgets:
+10. After quarantine succeeds, run `pnpm migrate verify --production` for the credential-free neutral
+    production build and asset budgets.
 
-   ```bash
-   pnpm migrate verify --production
-   ```
-
-10. After interruption or context compaction, regenerate bounded trusted context with
+11. After interruption or context compaction, regenerate bounded trusted context with
     `pnpm migrate resume --json`. Raw evidence is never included.
 
 ## Completion protocol

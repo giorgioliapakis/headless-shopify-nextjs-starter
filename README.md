@@ -36,6 +36,8 @@ compatibility matrix, not an “any Shopify store” claim.
 - Native selling-plan selection, Shopify blogs/articles and a machine-readable capability registry
 - CSP/security headers, rich-content sanitization, health/readiness endpoints, Storefront operation
   budgets and compressed JS/CSS regression gates
+- A pinned, networkless generated-code quarantine with immutable dependency/security controls and no
+  credential or broker access
 
 ## Credential-free migration start
 
@@ -80,6 +82,10 @@ pnpm migrate decision --id homepage-parity --status accepted --summary "Approved
 pnpm migrate review
 pnpm migrate verify --production
 ```
+
+Generated code must first pass the OS-isolated command in
+[`docs/security/generated-code-quarantine.md`](docs/security/generated-code-quarantine.md), invoked from
+a separate clean foundation checkout. Node permission flags are not treated as a malicious-code sandbox.
 
 There is intentionally no deploy, launch, DNS or cutover command. Those actions require separate human
 approval outside the agent-writable repository. Read the canonical

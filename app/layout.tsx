@@ -1,8 +1,9 @@
 import "./globals.css";
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense, type CSSProperties } from "react";
 
 import { AnalyticsComponents } from "@/components/analytics";
@@ -19,12 +20,6 @@ import { getLocale } from "@/lib/params";
 import { buildAlternates } from "@/lib/seo";
 import { shopConfig } from "@/shop.config";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const [locale, messages, t] = await Promise.all([
     getLocale(),
@@ -35,7 +30,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang={locale}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} flex min-h-dvh flex-col font-sans antialiased`}
+        className={`${GeistSans.variable} ${GeistMono.variable} flex min-h-dvh flex-col font-sans antialiased`}
         style={themeToCssVariables(shopConfig.theme) as CSSProperties}
       >
         <a

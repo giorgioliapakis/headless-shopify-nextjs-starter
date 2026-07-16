@@ -52,6 +52,10 @@ disabled by default. New dependencies, scripts, endpoints, subprocesses, dynamic
 reads, filesystem mounts, and network destinations require static review and a separate signed approval
 before privileged execution.
 
+The executable contract and exact local command are in
+[`generated-code-quarantine.md`](generated-code-quarantine.md). A Node permission flag alone is not an
+acceptable sandbox.
+
 ## CI and deployment
 
 - Untrusted and fork pull requests receive no secrets and use only synthetic fixtures.
