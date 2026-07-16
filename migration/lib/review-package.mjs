@@ -65,9 +65,10 @@ export function buildReviewManifest({
     mappingStatus: route.mappingStatus,
     captureStatus: route.captureStatus,
     scenarioCount:
+      route.scenarios?.length ??
       (route.states?.length ?? 0) *
-      (route.viewports?.length ?? 0) *
-      (route.preferences?.length ?? 1),
+        (route.viewports?.length ?? 0) *
+        (route.preferences?.length ?? 1),
   }));
   const staleArtifacts = artifactIntegrity.filter((artifact) => artifact.status !== "current");
   const pendingDecisions = decisions.filter((decision) => decision.status === "pending").length;

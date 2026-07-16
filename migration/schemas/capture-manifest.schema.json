@@ -26,6 +26,11 @@
           "viewports",
           "locales",
           "preferences",
+          "consentStates",
+          "inputs",
+          "sourceBreakpointCandidates",
+          "sourceBreakpointsRequireReview",
+          "scenarios",
           "dynamicMasks",
           "dynamicMasksRequireReview",
           "captureStatus"

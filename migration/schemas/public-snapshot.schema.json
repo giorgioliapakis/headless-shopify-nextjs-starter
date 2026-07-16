@@ -43,6 +43,7 @@
           "type": {
             "enum": [
               "home",
+              "collection-index",
               "product",
               "collection",
               "blog",
@@ -51,11 +52,18 @@
               "landing",
               "policy",
               "search",
+              "cart",
+              "account",
+              "checkout",
               "other"
             ]
           },
           "status": { "type": "integer", "minimum": 0, "maximum": 599 },
           "accessState": { "enum": ["public", "password-gated"] },
+          "canonical": { "type": ["string", "null"], "maxLength": 500 },
+          "robots": { "type": ["string", "null"], "maxLength": 300 },
+          "hreflang": { "type": "array", "maxItems": 50 },
+          "structuredDataTypes": { "type": "array", "maxItems": 100 },
           "evidencePath": { "type": ["string", "null"], "pattern": "^(evidence/public/pages/|$)" }
         }
       }

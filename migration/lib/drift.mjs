@@ -17,6 +17,10 @@ export function snapshotIdentity(snapshot) {
       title: page.title ?? null,
       description: page.description ?? null,
       headings: page.headings ?? [],
+      canonical: page.canonical ?? null,
+      robots: page.robots ?? null,
+      hreflang: page.hreflang ?? [],
+      structuredDataTypes: page.structuredDataTypes ?? [],
       accessState: page.accessState ?? null,
       error: page.error ?? null,
     }))
@@ -106,6 +110,10 @@ function changedFields(before, after) {
     "title",
     "description",
     "headings",
+    "canonical",
+    "robots",
+    "hreflang",
+    "structuredDataTypes",
     "accessState",
     "error",
   ];

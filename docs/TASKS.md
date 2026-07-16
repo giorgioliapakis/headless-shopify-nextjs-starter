@@ -124,6 +124,11 @@ The storefront-runtime track is defined in
       recipes only when discovery provides a concrete consumer; promote only repeated patterns.
 - [ ] Create a deterministic capture manifest across source breakpoints, viewports, inputs, locale,
       interactive states, consent, dynamic masks, and reduced motion.
+  - [x] Generate a bounded deterministic pairwise matrix for mobile/tablet/desktop, route interactions,
+        typed input rules, locale, consent and reduced motion.
+  - [x] Require manual dynamic-mask review; never auto-hide visual differences.
+  - [ ] Extract/review source-specific breakpoints and execute source/preview captures in the isolated
+        hostile-browser runner.
 - [x] Build a separate local-only evidence review package with readiness summary, blockers, decisions,
       grouped evidence, stale/conflict states, filters, provenance, and next actions.
 - [ ] Bind signed approvals to actor/action/environment/expiry and source/preview/evidence/check hashes;

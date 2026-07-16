@@ -78,6 +78,11 @@ explicitly blocking instead of silently treating a successful crawl as parity. R
 content-addressed, retain immutable originals, report route-level source drift and stale earlier review
 decisions instead of overwriting their evidence silently.
 
+Public capture records route status/type, title, description, headings, canonical, robots directives,
+hreflang and bounded JSON-LD types. Collection index, cart, hosted account and hosted checkout paths are
+classified explicitly. The visual manifest uses bounded pairwise scenarios rather than an unbounded
+cross-product of viewport, interaction, input, consent and motion states.
+
 The agent also receives source-bound template clusters, integration and unknown inventories, plus a
 three-layer brand pack. Raw observations remain immutable, semantic roles start unresolved for merchant
 mapping, and component/section variants may use only the versioned foundation registries.

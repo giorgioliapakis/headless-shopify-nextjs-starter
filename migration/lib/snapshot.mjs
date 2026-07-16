@@ -183,6 +183,7 @@ export function isDisallowed(path, rules) {
 
 export function classifyPath(path) {
   if (path === "/" || !path) return "home";
+  if (/^\/collections\/?$/.test(path)) return "collection-index";
   if (/^\/products\/[^/]+\/?$/.test(path)) return "product";
   if (/^\/collections\/[^/]+\/?$/.test(path)) return "collection";
   if (/^\/blogs\/[^/]+\/[^/]+\/?$/.test(path)) return "article";
@@ -191,6 +192,9 @@ export function classifyPath(path) {
   if (/^\/landing\/[^/]+\/?$/.test(path)) return "landing";
   if (/^\/policies\/[^/]+\/?$/.test(path)) return "policy";
   if (/^\/search\/?$/.test(path)) return "search";
+  if (/^\/cart\/?$/.test(path)) return "cart";
+  if (/^\/account(?:\/|$)/.test(path)) return "account";
+  if (/^\/checkout(?:\/|$)/.test(path)) return "checkout";
   return "other";
 }
 
@@ -206,11 +210,77 @@ function extractHtmlMetadata(html) {
       text: normalizeText(decodeXml(stripTags(match[2]))).slice(0, 300),
     }))
     .filter((heading) => heading.text);
+  const linkTags = [...html.matchAll(/<link\s+[^>]*>/gi)].slice(0, 200);
+  const canonical = linkTags
+    .map((match) => extractAttributes(match[0]))
+    .find((attributes) => attributes.rel?.toLowerCase().split(/\s+/).includes("canonical"))?.href;
+  const hreflang = linkTags
+    .map((match) => extractAttributes(match[0]))
+    .filter(
+      (attributes) =>
+        attributes.rel?.toLowerCase().split(/\s+/).includes("alternate") &&
+        attributes.hreflang &&
+        attributes.href,
+    )
+    .map((attributes) => ({
+      language: attributes.hreflang.slice(0, 50),
+      href: attributes.href.slice(0, 500),
+    }))
+    .slice(0, 50);
+  const robots = [...html.matchAll(/<meta\s+[^>]*>/gi)]
+    .slice(0, 200)
+    .map((match) => extractAttributes(match[0]))
+    .find((attributes) => attributes.name?.toLowerCase() === "robots")?.content;
   return {
     title: title ? normalizeText(decodeXml(stripTags(title))).slice(0, 300) : null,
     description: description ? normalizeText(decodeXml(description)).slice(0, 500) : null,
     headings,
+    canonical: canonical?.slice(0, 500) ?? null,
+    robots: robots?.slice(0, 300) ?? null,
+    hreflang,
+    structuredDataTypes: extractStructuredDataTypes(html),
   };
+}
+
+function extractAttributes(tag) {
+  const attributes = {};
+  for (const match of tag.matchAll(/([:\w-]+)\s*=\s*(?:"([^"]*)"|'([^']*)')/g)) {
+    attributes[match[1].toLowerCase()] = decodeXml(match[2] ?? match[3] ?? "");
+  }
+  return attributes;
+}
+
+function extractStructuredDataTypes(html) {
+  const types = new Set();
+  for (const match of html.matchAll(
+    /<script\s+[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi,
+  )) {
+    if (match[1].length > 64 * 1024) continue;
+    try {
+      const pending = [JSON.parse(match[1])];
+      let nodes = 0;
+      while (pending.length && nodes < 2_000) {
+        const value = pending.shift();
+        nodes += 1;
+        if (Array.isArray(value)) {
+          pending.push(...value);
+          continue;
+        }
+        if (!value || typeof value !== "object") continue;
+        const type = value["@type"];
+        for (const candidate of Array.isArray(type) ? type : [type]) {
+          if (typeof candidate === "string" && /^[A-Za-z][A-Za-z0-9_-]{0,99}$/.test(candidate)) {
+            types.add(candidate);
+          }
+        }
+        pending.push(
+          ...Object.values(value).filter((nested) => nested && typeof nested === "object"),
+        );
+      }
+    } catch {}
+    if (types.size >= 100) break;
+  }
+  return [...types].sort().slice(0, 100);
 }
 
 function summarizePages(pages, discoveredCount, selectedCount) {

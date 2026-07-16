@@ -10,6 +10,11 @@ const ROUTE_TARGETS = {
     strategy: "commerce-core",
     defaults: [],
   },
+  "collection-index": {
+    target: "app/collections/page.tsx",
+    strategy: "commerce-core",
+    defaults: [],
+  },
   search: { target: "app/search/page.tsx", strategy: "commerce-core", defaults: [] },
   blog: {
     target: "app/blogs/[handle]/page.tsx",
@@ -36,6 +41,9 @@ const ROUTE_TARGETS = {
     strategy: "content-core",
     defaults: ["rich-text"],
   },
+  cart: { target: "app/cart/page.tsx", strategy: "commerce-core", defaults: [] },
+  account: { target: "configured-hosted-account", strategy: "hosted-handoff", defaults: [] },
+  checkout: { target: "shopify-hosted-checkout", strategy: "hosted-handoff", defaults: [] },
   other: { target: "app/(merchant)/", strategy: "downstream-required", defaults: [] },
 };
 

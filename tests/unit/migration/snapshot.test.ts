@@ -28,6 +28,7 @@ describe("public snapshot", () => {
 
   it.each([
     ["/", "home"],
+    ["/collections", "collection-index"],
     ["/products/tee", "product"],
     ["/collections/all", "collection"],
     ["/blogs/news", "blog"],
@@ -36,6 +37,9 @@ describe("public snapshot", () => {
     ["/landing/campaign", "landing"],
     ["/policies/privacy-policy", "policy"],
     ["/search", "search"],
+    ["/cart", "cart"],
+    ["/account/login", "account"],
+    ["/checkout", "checkout"],
     ["/apps/example", "other"],
   ])("classifies %s as %s", (path, type) => expect(classifyPath(path)).toBe(type));
 
@@ -49,7 +53,7 @@ describe("public snapshot", () => {
       ],
       [
         "https://example.com/",
-        '<html><head><title>Home</title><meta name="description" content="Neutral store"></head><body><h1>Welcome</h1><a href="/pages/about?from=nav">About</a><a href="https://outside.example/collect">Outside</a></body></html>',
+        '<html><head><title>Home</title><meta name="description" content="Neutral store"><meta name="robots" content="index,follow"><link rel="canonical" href="https://example.com/"><link rel="alternate" hreflang="en-AU" href="https://example.com/"><script type="application/ld+json">{"@type":"WebSite"}</script></head><body><h1>Welcome</h1><a href="/pages/about?from=nav">About</a><a href="https://outside.example/collect">Outside</a></body></html>',
       ],
       [
         "https://example.com/products/tee",
@@ -88,6 +92,12 @@ describe("public snapshot", () => {
     expect(snapshot.pages[1]).toMatchObject({ type: "page", title: "About" });
     expect(snapshot.pages[2]).toMatchObject({ type: "product", title: "Tee" });
     expect(snapshot.pages[0].links).toEqual(["https://example.com/pages/about?from=nav"]);
+    expect(snapshot.pages[0]).toMatchObject({
+      canonical: "https://example.com/",
+      robots: "index,follow",
+      hreflang: [{ language: "en-AU", href: "https://example.com/" }],
+      structuredDataTypes: ["WebSite"],
+    });
     const evidence = await readFile(join(runDirectory, snapshot.pages[2].evidencePath!), "utf8");
     expect(evidence).toContain("Neutral tee");
   });

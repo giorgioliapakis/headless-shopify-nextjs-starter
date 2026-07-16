@@ -8,6 +8,7 @@ const VIEWPORTS = [
 
 const STATES = {
   home: ["default", "navigation-open"],
+  "collection-index": ["default"],
   product: ["default", "alternate-media", "variant-selected", "cart-confirmation"],
   collection: ["default", "filters-open", "sort-changed", "paginated"],
   search: ["default", "results", "filters-open", "empty-results"],
@@ -16,28 +17,63 @@ const STATES = {
   page: ["default"],
   landing: ["default"],
   policy: ["default"],
+  cart: ["default", "quantity-changed", "discount-applied", "note-entered", "checkout-handoff"],
+  account: ["hosted-handoff"],
+  checkout: ["hosted-handoff"],
   other: ["default"],
 };
+const INPUTS = {
+  product: [
+    { id: "variant", valueRule: "source-observed-available-value" },
+    { id: "quantity", valueRule: "bounded-positive-integer" },
+    { id: "selling-plan", valueRule: "source-observed-when-required" },
+  ],
+  collection: [
+    { id: "filters", valueRule: "source-observed-valid-filter" },
+    { id: "sort", valueRule: "source-observed-valid-sort" },
+    { id: "cursor", valueRule: "source-observed-next-page" },
+  ],
+  search: [
+    { id: "query", valueRule: "non-sensitive-source-representative-query" },
+    { id: "filters", valueRule: "source-observed-valid-filter" },
+    { id: "sort", valueRule: "source-observed-valid-sort" },
+  ],
+  cart: [
+    { id: "quantity", valueRule: "bounded-positive-integer" },
+    { id: "discount", valueRule: "merchant-provided-non-production-fixture" },
+    { id: "note", valueRule: "synthetic-non-sensitive-text" },
+  ],
+};
+const PREFERENCES = [
+  { colorScheme: "light", reducedMotion: false },
+  { colorScheme: "light", reducedMotion: true },
+];
+const CONSENT_STATES = ["default", "accepted", "rejected"];
 
 export function buildCaptureManifest(model) {
-  const routes = (model.routes ?? []).map((route) => ({
-    id: stableId(route.sourcePath),
-    sourceUrl: route.sourceUrl,
-    sourcePath: route.sourcePath,
-    sourceType: route.sourceType,
-    target: route.target,
-    mappingStatus: route.status,
-    states: STATES[route.sourceType] ?? STATES.other,
-    viewports: VIEWPORTS,
-    locales: ["source-default"],
-    preferences: [
-      { colorScheme: "light", reducedMotion: false },
-      { colorScheme: "light", reducedMotion: true },
-    ],
-    dynamicMasks: [],
-    dynamicMasksRequireReview: true,
-    captureStatus: "pending",
-  }));
+  const routes = (model.routes ?? []).map((route) => {
+    const states = STATES[route.sourceType] ?? STATES.other;
+    return {
+      id: stableId(route.sourcePath),
+      sourceUrl: route.sourceUrl,
+      sourcePath: route.sourcePath,
+      sourceType: route.sourceType,
+      target: route.target,
+      mappingStatus: route.status,
+      states,
+      viewports: VIEWPORTS,
+      locales: ["source-default"],
+      preferences: PREFERENCES,
+      consentStates: CONSENT_STATES,
+      inputs: INPUTS[route.sourceType] ?? [],
+      sourceBreakpointCandidates: [],
+      sourceBreakpointsRequireReview: true,
+      scenarios: buildPairwiseScenarios(route.sourcePath, states),
+      dynamicMasks: [],
+      dynamicMasksRequireReview: true,
+      captureStatus: "pending",
+    };
+  });
   return {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
@@ -53,13 +89,27 @@ export function buildCaptureManifest(model) {
     summary: {
       routeCount: routes.length,
       mappedRoutes: routes.filter((route) => route.mappingStatus === "mapped").length,
-      scenarioCount: routes.reduce(
-        (count, route) => count + route.states.length * route.viewports.length,
-        0,
-      ),
+      scenarioCount: routes.reduce((count, route) => count + route.scenarios.length, 0),
       pendingRoutes: routes.length,
     },
   };
+}
+
+function buildPairwiseScenarios(path, states) {
+  const scenarios = [];
+  function add(state, viewport, preference, consent) {
+    const value = { state, viewport, preference, consent, locale: "source-default" };
+    scenarios.push({ id: stableId(`${path}:${JSON.stringify(value)}`), ...value });
+  }
+  for (const viewport of VIEWPORTS) add(states[0], viewport.id, "default", "default");
+  add(states[0], "desktop", "reduced-motion", "default");
+  add(states[0], "desktop", "default", "accepted");
+  add(states[0], "desktop", "default", "rejected");
+  for (const state of states.slice(1)) {
+    add(state, "mobile", "default", "default");
+    add(state, "desktop", "default", "default");
+  }
+  return scenarios;
 }
 
 export function buildReconstructionReadiness(model, captureManifest) {

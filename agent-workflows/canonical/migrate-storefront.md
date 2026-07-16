@@ -72,6 +72,10 @@ not production authority.
    map them into downstream semantic roles, then select only registered component/section variants. A
    cluster is a work-sharing candidate, not proof that its pages are behaviorally identical.
 
+   The capture manifest is a bounded pairwise matrix, not completed visual evidence. Resolve its
+   source-breakpoint review, supply only non-sensitive typed inputs, and approve every dynamic mask
+   before the separate isolated browser runner captures source and preview contexts.
+
    Every capture receives a timestamp-independent content identity and an immutable content-addressed
    copy. A recapture writes `reports/source-drift-v1.json`, invalidates reconstruction, verification and
    older source-bound review decisions only when observed source content changed, and never silently

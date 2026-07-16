@@ -36,8 +36,20 @@ describe("migration capture and readiness model", () => {
       states: ["default", "alternate-media", "variant-selected", "cart-confirmation"],
       dynamicMasks: [],
       dynamicMasksRequireReview: true,
+      consentStates: ["default", "accepted", "rejected"],
+      inputs: [
+        { id: "variant", valueRule: "source-observed-available-value" },
+        { id: "quantity", valueRule: "bounded-positive-integer" },
+        { id: "selling-plan", valueRule: "source-observed-when-required" },
+      ],
+      sourceBreakpointCandidates: [],
+      sourceBreakpointsRequireReview: true,
     });
     expect(first.summary).toMatchObject({ routeCount: 1, scenarioCount: 12 });
+    expect(first.routes[0].scenarios).toHaveLength(12);
+    expect(first.routes[0].scenarios).toContainEqual(
+      expect.objectContaining({ consent: "rejected", viewport: "desktop" }),
+    );
   });
 
   it("keeps unknown source behavior blocking and browser proof pending", () => {
