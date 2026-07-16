@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "foundationRemote": "foundation",
+  "tagPattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$",
+  "merchantOwned": ["config/presets/", "public/merchant/"],
+  "generatedMerchantOwned": ["components/merchant/", "app/(merchant)/"],
+  "conflictPolicy": "fail-closed",
+  "applyStrategy": "git-merge-no-ff"
+}

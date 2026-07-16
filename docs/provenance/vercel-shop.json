@@ -873,8 +873,8 @@
     {
       "path": "package.json",
       "sourceSha256": "ae662f2818fe83f3a91d3eabe6bedee2709d5703b11d7e2bdc26e4bd151fd85e",
-      "currentSha256": "c1e833ed8d6bd4dba205d9e8cf4dca01b1e8903ddc218041a42c5b8c6c58b514",
-      "modification": "Adds the versioned autonomous migration CLI command to the adapted storefront package."
+      "currentSha256": "a2cb3fca310b061bdf8b42a8d45629b3364f53bf0ee20d672a3552583eac23b8",
+      "modification": "Adds autonomous migration, conflict-aware downstream updates, release verification, and exact lifecycle-script audit commands."
     },
     {
       "path": "postcss.config.mjs",

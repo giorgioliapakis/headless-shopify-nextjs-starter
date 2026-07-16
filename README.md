@@ -127,6 +127,7 @@ mode refuses any real merchant domain, token or private credential and fails on 
 - [Migration workflow](agent-workflows/canonical/migrate-storefront.md)
 - [Hydrogen compatibility](docs/compatibility/hydrogen.md)
 - [Hydrogen upgrade runbook](docs/runbooks/hydrogen-upgrade.md)
+- [Downstream foundation update runbook](docs/runbooks/foundation-updates.md)
 - [Cutover runbook](docs/runbooks/cutover.md) and [rollback runbook](docs/runbooks/rollback.md)
 - [Active implementation plan](docs/plans/2026-07-13-001-feat-autonomous-shopify-starter-plan.md)
 - [Hydrogen storefront platform plan](docs/plans/2026-07-16-001-feat-hydrogen-storefront-platform-plan.md)

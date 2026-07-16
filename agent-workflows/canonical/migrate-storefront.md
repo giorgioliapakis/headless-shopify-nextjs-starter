@@ -87,3 +87,7 @@ is not launch-ready until route/content/SEO/visual/interaction/commerce/accessib
 pass against the merchant preview, unsupported revenue-critical capabilities are zero, and independently
 signed deploy/domain/DNS/cutover/rollback decisions exist outside the repository. The CLI intentionally
 has no deploy, launch or cutover command.
+
+After the initial migration, consume tagged foundation updates through the conflict planner in
+`docs/runbooks/foundation-updates.md`; never replace merchant-owned recipes, assets or novel components
+with foundation defaults.

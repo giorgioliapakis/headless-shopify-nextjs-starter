@@ -4,6 +4,7 @@
 .context/
 .claude/skills/
 .migration/
+.release/
 .next/
 .vercel/
 coverage/
