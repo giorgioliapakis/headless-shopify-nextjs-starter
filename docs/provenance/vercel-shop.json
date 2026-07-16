@@ -84,7 +84,9 @@
     },
     {
       "path": "app/collections/[handle]/page.tsx",
-      "sourceSha256": "adf1d05b2e56f30996475b61ec707de38e65c683ec8b3daa6efef43ab0f449fb"
+      "sourceSha256": "adf1d05b2e56f30996475b61ec707de38e65c683ec8b3daa6efef43ab0f449fb",
+      "currentSha256": "bff64fc99eb1d128479fd933b4b4b138bae39f8e188cb9ab64dfcf7e6e9bd9d1",
+      "modification": "Publish the consent-gated Shopify collection-view event from the resolved collection route."
     },
     {
       "path": "app/collections/all/page.tsx",
@@ -148,7 +150,9 @@
     },
     {
       "path": "app/products/[handle]/page.tsx",
-      "sourceSha256": "20a887ff81c9fc97207387239ffc0e1939ef34366add1e9c71018beaed983866"
+      "sourceSha256": "20a887ff81c9fc97207387239ffc0e1939ef34366add1e9c71018beaed983866",
+      "currentSha256": "363723331c3aede17b87c3f6405bace72bd1364d48d66b7597c5fa75c1bd1c12",
+      "modification": "Publish the consent-gated Shopify product-view event for the resolved variant."
     },
     {
       "path": "app/robots.ts",
@@ -160,7 +164,9 @@
     },
     {
       "path": "app/search/page.tsx",
-      "sourceSha256": "7ef869fc10f4ca32941a9f4cb3d1dd62194091eb93fef8b0592116196cea7c37"
+      "sourceSha256": "7ef869fc10f4ca32941a9f4cb3d1dd62194091eb93fef8b0592116196cea7c37",
+      "currentSha256": "b6c2547d3fc2ac31a7b0ce91b56c69d26d4c06c8a8793f40d562ecd38da4b53c",
+      "modification": "Publish the consent-gated Shopify search-view event for non-empty search terms."
     },
     {
       "path": "app/sitemap.xml/route.ts",
@@ -755,8 +761,8 @@
     {
       "path": "lib/shopify/fragments.ts",
       "sourceSha256": "c83878f0dac9165482fd63a918f48b0faae59851a47feca24e2ae87ddc3e75a6",
-      "currentSha256": "06ec8bcf3f3fbf3f702c4e9f79848ce64bdfc153f9b28878ac4a1213a4d3cf27",
-      "modification": "Add bounded selected-variant selling-plan allocations while keeping all-variant agent queries compact."
+      "currentSha256": "0d548f846267811807b7b06311d1ed53a13c9474aa62db2b6b012e9836a7f3a3",
+      "modification": "Include the collection GID required by Shopify standard collection analytics."
     },
     {
       "path": "lib/shopify/operations/cart.ts",
@@ -820,7 +826,9 @@
     },
     {
       "path": "lib/shopify/transforms/collection.ts",
-      "sourceSha256": "a97ae4bcb0f2aa55702fb8634ea1a3ca69b15bd8fe436ead03e76958aa9c65b8"
+      "sourceSha256": "a97ae4bcb0f2aa55702fb8634ea1a3ca69b15bd8fe436ead03e76958aa9c65b8",
+      "currentSha256": "d00fa75c220e2d4cb167af5046a193812e6ceea6602188f4a7d7c87f896fcfec",
+      "modification": "Preserve the collection GID required by Shopify standard collection analytics."
     },
     {
       "path": "lib/shopify/transforms/filters.ts",
@@ -857,8 +865,8 @@
     {
       "path": "lib/types.ts",
       "sourceSha256": "ce8c5d1200434827b94bf447824cc2e7f276e62280abdae60d13c9fd2034c6fe",
-      "currentSha256": "b3e706201e289f3d90f6e5bdbee4d14d9e2a8d924b05dbb46eda6d27e9b5f9bb",
-      "modification": "Add native selling-plan contracts to selected product variants."
+      "currentSha256": "4f92d80fa0a2973d0a767a3b645c812383c17e0031cfbeffcb7f428eb32dac7d",
+      "modification": "Expose the optional collection GID while retaining the synthetic all-products collection."
     },
     {
       "path": "lib/utils.ts",

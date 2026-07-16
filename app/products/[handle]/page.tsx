@@ -1,8 +1,11 @@
+import type { ProductViewPayload } from "@shopify/hydrogen";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import { ProductDetailSection } from "@/components/product-detail/product-detail-section";
 import { RelatedProductsSection } from "@/components/product/related-products-section";
+import { RouteAnalyticsEvent } from "@/components/shopify/route-analytics-event";
 import { Container } from "@/components/ui/container";
 import { Page } from "@/components/ui/page";
 import { Sections } from "@/components/ui/sections";
@@ -19,7 +22,7 @@ import {
   getProduct,
   getProductVariant,
 } from "@/lib/shopify/operations/products";
-import type { ProductVariant } from "@/lib/types";
+import type { ProductDetails, ProductVariant } from "@/lib/types";
 import { shopConfig } from "@/shop.config";
 
 const PLACEHOLDER_HANDLE = "__placeholder__";
@@ -128,6 +131,11 @@ export default async function ProductPage({
             variantPromise={variantPromise}
             locale={locale}
           />
+          {shopConfig.analytics.shopify.enabled ? (
+            <Suspense>
+              <ProductAnalyticsEvent product={product} variantPromise={variantPromise} />
+            </Suspense>
+          ) : null}
           {shopConfig.pdp.relatedProducts.enabled ? (
             <RelatedProductsSection handle={handle} limit={4} locale={locale} />
           ) : null}
@@ -135,4 +143,30 @@ export default async function ProductPage({
       </Container>
     </Page>
   );
+}
+
+async function ProductAnalyticsEvent({
+  product,
+  variantPromise,
+}: {
+  product: ProductDetails;
+  variantPromise: Promise<ProductVariant | undefined>;
+}) {
+  const variant = (await variantPromise) ?? product.defaultVariant;
+  if (!variant) return null;
+  const payload: Omit<ProductViewPayload, "url"> = {
+    products: [
+      {
+        id: product.id,
+        price: variant.price.amount,
+        productType: product.category?.name,
+        quantity: 1,
+        title: product.title,
+        variantId: variant.id,
+        variantTitle: variant.title,
+        vendor: product.vendor ?? product.manufacturerName,
+      },
+    ],
+  };
+  return <RouteAnalyticsEvent event="product" payload={payload} />;
 }

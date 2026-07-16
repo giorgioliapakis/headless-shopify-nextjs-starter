@@ -50,10 +50,14 @@ describe("Hydrogen cart UI contract", () => {
   });
 
   it("keeps Shopify analytics explicit and consent-gated", async () => {
-    const [config, client, consent] = await Promise.all([
+    const [config, client, consent, publisher, product, collection, search] = await Promise.all([
       source("shop.config.ts"),
       source("lib/analytics/client.ts"),
       source("lib/shopify/routing/consent.ts"),
+      source("components/shopify/route-analytics-event.tsx"),
+      source("app/products/[handle]/page.tsx"),
+      source("app/collections/[handle]/page.tsx"),
+      source("app/search/page.tsx"),
     ]);
     expect(config).toContain('NEXT_PUBLIC_SHOPIFY_ANALYTICS_ENABLED === "true"');
     expect(client).toContain('consent: { mode: "default-banner" }');
@@ -61,5 +65,10 @@ describe("Hydrogen cart UI contract", () => {
     expect(consent).toContain("CONSENT_QUERY_SOURCE");
     expect(consent).toContain("Operation Not Allowed");
     expect(consent).not.toContain("request.json().query");
+    expect(publisher).toContain("window.location.href");
+    expect(client).toContain("pendingPublications");
+    expect(product).toContain('event="product"');
+    expect(collection).toContain('event="collection"');
+    expect(search).toContain('event="search"');
   });
 });

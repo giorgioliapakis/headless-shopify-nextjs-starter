@@ -71,6 +71,7 @@ const NEUTRAL_PRODUCT_CARD = {
 const NEUTRAL_COLLECTION = {
   description: "A neutral synthetic collection for deterministic verification.",
   handle: "neutral-collection",
+  id: "gid://shopify/Collection/200",
   image: null,
   seo: { description: null, title: null },
   title: "Neutral Collection",

@@ -160,6 +160,7 @@ export interface Category {
 export interface Collection {
   description: string;
   handle: string;
+  id?: string;
   image?: Image | null;
   path: string;
   seo: SEO;

@@ -154,6 +154,7 @@ export const TAXONOMY_CATEGORY_FRAGMENT = gql(`
 export const COLLECTION_FIELDS_FRAGMENT = gql(
   `
   fragment CollectionFields on Collection {
+    id
     handle
     title
     description

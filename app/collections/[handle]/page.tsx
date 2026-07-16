@@ -3,10 +3,12 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { CollectionDetailPage } from "@/components/collections/collection-page";
+import { RouteAnalyticsEvent } from "@/components/shopify/route-analytics-event";
 import { getCollectionResultsData, getCollectionSearchState } from "@/lib/collections/server";
 import { getLocale } from "@/lib/params";
 import { buildAlternates, buildOpenGraph } from "@/lib/seo";
 import { getCollection, getCollections } from "@/lib/shopify/operations/collections";
+import { shopConfig } from "@/shop.config";
 
 const PLACEHOLDER_HANDLE = "__placeholder__";
 
@@ -102,12 +104,20 @@ export default async function CollectionPage({
   });
 
   return (
-    <CollectionDetailPage
-      collection={collection}
-      collectionResultsDataPromise={collectionResultsDataPromise}
-      handle={handle}
-      locale={locale}
-      searchStatePromise={searchStatePromise}
-    />
+    <>
+      <CollectionDetailPage
+        collection={collection}
+        collectionResultsDataPromise={collectionResultsDataPromise}
+        handle={handle}
+        locale={locale}
+        searchStatePromise={searchStatePromise}
+      />
+      {shopConfig.analytics.shopify.enabled && collection.id ? (
+        <RouteAnalyticsEvent
+          event="collection"
+          payload={{ collection: { handle: collection.handle, id: collection.id } }}
+        />
+      ) : null}
+    </>
   );
 }

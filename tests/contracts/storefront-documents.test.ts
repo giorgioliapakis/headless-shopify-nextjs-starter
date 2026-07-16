@@ -3,7 +3,11 @@ import { resolve } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { PRODUCT_FRAGMENT, PURCHASABLE_PRODUCT_VARIANT_FRAGMENT } from "@/lib/shopify/fragments";
+import {
+  COLLECTION_FIELDS_FRAGMENT,
+  PRODUCT_FRAGMENT,
+  PURCHASABLE_PRODUCT_VARIANT_FRAGMENT,
+} from "@/lib/shopify/fragments";
 
 function fragmentNames(document: string): string[] {
   return [...document.matchAll(/\bfragment\s+(\w+)\s+on\b/g)].map((match) => match[1]);
@@ -47,5 +51,10 @@ describe("Hydrogen Storefront document contract", () => {
     await expect(access(resolve("lib/shopify/types/generated"))).rejects.toMatchObject({
       code: "ENOENT",
     });
+  });
+
+  it("keeps Shopify resource IDs required by standard analytics events", () => {
+    expect(COLLECTION_FIELDS_FRAGMENT).toMatch(/fragment CollectionFields[\s\S]*\bid\b/);
+    expect(PRODUCT_FRAGMENT).toMatch(/fragment ProductFields[\s\S]*\bid\b/);
   });
 });
