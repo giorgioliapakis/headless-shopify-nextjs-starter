@@ -82,6 +82,8 @@ describe("generated code quarantine", () => {
       expect(source).toContain(control);
     }
     expect(dockerfile).toContain("pnpm install --frozen-lockfile --ignore-scripts");
+    expect(dockerfile).toContain("apt-get install --yes --no-install-recommends git");
+    expect(configured.runtimeTools).toEqual(["git"]);
     expect(dockerfile).not.toMatch(/COPY\s+\.\s/);
     expect(entrypoint).not.toContain("pnpm check");
     expect(entrypoint).toContain("./node_modules/.bin/next build");

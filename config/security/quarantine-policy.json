@@ -2,6 +2,7 @@
   "schemaVersion": 1,
   "baseImage": "node:24-bookworm-slim@sha256:6f7b03f7c2c8e2e784dcf9295400527b9b1270fd37b7e9a7285cf83b6951452d",
   "packageManager": "pnpm@11.5.0",
+  "runtimeTools": ["git"],
   "limits": {
     "maxFiles": 5000,
     "maxTotalBytes": 262144000,

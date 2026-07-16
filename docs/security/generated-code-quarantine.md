@@ -30,6 +30,9 @@ socket or make an external request. The probe never enters the source repository
 ## Enforced boundary
 
 - The dependency image uses the exact digest in `config/security/quarantine-policy.json`.
+- The runtime installs only the tools declared by that policy (`git` today), which the theme
+  provenance verifier needs to bind local theme worktrees to an exact commit. The unprivileged
+  process cannot use the OS package manager against the read-only runtime.
 - Dependency installation sees only the immutable package manifest, lockfile, workspace file and npm
   configuration. Generated source is absent and lifecycle scripts are disabled.
 - The generated workspace must match the clean foundation's dependency, provenance, security, API,

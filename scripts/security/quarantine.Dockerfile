@@ -19,6 +19,9 @@ ENV COREPACK_HOME=/opt/corepack \
     PNPM_HOME=/opt/pnpm
 ENV PATH=${PNPM_HOME}:${PATH}
 WORKDIR /opt/deps
+RUN apt-get update \
+  && apt-get install --yes --no-install-recommends git \
+  && rm -rf /var/lib/apt/lists/*
 COPY --from=dependencies /opt/corepack /opt/corepack
 COPY --from=dependencies /opt/pnpm /opt/pnpm
 COPY --from=dependencies /opt/deps/node_modules ./node_modules

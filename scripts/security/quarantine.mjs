@@ -473,6 +473,7 @@ function validatePolicy(policy) {
     policy.schemaVersion !== 1 ||
     !/^node:24-[\w.-]+@sha256:[a-f0-9]{64}$/.test(policy.baseImage) ||
     policy.packageManager !== "pnpm@11.5.0" ||
+    JSON.stringify(policy.runtimeTools) !== JSON.stringify(["git"]) ||
     !Array.isArray(policy.immutablePaths) ||
     JSON.stringify(policy.commands) !==
       JSON.stringify([
