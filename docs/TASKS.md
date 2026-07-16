@@ -3,6 +3,23 @@
 This backlog is ordered. Complete the earliest unchecked task whose dependencies are satisfied. The
 active implementation detail lives in `docs/plans/2026-07-13-001-feat-autonomous-shopify-starter-plan.md`.
 
+The storefront-runtime track is defined in
+`docs/plans/2026-07-16-001-feat-hydrogen-storefront-platform-plan.md`. Its units execute in this order:
+
+- [ ] H0 — Governance, compatibility contracts and measurable baselines.
+  - [x] Accept the exact, expiring Hydrogen preview exception.
+  - [x] Publish the honest current capability inventory and performance budget policy.
+  - [x] Capture deterministic Storefront transport, cart and route contracts.
+  - [ ] Record the reproducible production-mode neutral performance baseline.
+- [ ] H1 — Exact Hydrogen package and matching agent-skill provenance.
+- [ ] H2 — Request-scoped Storefront client and credential-free GraphQL typing migration.
+- [ ] H3 — Shopify routing, redirect, Markets and cache-isolation integration.
+- [ ] H4 — Hydrogen cart, money, Shop Pay and consent-aware analytics conformance.
+- [ ] H5 — Complete the invariant commerce core and conditional capability packs.
+- [ ] H6 — Versioned token, component-variant and section-recipe customization system.
+- [ ] H7 — Browser, accessibility, performance, security and operations release gates.
+- [ ] H8 — Bind the runtime to autonomous migration and prove the experimental alpha.
+
 ## Phase 0 — Repository and trust boundary
 
 - [x] Create a separate local Git repository with no inherited history.

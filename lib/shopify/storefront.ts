@@ -79,7 +79,15 @@ export const storefront = {
       );
     }
 
-    return (await response.json()) as StorefrontResponse<T>;
+    try {
+      return (await response.json()) as StorefrontResponse<T>;
+    } catch {
+      throw new StorefrontApiError(
+        `Shopify ${operation} returned an invalid JSON response`,
+        response.status,
+        requestId,
+      );
+    }
   },
 };
 

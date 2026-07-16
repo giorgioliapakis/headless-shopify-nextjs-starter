@@ -15,6 +15,7 @@
     "verify:upstream": "node scripts/upstream/verify.mjs",
     "start": "next start",
     "test": "vitest run",
+    "test:contracts": "vitest run tests/contracts",
     "typegen": "graphql-codegen && next typegen"
   },
   "dependencies": {
