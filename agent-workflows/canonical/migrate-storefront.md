@@ -67,6 +67,11 @@ not production authority.
    Read `model/capture-manifest-v1.json` and `reports/reconstruction-readiness-v1.json` before editing.
    Never remove an unknown/app blocker merely because a suggested primitive looks similar.
 
+   Read `model/template-clusters-v1.json`, `model/integration-inventory-v1.json`,
+   `model/unknown-inventory-v1.json` and `model/brand-pack-v1.json`. Keep observed brand facts immutable,
+   map them into downstream semantic roles, then select only registered component/section variants. A
+   cluster is a work-sharing candidate, not proof that its pages are behaviorally identical.
+
    Every capture receives a timestamp-independent content identity and an immutable content-addressed
    copy. A recapture writes `reports/source-drift-v1.json`, invalidates reconstruction, verification and
    older source-bound review decisions only when observed source content changed, and never silently

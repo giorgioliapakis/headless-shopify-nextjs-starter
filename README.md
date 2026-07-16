@@ -78,6 +78,10 @@ explicitly blocking instead of silently treating a successful crawl as parity. R
 content-addressed, retain immutable originals, report route-level source drift and stale earlier review
 decisions instead of overwriting their evidence silently.
 
+The agent also receives source-bound template clusters, integration and unknown inventories, plus a
+three-layer brand pack. Raw observations remain immutable, semantic roles start unresolved for merchant
+mapping, and component/section variants may use only the versioned foundation registries.
+
 Each run also content-addresses foundation-owned runtime, migration, schema and pinned-skill contracts.
 Foundation drift preserves preflight/source evidence but forces reconstruction, verification and review
 back to pending through `pnpm migrate resume`; merchant-owned extension paths are excluded.

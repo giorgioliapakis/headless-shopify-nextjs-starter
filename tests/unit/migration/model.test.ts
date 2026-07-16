@@ -14,6 +14,7 @@ describe("reconstruction model", () => {
   it("maps core routes and leaves novel/app behavior explicitly downstream", () => {
     const model = buildReconstructionModel({
       snapshot: {
+        snapshotId: "0".repeat(64),
         pages: [
           {
             url: "https://example.com/",
@@ -76,6 +77,10 @@ describe("reconstruction model", () => {
       appBlockCount: 1,
       brandObservationSources: 1,
       passwordGatedPages: 0,
+    });
+    expect(model.source).toEqual({
+      publicSnapshotId: "0".repeat(64),
+      themeManifestSha256: "d".repeat(64),
     });
     expect(model.routes[0]).toMatchObject({
       target: "app/page.tsx",

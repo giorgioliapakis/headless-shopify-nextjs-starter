@@ -108,6 +108,10 @@ export function buildReconstructionModel({ snapshot, theme, capabilityMap }) {
   return {
     schemaVersion: 1,
     generatedAt: new Date().toISOString(),
+    source: {
+      publicSnapshotId: snapshot.snapshotId,
+      themeManifestSha256: theme.manifestSha256 ?? theme.sha256,
+    },
     evidenceTrust: "untrusted-source-derived-bounded-model",
     rules: {
       mappingsAreSuggestions: true,

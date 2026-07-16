@@ -119,6 +119,12 @@ Review these ignored artifacts before allowing an agent to rebuild pages:
 - `reports/theme-rights-status-v1.json` — source-bound resolved/unresolved totals from per-item `rights`
   decisions;
 - `model/reconstruction-plan-v1.json` — route/section candidates and explicit unknowns;
+- `model/template-clusters-v1.json` — repeated route and OS 2.0 template structures grouped without
+  inventing equivalence;
+- `model/integration-inventory-v1.json` and `model/unknown-inventory-v1.json` — app references and every
+  route/section/integration that remains downstream work;
+- `model/brand-pack-v1.json` — immutable observations, empty merchant semantic roles and registered
+  component/section variant contracts as three separate layers;
 - `model/capture-manifest-v1.json` — required source/preview viewports and interaction states;
 - `reports/reconstruction-readiness-v1.json` — blockers, review decisions and next actions.
 - `snapshots/public/<sha256>.json` — immutable content-addressed public captures;

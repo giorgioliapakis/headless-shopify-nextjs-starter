@@ -7,6 +7,7 @@
   "required": [
     "schemaVersion",
     "generatedAt",
+    "source",
     "evidenceTrust",
     "rules",
     "routes",
@@ -18,6 +19,15 @@
   "properties": {
     "schemaVersion": { "const": 1 },
     "generatedAt": { "type": "string", "format": "date-time" },
+    "source": {
+      "type": "object",
+      "required": ["publicSnapshotId", "themeManifestSha256"],
+      "properties": {
+        "publicSnapshotId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "themeManifestSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      },
+      "additionalProperties": false
+    },
     "evidenceTrust": { "const": "untrusted-source-derived-bounded-model" },
     "rules": { "type": "object" },
     "routes": { "type": "array", "maxItems": 500 },

@@ -117,7 +117,7 @@ The storefront-runtime track is defined in
 
 ## Phase 6 — Reconstruction and merchant review
 
-- [ ] Generate the route manifest, template clusters, integration inventory, unknowns, and three-layer
+- [x] Generate the route manifest, template clusters, integration inventory, unknowns, and three-layer
       brand pack from evidence.
 - [x] Map to generic primitives first and keep merchant recipes/config/assets downstream.
 - [x] Add optional blogs/articles, landing pages, forms, Markets, reviews, subscriptions, search, or app

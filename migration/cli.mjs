@@ -12,6 +12,12 @@ import {
 } from "./lib/foundation-identity.mjs";
 import { buildReconstructionModel } from "./lib/model.mjs";
 import { validatePublicStoreUrl } from "./lib/network.mjs";
+import {
+  buildBrandPack,
+  buildIntegrationInventory,
+  buildTemplateClusters,
+  buildUnknownInventory,
+} from "./lib/reconstruction-artifacts.mjs";
 import { buildReviewManifest, renderReviewHtml } from "./lib/review-package.mjs";
 import { capturePublicSnapshot } from "./lib/snapshot.mjs";
 import { buildThemeRightsInventory, buildThemeRightsStatus } from "./lib/theme-rights.mjs";
@@ -386,6 +392,24 @@ const handlers = {
         path: modelPath,
         kind: "model",
       });
+      for (const [id, name, value] of [
+        ["template-clusters", "template-clusters-v1.json", buildTemplateClusters(model)],
+        [
+          "integration-inventory",
+          "integration-inventory-v1.json",
+          buildIntegrationInventory(model),
+        ],
+        ["unknown-inventory", "unknown-inventory-v1.json", buildUnknownInventory(model)],
+        ["brand-pack", "brand-pack-v1.json", buildBrandPack(model)],
+      ]) {
+        const artifactPath = join(run.runDirectory, "model", name);
+        await writeJsonAtomic(artifactPath, value);
+        state = await recordArtifact(run.runDirectory, state, {
+          id,
+          path: artifactPath,
+          kind: "model",
+        });
+      }
       const captureManifest = buildCaptureManifest(model);
       const capturePath = join(run.runDirectory, "model", "capture-manifest-v1.json");
       await writeJsonAtomic(capturePath, captureManifest);
