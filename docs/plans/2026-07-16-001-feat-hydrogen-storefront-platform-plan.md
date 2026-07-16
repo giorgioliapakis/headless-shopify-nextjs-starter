@@ -415,7 +415,7 @@ or weakening clean-room/supply-chain guarantees.
 
 - The repository can prove exactly which Shopify code and instructions it adopted.
 
-- [ ] **Unit 2: Replace the Storefront transport and GraphQL typing in slices**
+- [x] **Unit 2: Replace the Storefront transport and GraphQL typing in slices**
 
 **Goal:** Use Hydrogen's request context, Storefront client and packaged GraphQL schema while preserving
 stable operation/domain contracts and Next's server-first architecture.

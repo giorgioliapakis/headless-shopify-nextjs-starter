@@ -12,7 +12,7 @@ The storefront-runtime track is defined in
   - [x] Capture deterministic Storefront transport, cart and route contracts.
   - [ ] Record the reproducible production-mode neutral performance baseline.
 - [x] H1 — Exact Hydrogen package and matching agent-skill provenance.
-- [ ] H2 — Request-scoped Storefront client and credential-free GraphQL typing migration.
+- [x] H2 — Request-scoped Storefront client and credential-free GraphQL typing migration.
 - [ ] H3 — Shopify routing, redirect, Markets and cache-isolation integration.
 - [ ] H4 — Hydrogen cart, money, Shop Pay and consent-aware analytics conformance.
 - [ ] H5 — Complete the invariant commerce core and conditional capability packs.
@@ -38,7 +38,7 @@ The storefront-runtime track is defined in
       allowlist, checksums, MIT attribution, and provenance manifest.
 - [x] Exclude the shopper assistant and preview headless accounts; replace upstream generic branding
       with explicitly licensed neutral metadata assets or generated metadata routes.
-- [x] Pin Node, pnpm, stable Next/React/Base UI/Tailwind, Shopify API, TypeScript, and codegen versions.
+- [x] Pin Node, pnpm, stable Next/React/Base UI/Tailwind, Shopify API, TypeScript, and GraphQL validation.
 - [x] Replace Hydrogen's preview transport with a stable typed Storefront GraphQL transport before
       removing Hydrogen, or record a dated removal-bound exception.
 - [x] Configure shadcn Base UI, semantic Tailwind tokens, Cache Components, and hosted account/checkout

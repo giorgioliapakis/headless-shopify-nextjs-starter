@@ -37,8 +37,8 @@
     {
       "path": ".graphqlrc.ts",
       "sourceSha256": "85ccec1ac6b6da6285c8f8a4aca6dc495d6a8a5e13770b516a8f2ea1bd5736b3",
-      "currentSha256": "6e1965038b78f85682298814422f4b9ff8f2cfae87d7736eb29b6936978657b3",
-      "modification": "Generate against the dated Shopify 2026-07 Storefront schema."
+      "modification": "Remove network-fetched GraphQL codegen after all Storefront documents moved to Hydrogen's bundled schema and gql.tada validation.",
+      "removed": true
     },
     {
       "path": ".npmrc",
@@ -676,19 +676,27 @@
     },
     {
       "path": "lib/shopify/fetch.ts",
-      "sourceSha256": "9ea8c8fea450cbd64084a34041541f6c6d425027657e704ecec609a24008321f"
+      "sourceSha256": "9ea8c8fea450cbd64084a34041541f6c6d425027657e704ecec609a24008321f",
+      "currentSha256": "b885fcb59da9f1a22ebe107a6334f27fdae271c9504afd8d22f084a2425112bd",
+      "modification": "Validate all shared catalogue and cart documents with Hydrogen's bundled schema and migrate deprecated product lookup fields."
     },
     {
       "path": "lib/shopify/fragments.ts",
-      "sourceSha256": "c83878f0dac9165482fd63a918f48b0faae59851a47feca24e2ae87ddc3e75a6"
+      "sourceSha256": "c83878f0dac9165482fd63a918f48b0faae59851a47feca24e2ae87ddc3e75a6",
+      "currentSha256": "8d88f591387fb9e56832c88ea02ff211501984e25596831718744f88860a97ae",
+      "modification": "Compose Storefront fragments through Hydrogen gql.tada, remove deprecated option values and retain one explicitly reviewed cart allocation field."
     },
     {
       "path": "lib/shopify/operations/cart.ts",
-      "sourceSha256": "5e6eb091193b8f3452fa0aa55fece637c23a62077a45d01428925ffbdb57253c"
+      "sourceSha256": "5e6eb091193b8f3452fa0aa55fece637c23a62077a45d01428925ffbdb57253c",
+      "currentSha256": "2dc271c317f9e25879a4e797e1d6a72fbcdf28eaca41e52e69ae856505b6230b",
+      "modification": "Validate cart, delivery, discount and buyer-identity documents with Hydrogen's bundled Storefront schema."
     },
     {
       "path": "lib/shopify/operations/collections.ts",
-      "sourceSha256": "963b21dcb20b362f49cce059a012edd117ac56b43675d6c4972cae7ec1e26d98"
+      "sourceSha256": "963b21dcb20b362f49cce059a012edd117ac56b43675d6c4972cae7ec1e26d98",
+      "currentSha256": "42765d6967c9f724ff47f9f384f646e957a6a40ea33b6cb34925abb12fcdf985",
+      "modification": "Validate collection documents with Hydrogen's bundled Storefront schema."
     },
     {
       "path": "lib/shopify/operations/menu.ts",
@@ -698,23 +706,33 @@
     },
     {
       "path": "lib/shopify/operations/pages.ts",
-      "sourceSha256": "34b8ee8e25d7a80d4dab8e43726d236da096761c3c432a8b8c59c26c0e4e8f79"
+      "sourceSha256": "34b8ee8e25d7a80d4dab8e43726d236da096761c3c432a8b8c59c26c0e4e8f79",
+      "currentSha256": "2c3365eb2566b877f0d265bcb2e7c2f532422e127300e6b4b6b314e51e7f4813",
+      "modification": "Validate Shopify page documents with Hydrogen's bundled Storefront schema."
     },
     {
       "path": "lib/shopify/operations/policies.ts",
-      "sourceSha256": "9cb730ea057eba3e295151a2fb4c0a5b9670048d3d7b43d22d6f908ab1dc0639"
+      "sourceSha256": "9cb730ea057eba3e295151a2fb4c0a5b9670048d3d7b43d22d6f908ab1dc0639",
+      "currentSha256": "18f3c4175a676092905a74514a18f60f9f1db8328b4027225b0942df4969bae4",
+      "modification": "Validate Shopify policy documents with Hydrogen's bundled Storefront schema."
     },
     {
       "path": "lib/shopify/operations/products.ts",
-      "sourceSha256": "031f67444cb2c6282647dc0801885283cb96b5c8b44c638815954219fccd76d5"
+      "sourceSha256": "031f67444cb2c6282647dc0801885283cb96b5c8b44c638815954219fccd76d5",
+      "currentSha256": "8a16740556da18991303033ef449ae16fde7d9152258a11ef2cd52eff2d94727",
+      "modification": "Validate product documents with Hydrogen's bundled schema and use the current product(handle:) field."
     },
     {
       "path": "lib/shopify/operations/search.ts",
-      "sourceSha256": "c5b861a6629f89ad12c27a55c49b550c63da3fdb24bc92b6a4b56bbf05ec5242"
+      "sourceSha256": "c5b861a6629f89ad12c27a55c49b550c63da3fdb24bc92b6a4b56bbf05ec5242",
+      "currentSha256": "68a93ac80fa4fd4f97ba7e552c6f68e3f12a3fb12fb2de9612750cceed7b521a",
+      "modification": "Validate predictive-search documents with Hydrogen's bundled Storefront schema."
     },
     {
       "path": "lib/shopify/operations/sitemap.ts",
-      "sourceSha256": "5c6dc4e01af8136fe2b92edbb5effe6bf21869d6b420c752b8a84d537ddf07cf"
+      "sourceSha256": "5c6dc4e01af8136fe2b92edbb5effe6bf21869d6b420c752b8a84d537ddf07cf",
+      "currentSha256": "df9818602f6defc386b7a5a72e64fd6c7359718f3dc3876c3c56548ab1b0b08b",
+      "modification": "Validate sitemap documents with Hydrogen's bundled Storefront schema."
     },
     {
       "path": "lib/shopify/storefront.ts",
@@ -740,7 +758,9 @@
     },
     {
       "path": "lib/shopify/transforms/product.ts",
-      "sourceSha256": "4456fee3e45bb31c0fe5cc49c09ff4dc9de40324f828f2f903ea58fe8cda3def"
+      "sourceSha256": "4456fee3e45bb31c0fe5cc49c09ff4dc9de40324f828f2f903ea58fe8cda3def",
+      "currentSha256": "30c752210a4b4a86687e2dc1bacf23203d9a56d33d8e8839e26702237804d0ca",
+      "modification": "Build product option values from the current optionValues response instead of the deprecated values field."
     },
     {
       "path": "lib/shopify/transforms/search.ts",
@@ -779,8 +799,8 @@
     {
       "path": "package.json",
       "sourceSha256": "ae662f2818fe83f3a91d3eabe6bedee2709d5703b11d7e2bdc26e4bd151fd85e",
-      "currentSha256": "270d5cb867b5713fcf03ee3f8a20db5e27012fe047fd1950253bad7380a05e35",
-      "modification": "Add credential-free gql.tada validation for the staged Hydrogen transport migration."
+      "currentSha256": "51acaabfc0cef3164534a6e5e3d4db1a101447ae40c631f9705dd6d0e04ecdd9",
+      "modification": "Remove legacy GraphQL codegen and enforce credential-free Hydrogen gql.tada validation."
     },
     {
       "path": "postcss.config.mjs",
@@ -789,8 +809,8 @@
     {
       "path": "tsconfig.json",
       "sourceSha256": "c5805d483585cee002979ca95018b75f6f9e9fe57ef540c765b931fc58dd03fc",
-      "currentSha256": "2bc15d2641c015844d90c2289ab8270bf786eb621a9d8bd04d72c8a9190a9a34",
-      "modification": "Use Hydrogen's packaged Storefront schema for gql.tada editor and CI validation."
+      "currentSha256": "cad8eef270ca14553f7bcf39e50a2cd8674af09b7b94b9b66b5f32a7e8bdbcc4",
+      "modification": "Remove legacy generated-type exclusions after Hydrogen's packaged schema takes ownership."
     }
   ]
 }

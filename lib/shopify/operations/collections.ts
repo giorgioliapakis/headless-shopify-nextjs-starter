@@ -1,3 +1,4 @@
+import { gql } from "@shopify/hydrogen";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { defaultLocale, getCountryCode, getLanguageCode } from "@/lib/i18n";
@@ -20,14 +21,16 @@ function tagCollections(collections: Array<{ handle: string }>): void {
   }
 }
 
-const GET_COLLECTION_QUERY = `#graphql
-  ${COLLECTION_FIELDS_FRAGMENT}
+const GET_COLLECTION_QUERY = gql(
+  `
   query getCollection($handle: String!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     collection(handle: $handle) {
       ...CollectionFields
     }
   }
-` as const;
+`,
+  [COLLECTION_FIELDS_FRAGMENT],
+);
 
 type ListingImage = { altText: string | null; height: number; url: string; width: number };
 
@@ -41,8 +44,8 @@ type CollectionsListingResponse = {
   };
 };
 
-const GET_COLLECTIONS_WITH_FEATURED_IMAGE_QUERY = `#graphql
-  ${COLLECTION_FIELDS_FRAGMENT}
+const GET_COLLECTIONS_WITH_FEATURED_IMAGE_QUERY = gql(
+  `
   query getCollectionsWithFeaturedImage($first: Int!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     collections(first: $first) {
       edges {
@@ -62,7 +65,9 @@ const GET_COLLECTIONS_WITH_FEATURED_IMAGE_QUERY = `#graphql
       }
     }
   }
-` as const;
+`,
+  [COLLECTION_FIELDS_FRAGMENT],
+);
 
 export async function getCollections(
   params: { limit?: number; locale?: string } = {},

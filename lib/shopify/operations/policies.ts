@@ -1,3 +1,4 @@
+import { gql } from "@shopify/hydrogen";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { defaultLocale, getCountryCode, getLanguageCode } from "@/lib/i18n";
@@ -6,7 +7,7 @@ import type { ShopPolicy } from "@/lib/types";
 import { assertStorefrontOk } from "../errors";
 import { storefront } from "../storefront";
 
-const GET_SHOP_POLICIES_QUERY = `#graphql
+const GET_SHOP_POLICIES_QUERY = gql(`
   query getShopPolicies($country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     shop {
       contactInformation {
@@ -46,7 +47,7 @@ const GET_SHOP_POLICIES_QUERY = `#graphql
       }
     }
   }
-` as const;
+`);
 
 type ShopifyPolicy = ShopPolicy | null | undefined;
 

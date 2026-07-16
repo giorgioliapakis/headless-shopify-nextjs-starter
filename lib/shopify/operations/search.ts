@@ -1,3 +1,5 @@
+import { gql } from "@shopify/hydrogen";
+
 import { defaultLocale, getCountryCode, getLanguageCode } from "@/lib/i18n";
 import type { PredictiveSearchResult } from "@/lib/types";
 
@@ -9,9 +11,8 @@ import {
   transformPredictiveSearchResult,
 } from "../transforms/search";
 
-const PREDICTIVE_SEARCH_QUERY = `#graphql
-  ${IMAGE_FRAGMENT}
-  ${MONEY_FRAGMENT}
+const PREDICTIVE_SEARCH_QUERY = gql(
+  `
   query predictiveSearch($query: String!, $limit: Int!, $limitScope: PredictiveSearchLimitScope, $types: [PredictiveSearchType!], $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     predictiveSearch(
       query: $query
@@ -49,7 +50,9 @@ const PREDICTIVE_SEARCH_QUERY = `#graphql
       }
     }
   }
-` as const;
+`,
+  [IMAGE_FRAGMENT, MONEY_FRAGMENT],
+);
 
 export async function predictiveSearch({
   limit = 4,

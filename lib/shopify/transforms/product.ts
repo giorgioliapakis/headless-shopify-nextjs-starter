@@ -68,8 +68,7 @@ interface ShopifyOptionValue {
 interface ShopifyOption {
   id: string;
   name: string;
-  values: string[];
-  optionValues?: ShopifyOptionValue[];
+  optionValues: ShopifyOptionValue[];
 }
 
 interface ShopifyCategory {
@@ -277,24 +276,15 @@ function transformSwatch(swatch: ShopifyOptionValueSwatch | null): OptionValueSw
 }
 
 function transformOption(option: ShopifyOption): ProductOption {
-  const swatchLookup = new Map<string, OptionValueSwatch | undefined>();
-  const imageLookup = new Map<string, string | undefined>();
-  if (option.optionValues) {
-    for (const ov of option.optionValues) {
-      swatchLookup.set(ov.name, transformSwatch(ov.swatch));
-      imageLookup.set(ov.name, ov.firstSelectableVariant?.image?.url);
-    }
-  }
-
   return {
     id: option.id,
     name: option.name,
-    values: option.values.map(
+    values: option.optionValues.map(
       (value): OptionValue => ({
-        id: value,
-        image: imageLookup.get(value),
-        name: value,
-        swatch: swatchLookup.get(value),
+        id: value.id,
+        image: value.firstSelectableVariant?.image?.url,
+        name: value.name,
+        swatch: transformSwatch(value.swatch),
       }),
     ),
   };

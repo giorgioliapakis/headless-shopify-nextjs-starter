@@ -1,3 +1,5 @@
+import { gql } from "@shopify/hydrogen";
+
 import { defaultLocale, getCountryCode, getLanguageCode } from "@/lib/i18n";
 import type {
   Cart,
@@ -62,8 +64,8 @@ const COLLECTION_SORT_KEY_MAP: Record<string, { sortKey: string; reverse: boolea
   COLLECTION_DEFAULT: { sortKey: "COLLECTION_DEFAULT", reverse: false },
 };
 
-const PRODUCTS_SEARCH_QUERY = `#graphql
-  ${PRODUCT_CARD_FRAGMENT}
+const PRODUCTS_SEARCH_QUERY = gql(
+  `
   query searchProducts($query: String!, $first: Int!, $after: String, $productFilters: [ProductFilter!], $sortKey: SearchSortKeys, $reverse: Boolean, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     search(
       query: $query
@@ -91,10 +93,12 @@ const PRODUCTS_SEARCH_QUERY = `#graphql
       }
     }
   }
-` as const;
+`,
+  [PRODUCT_CARD_FRAGMENT],
+);
 
-const COLLECTION_PRODUCTS_QUERY = `#graphql
-  ${PRODUCT_CARD_FRAGMENT}
+const COLLECTION_PRODUCTS_QUERY = gql(
+  `
   query collectionProducts($handle: String!, $first: Int!, $after: String, $sortKey: ProductCollectionSortKeys, $reverse: Boolean, $filters: [ProductFilter!], $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     collection(handle: $handle) {
       products(first: $first, after: $after, sortKey: $sortKey, reverse: $reverse, filters: $filters) {
@@ -133,37 +137,45 @@ const COLLECTION_PRODUCTS_QUERY = `#graphql
       }
     }
   }
-` as const;
+`,
+  [PRODUCT_CARD_FRAGMENT],
+);
 
-const GET_PRODUCT_WITH_VARIANTS_QUERY = `#graphql
-  ${PRODUCT_WITH_VARIANTS_FRAGMENT}
+const GET_PRODUCT_WITH_VARIANTS_QUERY = gql(
+  `
   query getProductWithVariants($handle: String!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
-    productByHandle(handle: $handle) {
+    productByHandle: product(handle: $handle) {
       ...ProductWithVariantsFields
     }
   }
-` as const;
+`,
+  [PRODUCT_WITH_VARIANTS_FRAGMENT],
+);
 
-const COMPLEMENTARY_PRODUCTS_QUERY = `#graphql
-  ${PRODUCT_CARD_FRAGMENT}
+const COMPLEMENTARY_PRODUCTS_QUERY = gql(
+  `
   query complementaryProducts($handle: String!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     productRecommendations(productHandle: $handle, intent: COMPLEMENTARY) {
       ...ProductCardFields
     }
   }
-` as const;
+`,
+  [PRODUCT_CARD_FRAGMENT],
+);
 
-const RELATED_PRODUCTS_QUERY = `#graphql
-  ${PRODUCT_CARD_FRAGMENT}
+const RELATED_PRODUCTS_QUERY = gql(
+  `
   query relatedProducts($handle: String!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     productRecommendations(productHandle: $handle, intent: RELATED) {
       ...ProductCardFields
     }
   }
-` as const;
+`,
+  [PRODUCT_CARD_FRAGMENT],
+);
 
-const GET_COLLECTIONS_QUERY = `#graphql
-  ${COLLECTION_FIELDS_FRAGMENT}
+const GET_COLLECTIONS_QUERY = gql(
+  `
   query getCollections($first: Int!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     collections(first: $first) {
       edges {
@@ -173,19 +185,23 @@ const GET_COLLECTIONS_QUERY = `#graphql
       }
     }
   }
-` as const;
+`,
+  [COLLECTION_FIELDS_FRAGMENT],
+);
 
-const GET_CART_QUERY = `#graphql
-  ${CART_FRAGMENT}
+const GET_CART_QUERY = gql(
+  `
   query getCart($cartId: ID!) {
     cart(id: $cartId) {
       ...CartFields
     }
   }
-` as const;
+`,
+  [CART_FRAGMENT],
+);
 
-const CART_CREATE_MUTATION = `#graphql
-  ${CART_FRAGMENT}
+const CART_CREATE_MUTATION = gql(
+  `
   mutation cartCreate($input: CartInput, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     cartCreate(input: $input) {
       cart { ...CartFields }
@@ -193,10 +209,12 @@ const CART_CREATE_MUTATION = `#graphql
       warnings { code message target }
     }
   }
-` as const;
+`,
+  [CART_FRAGMENT],
+);
 
-const CART_LINES_ADD_MUTATION = `#graphql
-  ${CART_FRAGMENT}
+const CART_LINES_ADD_MUTATION = gql(
+  `
   mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
     cartLinesAdd(cartId: $cartId, lines: $lines) {
       cart { ...CartFields }
@@ -204,10 +222,12 @@ const CART_LINES_ADD_MUTATION = `#graphql
       warnings { code message target }
     }
   }
-` as const;
+`,
+  [CART_FRAGMENT],
+);
 
-const CART_LINES_UPDATE_MUTATION = `#graphql
-  ${CART_FRAGMENT}
+const CART_LINES_UPDATE_MUTATION = gql(
+  `
   mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
     cartLinesUpdate(cartId: $cartId, lines: $lines) {
       cart { ...CartFields }
@@ -215,10 +235,12 @@ const CART_LINES_UPDATE_MUTATION = `#graphql
       warnings { code message target }
     }
   }
-` as const;
+`,
+  [CART_FRAGMENT],
+);
 
-const CART_LINES_REMOVE_MUTATION = `#graphql
-  ${CART_FRAGMENT}
+const CART_LINES_REMOVE_MUTATION = gql(
+  `
   mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
       cart { ...CartFields }
@@ -226,10 +248,12 @@ const CART_LINES_REMOVE_MUTATION = `#graphql
       warnings { code message target }
     }
   }
-` as const;
+`,
+  [CART_FRAGMENT],
+);
 
-const CART_NOTE_UPDATE_MUTATION = `#graphql
-  ${CART_FRAGMENT}
+const CART_NOTE_UPDATE_MUTATION = gql(
+  `
   mutation cartNoteUpdate($cartId: ID!, $note: String!) {
     cartNoteUpdate(cartId: $cartId, note: $note) {
       cart { ...CartFields }
@@ -237,7 +261,9 @@ const CART_NOTE_UPDATE_MUTATION = `#graphql
       warnings { code message target }
     }
   }
-` as const;
+`,
+  [CART_FRAGMENT],
+);
 
 export type SearchIndexProductsParams = {
   collection?: string;
@@ -487,7 +513,7 @@ export async function fetchCart(cartId: string): Promise<Cart | undefined> {
   return response.data.cart ? transformShopifyCart(response.data.cart) : undefined;
 }
 
-const NODE_HANDLES_QUERY = `#graphql
+const NODE_HANDLES_QUERY = gql(`
   query nodeHandles($ids: [ID!]!) {
     nodes(ids: $ids) {
       ... on Product {
@@ -496,7 +522,7 @@ const NODE_HANDLES_QUERY = `#graphql
       }
     }
   }
-` as const;
+`);
 
 export async function fetchProductHandlesByIds(ids: string[]): Promise<Map<string, string>> {
   const handles = new Map<string, string>();

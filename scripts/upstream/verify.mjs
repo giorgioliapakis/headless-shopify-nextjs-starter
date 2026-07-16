@@ -67,9 +67,20 @@ for (const entry of manifest.files) {
   if (entry.currentSha256 && !entry.modification) {
     fail(`modified file has no rationale: ${entry.path}`);
   }
+  if (entry.removed && !entry.modification) {
+    fail(`removed file has no rationale: ${entry.path}`);
+  }
 
   const absolutePath = resolve(root, entry.path);
   if (!absolutePath.startsWith(`${root}/`)) fail(`path escapes repository: ${entry.path}`);
+
+  if (entry.removed) {
+    const exists = await stat(absolutePath)
+      .then(() => true)
+      .catch(() => false);
+    if (exists) fail(`removed upstream path still exists: ${entry.path}`);
+    continue;
+  }
 
   let metadata;
   try {

@@ -22,8 +22,8 @@ compatibility matrix, not an “any Shopify store” claim.
 
 - Next.js 16 App Router, React Server Components, Server Actions, Cache Components, and Tailwind CSS 4
 - shadcn source-owned components on Base UI
-- Typed Shopify Storefront API `2026-07` operations for products, collections, search, pages, policies,
-  cart, sitemap, and cache revalidation
+- Hydrogen-backed Shopify Storefront API `2026-07` operations with bundled-schema `gql.tada`
+  validation for products, collections, search, pages, policies, cart, sitemap, and cache revalidation
 - Shopify-hosted checkout and optional hosted customer-account handoff
 - Exact-SHA Vercel Shop provenance with the shopper assistant and preview headless accounts excluded
 - Pinned React performance, composition, shadcn, and interface-review skills; Next.js guidance comes
@@ -31,7 +31,7 @@ compatibility matrix, not an “any Shopify store” claim.
 
 ## Hydrogen adoption
 
-The starter remains a Next.js application deployed to Vercel. It is adopting Shopify's new
+The starter remains a Next.js application deployed to Vercel. It uses Shopify's new
 framework-agnostic Hydrogen SDK as a commerce library—not migrating to the older React Router Hydrogen
 framework or to Oxygen. The exact preview is bounded by
 [ADR 0002](docs/adr/0002-hydrogen-preview-adoption.md), characterization tests and an expiry; no moving
@@ -49,7 +49,6 @@ Prerequisites are Node 24 and pnpm 11.5.0.
 ```bash
 cp .env.example .env.local
 pnpm install --frozen-lockfile
-pnpm codegen
 pnpm dev
 ```
 

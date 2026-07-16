@@ -1,3 +1,4 @@
+import { gql } from "@shopify/hydrogen";
 import { cache } from "react";
 
 import { getCartIdFromCookie, invalidateCartCache, setCartIdCookie } from "@/lib/cart/server";
@@ -22,8 +23,8 @@ import type { ShopifyCart } from "../transforms/cart";
 
 export type { CartLineInput, CartMutationResult };
 
-const CART_BUYER_IDENTITY_UPDATE_MUTATION = `#graphql
-  ${CART_FRAGMENT}
+const CART_BUYER_IDENTITY_UPDATE_MUTATION = gql(
+  `
   mutation cartBuyerIdentityUpdate($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!) {
     cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
       cart {
@@ -40,10 +41,12 @@ const CART_BUYER_IDENTITY_UPDATE_MUTATION = `#graphql
       }
     }
   }
-` as const;
+`,
+  [CART_FRAGMENT],
+);
 
-const CART_DISCOUNT_CODES_UPDATE_MUTATION = `#graphql
-  ${CART_FRAGMENT}
+const CART_DISCOUNT_CODES_UPDATE_MUTATION = gql(
+  `
   mutation cartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]!) {
     cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
       cart {
@@ -60,9 +63,11 @@ const CART_DISCOUNT_CODES_UPDATE_MUTATION = `#graphql
       }
     }
   }
-` as const;
+`,
+  [CART_FRAGMENT],
+);
 
-const GET_CART_SELECTABLE_ADDRESSES_QUERY = `#graphql
+const GET_CART_SELECTABLE_ADDRESSES_QUERY = gql(`
   query getCartSelectableAddresses($cartId: ID!) {
     cart(id: $cartId) {
       delivery {
@@ -72,10 +77,10 @@ const GET_CART_SELECTABLE_ADDRESSES_QUERY = `#graphql
       }
     }
   }
-` as const;
+`);
 
-const CART_DELIVERY_ADDRESSES_ADD_MUTATION = `#graphql
-  ${CART_FRAGMENT}
+const CART_DELIVERY_ADDRESSES_ADD_MUTATION = gql(
+  `
   mutation cartDeliveryAddressesAdd($cartId: ID!, $addresses: [CartSelectableAddressInput!]!) {
     cartDeliveryAddressesAdd(cartId: $cartId, addresses: $addresses) {
       cart {
@@ -92,9 +97,11 @@ const CART_DELIVERY_ADDRESSES_ADD_MUTATION = `#graphql
       }
     }
   }
-` as const;
+`,
+  [CART_FRAGMENT],
+);
 
-const GET_CART_DELIVERY_OPTIONS_QUERY = `#graphql
+const GET_CART_DELIVERY_OPTIONS_QUERY = gql(`
   query getCartDeliveryOptions($cartId: ID!) {
     cart(id: $cartId) {
       deliveryGroups(first: 5) {
@@ -111,10 +118,10 @@ const GET_CART_DELIVERY_OPTIONS_QUERY = `#graphql
       }
     }
   }
-` as const;
+`);
 
-const CART_DELIVERY_ADDRESSES_UPDATE_MUTATION = `#graphql
-  ${CART_FRAGMENT}
+const CART_DELIVERY_ADDRESSES_UPDATE_MUTATION = gql(
+  `
   mutation cartDeliveryAddressesUpdate($cartId: ID!, $addresses: [CartSelectableAddressUpdateInput!]!) {
     cartDeliveryAddressesUpdate(cartId: $cartId, addresses: $addresses) {
       cart {
@@ -131,7 +138,9 @@ const CART_DELIVERY_ADDRESSES_UPDATE_MUTATION = `#graphql
       }
     }
   }
-` as const;
+`,
+  [CART_FRAGMENT],
+);
 
 export const getCart = cache(async (): Promise<Cart | undefined> => {
   const cartId = await getCartIdFromCookie();

@@ -1,3 +1,4 @@
+import { gql } from "@shopify/hydrogen";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { assertStorefrontOk } from "../errors";
@@ -10,7 +11,7 @@ export interface SitemapResource {
   updatedAt: string;
 }
 
-const GET_SITEMAP_PAGES_COUNT_QUERY = `#graphql
+const GET_SITEMAP_PAGES_COUNT_QUERY = gql(`
   query getSitemapPagesCount($type: SitemapType!) {
     sitemap(type: $type) {
       pagesCount {
@@ -18,9 +19,9 @@ const GET_SITEMAP_PAGES_COUNT_QUERY = `#graphql
       }
     }
   }
-` as const;
+`);
 
-const GET_SITEMAP_PAGE_QUERY = `#graphql
+const GET_SITEMAP_PAGE_QUERY = gql(`
   query getSitemapPage($type: SitemapType!, $page: Int!) {
     sitemap(type: $type) {
       resources(page: $page) {
@@ -32,7 +33,7 @@ const GET_SITEMAP_PAGE_QUERY = `#graphql
       }
     }
   }
-` as const;
+`);
 
 function cacheTagsFor(type: ShopifySitemapType): string[] {
   if (type === "COLLECTION") return ["collections", "collections-index"];

@@ -3,14 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "graphql-codegen && next build",
+    "build": "next build",
     "check": "pnpm typegen && oxlint . && oxfmt --check && tsc --noEmit && pnpm check:graphql && vitest run && node scripts/upstream/verify.mjs && node scripts/agents/verify-skills.mjs && node scripts/clean-room/scan.mjs",
-    "check:graphql": "gql.tada check --fail-on-warn",
+    "check:graphql": "node scripts/verify/graphql.mjs",
     "clean-room": "node scripts/clean-room/scan.mjs",
-    "codegen": "graphql-codegen",
-    "codegen:watch": "graphql-codegen --watch",
-    "dev": "graphql-codegen || true && next dev",
-    "dev:portless": "graphql-codegen || true && portless shop next dev",
+    "dev": "next dev",
+    "dev:portless": "portless shop next dev",
     "format": "oxfmt",
     "lint": "oxlint . && oxfmt --check",
     "skills:sync:hydrogen": "node scripts/agents/sync-hydrogen-skills.mjs && node scripts/agents/sync-claude-skills.mjs",
@@ -18,12 +16,10 @@
     "start": "next start",
     "test": "vitest run",
     "test:contracts": "vitest run tests/contracts",
-    "typegen": "graphql-codegen && next typegen"
+    "typegen": "next typegen"
   },
   "dependencies": {
     "@base-ui/react": "1.6.0",
-    "@graphql-codegen/cli": "7.1.3",
-    "@shopify/api-codegen-preset": "2.0.1",
     "@shopify/hydrogen": "0.0.0-preview-8a708a8-20260708155454",
     "@tailwindcss/postcss": "4.3.2",
     "@tailwindcss/typography": "0.5.20",

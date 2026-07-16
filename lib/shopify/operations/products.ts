@@ -1,3 +1,4 @@
+import { gql } from "@shopify/hydrogen";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { defaultLocale, getCountryCode, getLanguageCode } from "@/lib/i18n";
@@ -28,7 +29,6 @@ import {
 } from "../fetch";
 import {
   BUNDLE_RELATIONSHIPS_FRAGMENT,
-  IMAGE_FRAGMENT,
   PRODUCT_CARD_FRAGMENT,
   PRODUCT_FRAGMENT,
   PRODUCT_VARIANT_FRAGMENT,
@@ -70,27 +70,30 @@ function tagProducts(products: Array<{ id: string }>): void {
   }
 }
 
-const GET_PRODUCT_BY_HANDLE_QUERY = `#graphql
-  ${PRODUCT_FRAGMENT}
+const GET_PRODUCT_BY_HANDLE_QUERY = gql(
+  `
   query getProductByHandle($handle: String!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
-    productByHandle(handle: $handle) {
+    productByHandle: product(handle: $handle) {
       ...ProductFields
     }
   }
-` as const;
+`,
+  [PRODUCT_FRAGMENT],
+);
 
-const GET_PRODUCT_BY_HANDLE_WITH_BUNDLES_QUERY = `#graphql
-  ${BUNDLE_RELATIONSHIPS_FRAGMENT}
-  ${PRODUCT_FRAGMENT}
+const GET_PRODUCT_BY_HANDLE_WITH_BUNDLES_QUERY = gql(
+  `
   query getProductByHandleWithBundles($handle: String!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
-    productByHandle(handle: $handle) {
+    productByHandle: product(handle: $handle) {
       ...ProductFields
       selectedOrFirstAvailableVariant {
         ...BundleRelationshipFields
       }
     }
   }
-` as const;
+`,
+  [BUNDLE_RELATIONSHIPS_FRAGMENT, PRODUCT_FRAGMENT],
+);
 
 export async function getProduct({
   handle,
@@ -125,29 +128,31 @@ export async function getProduct({
   return transformShopifyProductDetails(data.productByHandle);
 }
 
-const GET_PRODUCT_VARIANT_QUERY = `#graphql
-  ${IMAGE_FRAGMENT}
-  ${PRODUCT_VARIANT_FRAGMENT}
+const GET_PRODUCT_VARIANT_QUERY = gql(
+  `
   query getProductVariant($handle: String!, $selectedOptions: [SelectedOptionInput!]!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
-    productByHandle(handle: $handle) {
+    productByHandle: product(handle: $handle) {
       selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
         ...ProductVariantFields
       }
     }
   }
-` as const;
+`,
+  [PRODUCT_VARIANT_FRAGMENT],
+);
 
-const GET_PRODUCT_VARIANT_WITH_BUNDLES_QUERY = `#graphql
-  ${IMAGE_FRAGMENT}
-  ${PURCHASABLE_PRODUCT_VARIANT_FRAGMENT}
+const GET_PRODUCT_VARIANT_WITH_BUNDLES_QUERY = gql(
+  `
   query getProductVariantWithBundles($handle: String!, $selectedOptions: [SelectedOptionInput!]!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
-    productByHandle(handle: $handle) {
+    productByHandle: product(handle: $handle) {
       selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
         ...PurchasableProductVariantFields
       }
     }
   }
-` as const;
+`,
+  [PURCHASABLE_PRODUCT_VARIANT_FRAGMENT],
+);
 
 // Empty selections intentionally resolve Shopify's first available variant.
 export async function getProductVariant({
@@ -195,8 +200,8 @@ export async function getProductWithVariants(params: {
   return product;
 }
 
-const CATALOG_PRODUCTS_QUERY = `#graphql
-  ${PRODUCT_CARD_FRAGMENT}
+const CATALOG_PRODUCTS_QUERY = gql(
+  `
   query catalogProducts($first: Int!, $after: String, $query: String, $sortKey: ProductSortKeys, $reverse: Boolean, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     products(
       first: $first
@@ -219,9 +224,11 @@ const CATALOG_PRODUCTS_QUERY = `#graphql
       }
     }
   }
-` as const;
+`,
+  [PRODUCT_CARD_FRAGMENT],
+);
 
-const SEARCH_FACETS_QUERY = `#graphql
+const SEARCH_FACETS_QUERY = gql(`
   query searchFacets($query: String!, $productFilters: [ProductFilter!], $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     search(
       query: $query
@@ -261,7 +268,7 @@ const SEARCH_FACETS_QUERY = `#graphql
       }
     }
   }
-` as const;
+`);
 
 const CATALOG_SORT_KEY_MAP: Record<string, { sortKey: string; reverse: boolean }> = {
   "best-matches": { sortKey: "RELEVANCE", reverse: false },
@@ -619,8 +626,8 @@ export async function getRelatedProducts(params: {
   return products;
 }
 
-const GET_PRODUCTS_BY_HANDLES_QUERY = `#graphql
-  ${PRODUCT_CARD_FRAGMENT}
+const GET_PRODUCTS_BY_HANDLES_QUERY = gql(
+  `
   query getProductsByHandles($query: String!, $first: Int!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     products(first: $first, query: $query) {
       edges {
@@ -630,10 +637,12 @@ const GET_PRODUCTS_BY_HANDLES_QUERY = `#graphql
       }
     }
   }
-` as const;
+`,
+  [PRODUCT_CARD_FRAGMENT],
+);
 
-const GET_PRODUCT_BY_ID_QUERY = `#graphql
-  ${PRODUCT_WITH_VARIANTS_FRAGMENT}
+const GET_PRODUCT_BY_ID_QUERY = gql(
+  `
   query getProductById($id: ID!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     node(id: $id) {
       ... on Product {
@@ -641,10 +650,12 @@ const GET_PRODUCT_BY_ID_QUERY = `#graphql
       }
     }
   }
-` as const;
+`,
+  [PRODUCT_WITH_VARIANTS_FRAGMENT],
+);
 
-const GET_PRODUCTS_BY_IDS_QUERY = `#graphql
-  ${PRODUCT_CARD_FRAGMENT}
+const GET_PRODUCTS_BY_IDS_QUERY = gql(
+  `
   query getProductsByIds($ids: [ID!]!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     nodes(ids: $ids) {
       ... on Product {
@@ -652,7 +663,9 @@ const GET_PRODUCTS_BY_IDS_QUERY = `#graphql
       }
     }
   }
-` as const;
+`,
+  [PRODUCT_CARD_FRAGMENT],
+);
 
 function decodeShopifyId(id: string): string {
   if (id.startsWith("gid://")) {
