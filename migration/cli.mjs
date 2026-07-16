@@ -4,6 +4,7 @@ import { access, readFile } from "node:fs/promises";
 import { basename, join, resolve } from "node:path";
 import { promisify } from "node:util";
 
+import { buildReconstructionModel } from "./lib/model.mjs";
 import { validatePublicStoreUrl } from "./lib/network.mjs";
 import { capturePublicSnapshot } from "./lib/snapshot.mjs";
 import { inspectThemeSource } from "./lib/theme.mjs";
@@ -200,6 +201,20 @@ const handlers = {
         path,
         kind: "snapshot",
       });
+      const theme = await readOptionalJson(
+        join(run.runDirectory, "snapshots", "theme-inventory-v1.json"),
+      );
+      const capabilityMap =
+        (await readOptionalJson(join(run.runDirectory, "model", "capabilities.json"))) ??
+        JSON.parse(await readFile(join(cwd, "agent-workflows", "capability-map.json"), "utf8"));
+      const model = buildReconstructionModel({ snapshot, theme, capabilityMap });
+      const modelPath = join(run.runDirectory, "model", "reconstruction-plan-v1.json");
+      await writeJsonAtomic(modelPath, model);
+      state = await recordArtifact(run.runDirectory, state, {
+        id: "reconstruction-plan",
+        path: modelPath,
+        kind: "model",
+      });
       const status =
         snapshot.summary.failedCount || snapshot.summary.selectedCount === 0
           ? "partial"
@@ -217,8 +232,8 @@ const handlers = {
       );
       state = await updateState(run.runDirectory, state, {
         nextActions: [
-          "Review page-type inventory",
-          "Map source surfaces to generic section recipes",
+          "Review candidate section mappings",
+          "Implement unknown patterns in merchant-owned files",
         ],
       });
       await appendLedger(run.runDirectory, {

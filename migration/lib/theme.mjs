@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { lstat, open, readdir, realpath } from "node:fs/promises";
+import { lstat, open, readFile, readdir, realpath } from "node:fs/promises";
 import { basename, extname, relative, resolve, sep } from "node:path";
 
 const DEFAULT_MAX_FILES = 5_000;
@@ -54,11 +54,15 @@ export async function inspectThemeSource(input, options = {}) {
         );
       totalBytes += info.size;
       assertWithinLimit(totalBytes, maxBytes, "Theme source");
-      files.push({
+      const file = {
         path: safeRelative(root, absolute),
         bytes: info.size,
         sha256: await hashFile(absolute),
-      });
+      };
+      if (file.path.endsWith(".json") && info.size <= 1_048_576) {
+        file.structure = await inspectJsonStructure(absolute);
+      }
+      files.push(file);
       if (files.length > maxFiles)
         throw new Error(`Theme source exceeds the ${maxFiles} file limit`);
     }
@@ -78,6 +82,43 @@ export async function inspectThemeSource(input, options = {}) {
     inspection: "read-only-hash-inventory",
     requiresArchiveInspection: false,
   };
+}
+
+async function inspectJsonStructure(path) {
+  try {
+    const value = JSON.parse(await readFile(path, "utf8"));
+    const sectionTypes = new Set();
+    const appBlockTypes = new Set();
+    let nodes = 0;
+    const queue = [value];
+    while (queue.length) {
+      const current = queue.shift();
+      nodes += 1;
+      if (nodes > 10_000) {
+        return { parseStatus: "bounded", sectionTypes: [], appBlockTypes: [] };
+      }
+      if (Array.isArray(current)) {
+        queue.push(...current);
+        continue;
+      }
+      if (!current || typeof current !== "object") continue;
+      for (const [key, nested] of Object.entries(current)) {
+        if (key === "type" && typeof nested === "string") {
+          const bounded = nested.slice(0, 300);
+          if (bounded.startsWith("shopify://apps/")) appBlockTypes.add(bounded);
+          else if (/^[a-z0-9][a-z0-9_-]{0,99}$/i.test(bounded)) sectionTypes.add(bounded);
+        }
+        if (nested && typeof nested === "object") queue.push(nested);
+      }
+    }
+    return {
+      parseStatus: "parsed-data-only",
+      sectionTypes: [...sectionTypes].sort().slice(0, 200),
+      appBlockTypes: [...appBlockTypes].sort().slice(0, 200),
+    };
+  } catch {
+    return { parseStatus: "invalid-json", sectionTypes: [], appBlockTypes: [] };
+  }
 }
 
 async function hashFile(path) {

@@ -36,6 +36,7 @@ describe("agent migration contract", () => {
       "run-state.schema.json",
       "public-snapshot.schema.json",
       "decision.schema.json",
+      "reconstruction-plan.schema.json",
     ]) {
       const schema = JSON.parse(await readFile(`migration/schemas/${file}`, "utf8"));
       expect(schema.$schema).toContain("2020-12");

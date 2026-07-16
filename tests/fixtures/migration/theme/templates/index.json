@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "hero": { "type": "image-banner" },
+    "app": {
+      "type": "shopify://apps/synthetic-provider/blocks/widget/00000000-0000-0000-0000-000000000000"
+    }
+  },
+  "order": ["hero", "app"]
+}

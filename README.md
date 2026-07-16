@@ -59,6 +59,10 @@ source is hashed read-only; archives are not extracted or executed. State, evide
 ignored `.migration/`. Secret-bearing CLI flags are rejected. Protected Shopify Admin discovery is a
 future allowlisted OS-keychain broker—not an access token passed to an agent.
 
+Snapshotting also produces a route/template/section reconstruction plan. Known patterns point to the
+commerce core or registered sections; heuristic mappings require review, while app blocks and unknown
+patterns remain merchant-owned downstream work.
+
 After reconstruction, record non-authoritative review decisions and run the complete local gate:
 
 ```bash

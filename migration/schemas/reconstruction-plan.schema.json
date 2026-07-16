@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-shopify.dev/schemas/migration/reconstruction-plan-v1.json",
+  "title": "Bounded reconstruction suggestion model",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "evidenceTrust",
+    "rules",
+    "routes",
+    "theme",
+    "integrations",
+    "summary"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "evidenceTrust": { "const": "untrusted-source-derived-bounded-model" },
+    "rules": { "type": "object" },
+    "routes": { "type": "array", "maxItems": 500 },
+    "theme": { "type": "object" },
+    "integrations": { "type": "object" },
+    "summary": { "type": "object" }
+  }
+}

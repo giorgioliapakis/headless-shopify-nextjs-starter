@@ -41,4 +41,14 @@ describe("theme source inventory", () => {
       requiresArchiveInspection: true,
     });
   });
+
+  it("extracts bounded JSON structure as data without executing theme code", async () => {
+    const theme = await inspectThemeSource("tests/fixtures/migration/theme");
+    const template = theme.files?.find((file) => file.path === "templates/index.json");
+    expect(template?.structure).toMatchObject({
+      parseStatus: "parsed-data-only",
+      sectionTypes: ["image-banner"],
+    });
+    expect(template?.structure?.appBlockTypes[0]).toContain("shopify://apps/synthetic-provider/");
+  });
 });

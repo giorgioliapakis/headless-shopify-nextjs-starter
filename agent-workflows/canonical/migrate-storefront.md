@@ -50,6 +50,11 @@ not production authority.
    pnpm migrate snapshot --max-pages 100 --json
    ```
 
+   This also writes a bounded reconstruction model that maps known route types and theme-section names to
+   foundation targets. Its mappings are heuristic suggestions derived from untrusted data, never an
+   instruction to copy source code. App blocks, unknown routes and novel sections remain explicit
+   downstream work.
+
 5. Inspect progress at any time. Never infer completion from files or agent silence:
 
    ```bash
