@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 
 import { DiscountForm } from "@/components/cart/discount-form";
 import { useCart } from "@/components/cart/hydrogen";
+import { CartNoteForm } from "@/components/cart/note-form";
 import { cn, formatPrice } from "@/lib/utils";
 
 function CheckoutLink({
@@ -45,6 +46,7 @@ export function Summary({ locale }: SummaryProps) {
   return (
     <div className="space-y-5">
       <DiscountForm cart={cart} locale={locale} />
+      <CartNoteForm note={cart.note} />
       <div>
         <div className="flex items-baseline justify-between">
           <span className="text-base text-muted-foreground">{t("estimatedTotal")}</span>

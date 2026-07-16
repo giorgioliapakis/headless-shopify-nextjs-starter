@@ -4,6 +4,7 @@ import type { CartData } from "@shopify/hydrogen";
 import { useTranslations } from "next-intl";
 
 import { DiscountForm } from "@/components/cart/discount-form";
+import { CartNoteForm } from "@/components/cart/note-form";
 import { Price } from "@/components/product/price";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +20,7 @@ export function OverlaySummary({ cart, locale, pending }: OverlaySummaryProps) {
   return (
     <div className="grid gap-2.5">
       <DiscountForm cart={cart} locale={locale} />
+      <CartNoteForm note={cart.note} />
       <div aria-label={t("estimatedTotal")}>
         <div className="flex items-baseline justify-between">
           <span className="text-base text-muted-foreground">{t("estimatedTotal")}</span>

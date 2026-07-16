@@ -48,4 +48,18 @@ describe("Hydrogen cart UI contract", () => {
       code: "ENOENT",
     });
   });
+
+  it("keeps Shopify analytics explicit and consent-gated", async () => {
+    const [config, client, consent] = await Promise.all([
+      source("shop.config.ts"),
+      source("lib/analytics/client.ts"),
+      source("lib/shopify/routing/consent.ts"),
+    ]);
+    expect(config).toContain('NEXT_PUBLIC_SHOPIFY_ANALYTICS_ENABLED === "true"');
+    expect(client).toContain('consent: { mode: "default-banner" }');
+    expect(client).not.toContain("canTrack:");
+    expect(consent).toContain("CONSENT_QUERY_SOURCE");
+    expect(consent).toContain("Operation Not Allowed");
+    expect(consent).not.toContain("request.json().query");
+  });
 });

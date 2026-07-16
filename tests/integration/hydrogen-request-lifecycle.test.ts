@@ -63,6 +63,63 @@ describe("Hydrogen request lifecycle", () => {
     expect(classifyShopifyProxyRoute("/legacy-campaign")).toBe("redirect-candidate");
     expect(classifyShopifyProxyRoute("/admin")).toBe("redirect-candidate");
     expect(classifyShopifyProxyRoute("/api/cart")).toBe("cart");
+    expect(classifyShopifyProxyRoute("/api/unstable/graphql.json")).toBe("consent");
+  });
+
+  it("keeps the consent bootstrap off unless Shopify analytics is enabled", async () => {
+    const fetchMock = vi.fn();
+    const response = await handleSafeShopifyProxyRoute(
+      new Request("https://store.example/api/unstable/graphql.json", {
+        method: "POST",
+        headers: { "content-type": "application/json", origin: "https://store.example" },
+        body: JSON.stringify({
+          query: "query ensureCookies{consentManagement{cookies(visitorConsent:{}){cookieDomain}}}",
+        }),
+      }),
+      { analyticsEnabled: false, environment: privateEnvironment, fetch: fetchMock },
+    );
+    expect(response?.status).toBe(404);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("proxies only Hydrogen's fixed consent bootstrap operation", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      Response.json(
+        {
+          data: {
+            consentManagement: { cookies: { cookieDomain: ".store.example" } },
+          },
+        },
+        { headers: { "x-shopify-api-version": "unstable" } },
+      ),
+    );
+    const validRequest = new Request("https://store.example/api/unstable/graphql.json", {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: "https://store.example" },
+      body: JSON.stringify({
+        query: "query ensureCookies{consentManagement{cookies(visitorConsent:{}){cookieDomain}}}",
+      }),
+    });
+    const validResponse = await handleSafeShopifyProxyRoute(validRequest, {
+      analyticsEnabled: true,
+      environment: privateEnvironment,
+      fetch: fetchMock,
+    });
+    expect(validResponse?.status).toBe(200);
+    expect(validResponse?.headers.get("cache-control")).toContain("private");
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain("/api/unstable/graphql.json");
+
+    const rejectedResponse = await handleSafeShopifyProxyRoute(
+      new Request("https://store.example/api/unstable/graphql.json", {
+        method: "POST",
+        headers: { "content-type": "application/json", origin: "https://store.example" },
+        body: JSON.stringify({ query: "query Shop { shop { name } }" }),
+      }),
+      { analyticsEnabled: true, environment: privateEnvironment, fetch: fetchMock },
+    );
+    expect(rejectedResponse?.status).toBe(403);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it("keeps cart reads private and returns a settled empty envelope without a cookie", async () => {

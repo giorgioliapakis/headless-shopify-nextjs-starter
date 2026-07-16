@@ -12,6 +12,7 @@ import { CartOverlay } from "@/components/cart/overlay";
 import { Footer } from "@/components/footer";
 import { Nav } from "@/components/nav";
 import { SiteSchema } from "@/components/schema/site-schema";
+import { ShopifyAnalyticsBoundary } from "@/components/shopify/analytics-boundary";
 import { ShopifyRuntime } from "@/components/shopify/runtime";
 import { getLocale } from "@/lib/params";
 import { buildAlternates } from "@/lib/seo";
@@ -53,6 +54,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
               <Suspense>
                 <CartOverlay locale={locale} />
               </Suspense>
+              {shopConfig.analytics.shopify.enabled ? (
+                <Suspense>
+                  <ShopifyAnalyticsBoundary locale={locale} />
+                </Suspense>
+              ) : null}
             </CartDrawerProvider>
           </CartProvider>
         </NextIntlClientProvider>

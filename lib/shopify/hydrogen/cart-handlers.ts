@@ -5,6 +5,16 @@ import { createCartServerHandlers, gql } from "@shopify/hydrogen";
 const CART_ANALYTICS_FRAGMENT = gql(`
   fragment CartFragment on Cart {
     updatedAt
+    lines(first: 250) {
+      nodes {
+        merchandise {
+          ... on ProductVariant {
+            price { amount currencyCode }
+            product { id title vendor productType handle }
+          }
+        }
+      }
+    }
   }
 `);
 

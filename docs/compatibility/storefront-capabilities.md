@@ -15,22 +15,22 @@ Status vocabulary:
 
 ## Shopper routes
 
-| Surface           | Route contract             | Status  | Current behavior                                                                                    |
-| ----------------- | -------------------------- | ------- | --------------------------------------------------------------------------------------------------- |
-| Home              | `/`                        | Core    | Server-rendered section composition using neutral configuration.                                    |
-| Product detail    | `/products/[handle]`       | Core    | Metadata, variant URL state, gallery, options, add/buy actions, related-products flag and hard 404. |
-| Collection index  | `/collections`             | Core    | Published collection navigation.                                                                    |
-| Collection detail | `/collections/[handle]`    | Core    | Metadata, filters, sorting, pagination and hard 404.                                                |
-| All products      | `/collections/all`         | Core    | Catalogue listing behavior.                                                                         |
-| Search            | `/search`                  | Core    | Storefront product search, filters, sorting and pagination.                                         |
-| Content page      | `/pages/[handle]`          | Core    | Shopify page content, metadata and hard 404.                                                        |
-| Policy            | `/policies/[handle]`       | Core    | Shopify policy content, metadata and hard 404.                                                      |
-| Cart              | `/cart`                    | Core    | Request-bound cart, warnings, discounts, gift cards, delivery estimate and hosted checkout handoff. |
-| Customer account  | configured external URL    | Hosted  | No local account session by default.                                                                |
-| Checkout          | Shopify `cart.checkoutUrl` | Hosted  | No custom checkout.                                                                                 |
-| Blog/article      | `/blogs/**`                | Planned | Conditional pack; not currently present.                                                            |
-| Landing pages     | downstream recipes         | Planned | Section registry and route recipe contract not yet complete.                                        |
-| Unknown path      | any unmatched URL          | Core    | Safe redirect lookup for paths outside the app manifest, otherwise a static hard 404.               |
+| Surface           | Route contract             | Status  | Current behavior                                                                                      |
+| ----------------- | -------------------------- | ------- | ----------------------------------------------------------------------------------------------------- |
+| Home              | `/`                        | Core    | Server-rendered section composition using neutral configuration.                                      |
+| Product detail    | `/products/[handle]`       | Core    | Metadata, variant URL state, gallery, options, add/buy actions, related-products flag and hard 404.   |
+| Collection index  | `/collections`             | Core    | Published collection navigation.                                                                      |
+| Collection detail | `/collections/[handle]`    | Core    | Metadata, filters, sorting, pagination and hard 404.                                                  |
+| All products      | `/collections/all`         | Core    | Catalogue listing behavior.                                                                           |
+| Search            | `/search`                  | Core    | Storefront product search, filters, sorting and pagination.                                           |
+| Content page      | `/pages/[handle]`          | Core    | Shopify page content, metadata and hard 404.                                                          |
+| Policy            | `/policies/[handle]`       | Core    | Shopify policy content, metadata and hard 404.                                                        |
+| Cart              | `/cart`                    | Core    | Hydrogen request-bound cart, warnings, discounts, progressive line forms and hosted checkout handoff. |
+| Customer account  | configured external URL    | Hosted  | No local account session by default.                                                                  |
+| Checkout          | Shopify `cart.checkoutUrl` | Hosted  | No custom checkout.                                                                                   |
+| Blog/article      | `/blogs/**`                | Planned | Conditional pack; not currently present.                                                              |
+| Landing pages     | downstream recipes         | Planned | Section registry and route recipe contract not yet complete.                                          |
+| Unknown path      | any unmatched URL          | Core    | Safe redirect lookup for paths outside the app manifest, otherwise a static hard 404.                 |
 
 The app also exposes neutral SEO/agent representations: `robots.txt`, a sharded sitemap, `llms.txt`,
 dynamic default Open Graph imagery and markdown representations for product, collection and search
@@ -47,14 +47,16 @@ surfaces. Draft mode and the Shopify webhook handler are server endpoints, not s
 | Product recommendations                                        | Conditional | Disabled by default through `shop.config.ts`.                                                 |
 | Bundles/componentized products                                 | Conditional | Domain/cart types support components; UI is disabled by default.                              |
 | Complementary products                                         | Conditional | Disabled by default.                                                                          |
-| Create/add/update/remove cart lines                            | Core        | Server Actions and cookie-backed cart identity.                                               |
-| Cart note, discount codes and buyer country                    | Core        | Shopify warnings and user errors remain explicit.                                             |
-| Gift cards and shipping estimate display                       | Core        | Derived from Storefront cart response.                                                        |
-| Buy now with Shop Pay handoff                                  | Core        | Uses Shopify cart permalink; no local checkout.                                               |
+| Create/add/update/remove cart lines                            | Core        | Hydrogen server handlers, HTTP-only cart identity and progressively enhanced forms.           |
+| Discount codes                                                 | Core        | Hydrogen forms surface Shopify warnings and user errors.                                      |
+| Cart note                                                      | Core        | Hydrogen note form works with and without JavaScript and surfaces mutation errors.            |
+| Buyer country                                                  | Planned     | Market foundations exist; complete shopper controls and recovery proof remain.                |
+| Gift cards and shipping estimate display                       | Planned     | Must move to supported Hydrogen cart fragments and UI before being claimed.                   |
+| Shop Pay handoff                                               | Core        | Uses Hydrogen's real Shop Pay custom element; no local checkout.                              |
 | Markets selector and contextual pricing                        | Conditional | Single-market default; bounded cookie/cart identity selector activates with verified locales. |
 | Selling plans/subscriptions                                    | Planned     | Conditional adapter required.                                                                 |
 | Predictive search                                              | Planned     | Hydrogen capability; current search is full-page only.                                        |
-| First-party consent-aware analytics contract                   | Planned     | Vercel telemetry flags exist; commerce event contract is incomplete.                          |
+| First-party consent-aware analytics contract                   | Conditional | Disabled by default; page/cart and confirmed cart-delta events use Hydrogen's consent bus.    |
 | Headless customer accounts                                     | Planned     | Optional pack only; hosted accounts remain default.                                           |
 | Reviews, loyalty, wishlists, subscriptions and external search | Unsupported | Require provider-specific downstream adapters and parity evidence.                            |
 
@@ -70,9 +72,12 @@ covers allowlisted product, collection and optional CMS metaobject topics only a
 API-version, webhook-ID and body-size validation. Durable cross-instance delivery deduplication remains a
 deployment capability rather than an in-memory runtime claim.
 
-Hydrogen checkout and validated cart-permalink routing is enabled. Its Storefront API, AJAX cart,
-GraphiQL, MCP and agent proxy surfaces are hard 404 by default. Ordinary catalogue routes create no
-Hydrogen request client or Storefront call. See [ADR 0003](../adr/0003-cache-and-request-lifecycle.md).
+Hydrogen checkout and validated cart-permalink routing is enabled. Its general Storefront API, AJAX cart,
+GraphiQL, MCP and agent proxy surfaces are hard 404 by default. When Shopify analytics is explicitly
+enabled, the nominal `/api/unstable/graphql.json` path accepts only Hydrogen's fixed consent-cookie query,
+with same-origin, method, media-type and body-size enforcement; it is not a general GraphQL proxy.
+Ordinary catalogue routes create no Hydrogen request client or Storefront call. See
+[ADR 0003](../adr/0003-cache-and-request-lifecycle.md).
 
 ## Configuration and credentials
 
@@ -83,7 +88,9 @@ private buyer-context token. A real `PRIVATE_STOREFRONT_API_TOKEN` from the Head
 before a private client is created.
 
 Optional configuration includes the public site name/base URL, hosted account URL, webhook secret, draft
-mode secret, debug logging and per-feature flags in `shop.config.ts`. Migration-only Admin access belongs
+mode secret, debug logging and per-feature flags in `shop.config.ts`. Shopify analytics remains off until
+`analytics.shopify.enabled` is deliberately set; its default-banner mode does not override Hydrogen's
+Customer Privacy consent decision. Migration-only Admin access belongs
 in the external credential broker and must not be placed in the storefront environment or repository.
 
 ## Errors and degraded behavior

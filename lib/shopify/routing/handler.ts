@@ -3,7 +3,9 @@ import { handleShopifyRoutes } from "@shopify/hydrogen";
 
 import { hydrogenCartHandlers } from "@/lib/shopify/hydrogen/cart-handlers";
 import { createRequestStorefrontClient } from "@/lib/shopify/hydrogen/storefront";
+import { shopConfig } from "@/shop.config";
 
+import { handleConsentBootstrap } from "./consent";
 import {
   applyPrivateNoStoreHeaders,
   classifyShopifyProxyRoute,
@@ -12,13 +14,24 @@ import {
 } from "./policy";
 import { createStatelessShopifyRouteSession } from "./session";
 
+type SafeShopifyRouteOptions = NonNullable<Parameters<typeof createRequestStorefrontClient>[1]> & {
+  analyticsEnabled?: boolean;
+};
+
 export async function handleSafeShopifyProxyRoute(
   request: Request,
-  options?: Parameters<typeof createRequestStorefrontClient>[1],
+  options?: SafeShopifyRouteOptions,
 ): Promise<Response | null> {
   const route = classifyShopifyProxyRoute(new URL(request.url).pathname);
   if (route === "next") return null;
   if (route === "redirect-candidate") return null;
+  if (route === "consent") {
+    return handleConsentBootstrap(request, {
+      enabled: options?.analyticsEnabled ?? shopConfig.analytics.shopify.enabled,
+      environment: options?.environment,
+      fetch: options?.fetch,
+    });
+  }
   if (route === "blocked") {
     return new Response("Not Found", {
       status: 404,

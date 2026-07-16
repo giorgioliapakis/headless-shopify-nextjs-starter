@@ -3,7 +3,13 @@ const STOREFRONT_API_PROXY = /^\/api\/(?:unstable|2\d{3}-\d{2})\/graphql\.json$/
 const AJAX_CART =
   /^(?:\/[a-z]{2}(?:-[a-z]{2})?)?\/cart(?:\.(?:js|json)|\/(?:add|update|change|clear)(?:\.(?:js|json))?)$/i;
 
-export type ShopifyProxyRoute = "blocked" | "cart" | "checkout" | "next" | "redirect-candidate";
+export type ShopifyProxyRoute =
+  | "blocked"
+  | "cart"
+  | "checkout"
+  | "consent"
+  | "next"
+  | "redirect-candidate";
 
 const APPLICATION_ROUTE_PREFIXES = [
   "/api/draft",
@@ -34,6 +40,7 @@ export function isKnownApplicationPath(pathname: string): boolean {
  * these routes later only with an independently tested capability adapter.
  */
 export function classifyShopifyProxyRoute(pathname: string): ShopifyProxyRoute {
+  if (pathname === "/api/unstable/graphql.json") return "consent";
   if (
     pathname === "/api/mcp" ||
     pathname.startsWith("/agent/") ||

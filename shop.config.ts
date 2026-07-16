@@ -18,6 +18,7 @@ export interface SocialLink {
 export interface ShopConfig {
   accounts: { url: string | null };
   analytics: {
+    shopify: { enabled: boolean };
     speedInsights: { enabled: boolean };
     vercel: { enabled: boolean };
   };
@@ -45,6 +46,7 @@ export const shopConfig = {
       : null,
   },
   analytics: {
+    shopify: { enabled: process.env.NEXT_PUBLIC_SHOPIFY_ANALYTICS_ENABLED === "true" },
     speedInsights: { enabled: false },
     vercel: { enabled: false },
   },

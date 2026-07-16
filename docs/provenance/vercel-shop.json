@@ -31,8 +31,8 @@
     {
       "path": ".env.example",
       "sourceSha256": "1152af1b90677027c7ea1de3d771e7b43d47aef4006d8fcc36d0f0af25802a11",
-      "currentSha256": "2d84886ea165baa577f3256a3bd5b32333c532d6731b1aca140a139daddcdaf2",
-      "modification": "Document canonical Hydrogen environment names, bounded aliases, and explicit credential-free fixture mode."
+      "currentSha256": "5b0933cb400329264da1b2aba6a7a0dc74f544df6f86fc5565afbfdfa17e4322",
+      "modification": "Document the optional consent-aware Shopify analytics capability."
     },
     {
       "path": ".graphqlrc.ts",
@@ -201,8 +201,8 @@
     {
       "path": "components/cart-page/summary.tsx",
       "sourceSha256": "849d4674dec8e431b6e43675bdac705ec7f1ed76f4bae7cb3bf8e42ca726cebb",
-      "currentSha256": "9dc549d5dd63c9c3784254910344ed516c54e6e09f44ecfe7c0a577eda79c626",
-      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
+      "currentSha256": "2f3f3b4daaf9b7b71bad2ca8156065f179ad93002e9ed1ec7e67cc4d5cc275d2",
+      "modification": "Expose Hydrogen cart notes and server-provided totals on the full cart page."
     },
     {
       "path": "components/cart/context-sync.tsx",
@@ -237,8 +237,8 @@
     {
       "path": "components/cart/overlay-summary.tsx",
       "sourceSha256": "958a7624a94831592413012159751fc76801d4b990f37b357b8040b7497ec9a4",
-      "currentSha256": "eace21415234bbc0a32e6ae802f58d712dacd8bfcf6e68baa9a90076696e36d4",
-      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
+      "currentSha256": "6b0407fa3a3b1732489516e5f4afe3e99cebcb4b415c230a17bf8132514cb7a6",
+      "modification": "Expose Hydrogen cart notes and server-provided totals in the cart drawer."
     },
     {
       "path": "components/cart/overlay.tsx",
@@ -647,8 +647,8 @@
     {
       "path": "lib/i18n/messages/en.json",
       "sourceSha256": "1c6c710e305fb380212f2bf0cac55e355a6613d90668f7809108114662c7c9c3",
-      "currentSha256": "808f5ac65aa4cd947b5c60400576399c788e06e8d04c7853994b62e3f147528b",
-      "modification": "Remove excluded assistant/headless-account copy from runtime messages."
+      "currentSha256": "d8348d8b47de9048a69081550c0566bd05c4670489d39b8a7d8191e0216cdf23",
+      "modification": "Add neutral cart-note labels for the Hydrogen form."
     },
     {
       "path": "lib/i18n/request.ts",

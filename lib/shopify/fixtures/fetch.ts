@@ -231,6 +231,11 @@ export function neutralStorefrontFixtureData(
       return { page: null };
     case "getShopPolicies":
       return { shop: emptyShopPolicies() };
+    case "shopAnalytics":
+      return {
+        localization: { country: { currency: { isoCode: "USD" } } },
+        shop: { id: "gid://shopify/Shop/100" },
+      };
     case "predictiveSearch":
       return {
         predictiveSearch: { articles: [], collections: [], pages: [], products: [], queries: [] },
