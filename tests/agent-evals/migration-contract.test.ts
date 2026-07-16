@@ -49,6 +49,7 @@ describe("agent migration contract", () => {
       "capability",
       "snapshot",
       "status",
+      "review",
       "decision",
       "verify",
       "resume",
@@ -67,6 +68,7 @@ describe("agent migration contract", () => {
       "decision.schema.json",
       "reconstruction-plan.schema.json",
       "capture-manifest.schema.json",
+      "review-package.schema.json",
     ]) {
       const schema = JSON.parse(await readFile(`migration/schemas/${file}`, "utf8"));
       expect(schema.$schema).toContain("2020-12");

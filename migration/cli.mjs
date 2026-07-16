@@ -7,6 +7,7 @@ import { promisify } from "node:util";
 import { buildCaptureManifest, buildReconstructionReadiness } from "./lib/capture-manifest.mjs";
 import { buildReconstructionModel } from "./lib/model.mjs";
 import { validatePublicStoreUrl } from "./lib/network.mjs";
+import { buildReviewManifest, renderReviewHtml } from "./lib/review-package.mjs";
 import { capturePublicSnapshot } from "./lib/snapshot.mjs";
 import { inspectThemeSource } from "./lib/theme.mjs";
 import {
@@ -14,9 +15,11 @@ import {
   createRun,
   currentRun,
   recordArtifact,
+  sha256File,
   updateState,
   withWorkspaceLock,
   writeJsonAtomic,
+  writeTextAtomic,
 } from "./lib/workspace.mjs";
 
 const execFileAsync = promisify(execFile);
@@ -77,7 +80,15 @@ async function main(argv = process.argv.slice(2), cwd = process.cwd()) {
 async function dispatch(parsed, cwd) {
   const aliases = { preflight: "doctor" };
   const command = aliases[parsed.command] ?? parsed.command;
-  const mutating = new Set(["doctor", "capability", "snapshot", "decision", "verify", "resume"]);
+  const mutating = new Set([
+    "doctor",
+    "capability",
+    "snapshot",
+    "review",
+    "decision",
+    "verify",
+    "resume",
+  ]);
   const execute = () => handlers[command]?.(parsed.options, parsed.positionals, cwd);
   if (!handlers[command]) throw new Error(usage());
   return mutating.has(command) ? withWorkspaceLock(cwd, command, execute) : execute();
@@ -322,6 +333,69 @@ const handlers = {
     };
   },
 
+  async review(options, positionals, cwd) {
+    rejectPositionals(positionals);
+    rejectUnknown(options, ["json"]);
+    const run = await requireRun(cwd, "preflight");
+    const model = await readRequiredJson(
+      join(run.runDirectory, "model", "reconstruction-plan-v1.json"),
+      "Run public snapshot before generating the review package",
+    );
+    const readiness = await readRequiredJson(
+      join(run.runDirectory, "reports", "reconstruction-readiness-v1.json"),
+      "Run public snapshot before generating the review package",
+    );
+    const captureManifest = await readRequiredJson(
+      join(run.runDirectory, "model", "capture-manifest-v1.json"),
+      "Run public snapshot before generating the review package",
+    );
+    const decisions = await readDecisionSummaries(join(run.runDirectory, "decisions"));
+    const artifactIntegrity = await verifyArtifactIntegrity(run.runDirectory, run.state.artifacts);
+    const report = buildReviewManifest({
+      state: run.state,
+      model,
+      readiness,
+      captureManifest,
+      decisions,
+      artifactIntegrity,
+    });
+    const manifestPath = join(run.runDirectory, "review", "review-package-v1.json");
+    const htmlPath = join(run.runDirectory, "review", "index.html");
+    await writeJsonAtomic(manifestPath, report);
+    await writeTextAtomic(htmlPath, renderReviewHtml(report));
+    let state = await recordArtifact(run.runDirectory, run.state, {
+      id: "review-package",
+      path: manifestPath,
+      kind: "review",
+    });
+    state = await recordArtifact(run.runDirectory, state, {
+      id: "review-html",
+      path: htmlPath,
+      kind: "review",
+    });
+    state = await setPhase(run.runDirectory, state, "review", "in_progress");
+    state = await updateState(run.runDirectory, state, {
+      nextActions: readiness.nextActions,
+    });
+    await appendLedger(run.runDirectory, {
+      event: "review-package.generated",
+      details: {
+        blockers: report.summary.blockerCount,
+        requiredReviews: report.summary.requiredReviewCount,
+        staleArtifacts: report.summary.staleArtifactCount,
+      },
+    });
+    return {
+      ok: true,
+      runId: state.runId,
+      summary: report.summary,
+      report: state.artifacts.find((artifact) => artifact.id === "review-html")?.path,
+      warning:
+        "Local migration review only. This report grants no deploy, DNS, cutover, or launch authority.",
+      nextActions: state.nextActions,
+    };
+  },
+
   async decision(options, positionals, cwd) {
     rejectPositionals(positionals);
     rejectUnknown(options, ["json", "id", "status", "summary"]);
@@ -544,6 +618,58 @@ async function readOptionalJson(path) {
   }
 }
 
+async function readRequiredJson(path, remediation) {
+  try {
+    return JSON.parse(await readFile(path, "utf8"));
+  } catch (error) {
+    if (error?.code === "ENOENT") throw new Error(remediation, { cause: error });
+    throw error;
+  }
+}
+
+async function verifyArtifactIntegrity(runDirectory, artifacts) {
+  return Promise.all(
+    artifacts
+      .filter((artifact) => !["review-package", "review-html"].includes(artifact.id))
+      .map(async (artifact) => {
+        const path = resolve(runDirectory, artifact.path);
+        if (!path.startsWith(`${resolve(runDirectory)}/`)) {
+          return {
+            id: artifact.id,
+            kind: artifact.kind,
+            path: artifact.path,
+            expectedSha256: artifact.sha256,
+            observedSha256: null,
+            status: "invalid-path",
+          };
+        }
+        try {
+          const observedSha256 = await sha256File(path);
+          return {
+            id: artifact.id,
+            kind: artifact.kind,
+            path: artifact.path,
+            expectedSha256: artifact.sha256,
+            observedSha256,
+            status: observedSha256 === artifact.sha256 ? "current" : "mismatch",
+          };
+        } catch (error) {
+          if (error?.code === "ENOENT") {
+            return {
+              id: artifact.id,
+              kind: artifact.kind,
+              path: artifact.path,
+              expectedSha256: artifact.sha256,
+              observedSha256: null,
+              status: "missing",
+            };
+          }
+          throw error;
+        }
+      }),
+  );
+}
+
 async function readDecisionSummaries(directory) {
   const { readdir } = await import("node:fs/promises");
   const entries = await readdir(directory).catch((error) =>
@@ -625,7 +751,7 @@ function formatResult(command, result) {
 }
 
 function usage() {
-  return `Usage: pnpm migrate <command> [options]\n\nCommands:\n  doctor|preflight --store-url <https-url> --theme-source <path> --theme-rights-confirmed [--new-run]\n  capability\n  snapshot [--max-pages 100]\n  status\n  decision --id <id> --status <pending|accepted|rejected> --summary <text>\n  verify [--production]\n  resume\n\nAdd --json for machine-readable output. Secret-bearing flags are forbidden.`;
+  return `Usage: pnpm migrate <command> [options]\n\nCommands:\n  doctor|preflight --store-url <https-url> --theme-source <path> --theme-rights-confirmed [--new-run]\n  capability\n  snapshot [--max-pages 100]\n  status\n  review\n  decision --id <id> --status <pending|accepted|rejected> --summary <text>\n  verify [--production]\n  resume\n\nAdd --json for machine-readable output. Secret-bearing flags are forbidden.`;
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

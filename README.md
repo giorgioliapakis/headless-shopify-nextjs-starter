@@ -52,6 +52,7 @@ pnpm migrate doctor \
 pnpm migrate capability
 pnpm migrate snapshot --max-pages 100
 pnpm migrate status
+pnpm migrate review
 pnpm migrate resume --json
 ```
 
@@ -76,6 +77,7 @@ After reconstruction, record non-authoritative review decisions and run the comp
 
 ```bash
 pnpm migrate decision --id homepage-parity --status accepted --summary "Approved against the source evidence"
+pnpm migrate review
 pnpm migrate verify --production
 ```
 

@@ -66,6 +66,7 @@ pnpm migrate doctor \
 pnpm migrate capability --json
 pnpm migrate snapshot --max-pages 100 --json
 pnpm migrate status --json
+pnpm migrate review
 ```
 
 Review these ignored artifacts before allowing an agent to rebuild pages:
@@ -75,6 +76,8 @@ Review these ignored artifacts before allowing an agent to rebuild pages:
 - `model/reconstruction-plan-v1.json` — route/section candidates and explicit unknowns;
 - `model/capture-manifest-v1.json` — required source/preview viewports and interaction states;
 - `reports/reconstruction-readiness-v1.json` — blockers, review decisions and next actions.
+- `review/index.html` — script-free, CSP-locked local report with grouped mappings, filters, decisions,
+  artifact integrity and provenance. It contains no raw scraped HTML and grants no launch authority.
 
 A password gate, unknown revenue route, unknown section or app block is not parity. Resolve it or retain
 it as an explicit blocker.

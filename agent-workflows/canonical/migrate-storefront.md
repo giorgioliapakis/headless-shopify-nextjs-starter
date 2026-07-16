@@ -65,29 +65,39 @@ not production authority.
    pnpm migrate status --json
    ```
 
-6. Reconstruct pages from registered sections, semantic tokens and invariant commerce primitives. Keep
+6. Generate the self-contained local review package:
+
+   ```bash
+   pnpm migrate review
+   ```
+
+   Open the reported `review/index.html` file locally. It is built only from bounded reconstruction,
+   readiness, capture and decision models; raw scraped HTML is excluded. The report has a fail-closed
+   Content Security Policy, no scripts or network dependencies, is ignored by Git and must never be
+   exposed from a production route. It reports artifact staleness, but downstream file conflicts remain
+   unevaluated until a generated merchant workspace is attached.
+
+7. Reconstruct pages from registered sections, semantic tokens and invariant commerce primitives. Keep
    novel merchant patterns in merchant-owned recipes/components. Do not copy Liquid, scripts, brand
    assets or editorial content into the foundation. Preserve URLs, approved content, SEO and behavior
    unless a documented security, accessibility, correctness, platform or performance exception applies.
-7. Record bounded review choices without representing them as approval:
+8. Record bounded review choices without representing them as approval, then regenerate the review
+   package so it includes the latest decision state:
 
    ```bash
    pnpm migrate decision --id navigation-model --status accepted --summary "Preserve approved nested navigation"
+   pnpm migrate review
    ```
 
-8. Run deterministic verification. Add `--production` for the credential-free neutral production build
+9. Run deterministic verification. Add `--production` for the credential-free neutral production build
    and asset budgets:
 
    ```bash
    pnpm migrate verify --production
    ```
 
-9. After interruption or context compaction, regenerate bounded trusted context. Raw evidence is never
-   included:
-
-   ```bash
-   pnpm migrate resume --json
-   ```
+10. After interruption or context compaction, regenerate bounded trusted context with
+    `pnpm migrate resume --json`. Raw evidence is never included.
 
 ## Completion protocol
 
