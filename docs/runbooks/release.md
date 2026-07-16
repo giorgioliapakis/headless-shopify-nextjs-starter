@@ -12,8 +12,11 @@ pnpm release:verify
 ```
 
 This reruns the source/type/query/test/lifecycle/provenance/clean-room gates and neutral production build,
-then writes ignored `.release/` evidence: a Git archive, SHA-256 source manifest, CycloneDX 1.6 SBOM and
-an unsigned local report. Inspect the archive/report and preserve them outside the source repository.
+then writes ignored `.release/` evidence: a Git archive, SHA-256 source manifest, CycloneDX 1.6 SBOM,
+production-license inventory and an unsigned local report. The license audit fails closed when a new
+expression appears; non-permissive runtime assets are accepted only through narrow package-pattern
+exceptions with distribution rationale in `config/supply-chain/license-policy.json`. Inspect the
+archive/report and preserve them outside the source repository.
 
 ## Protected GitHub evidence
 

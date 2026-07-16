@@ -56,6 +56,7 @@ jobs:
             .release/agentic-shopify-starter-0.1.0.tar
             .release/release-report.json
             .release/sbom.cdx.json
+            .release/license-inventory.json
             .release/source-manifest.json
           if-no-files-found: error
           include-hidden-files: true

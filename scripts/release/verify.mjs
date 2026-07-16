@@ -5,6 +5,8 @@ import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { basename, join, resolve } from "node:path";
 import { promisify } from "node:util";
 
+import { auditLicenseReport, licenseMap } from "../security/license-policy.mjs";
+
 const execFileAsync = promisify(execFile);
 const root = resolve(process.cwd());
 const releaseDirectory = join(root, ".release");
@@ -38,16 +40,26 @@ for (const path of files) {
 }
 
 const packageManifest = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
-const dependencyTree = JSON.parse(
-  (
-    await execFileAsync("pnpm", ["list", "--prod", "--json", "--depth", "Infinity"], {
-      cwd: root,
-      encoding: "utf8",
-      maxBuffer: 20 * 1024 * 1024,
-    })
-  ).stdout,
+const licensePolicy = JSON.parse(
+  await readFile(join(root, "config", "supply-chain", "license-policy.json"), "utf8"),
 );
-const components = collectComponents(dependencyTree);
+const [dependencyResult, licenseResult] = await Promise.all([
+  execFileAsync("pnpm", ["list", "--prod", "--json", "--depth", "Infinity"], {
+    cwd: root,
+    encoding: "utf8",
+    maxBuffer: 50 * 1024 * 1024,
+  }),
+  execFileAsync("pnpm", ["licenses", "list", "--prod", "--json"], {
+    cwd: root,
+    encoding: "utf8",
+    maxBuffer: 50 * 1024 * 1024,
+  }),
+]);
+const licensedPackages = auditLicenseReport(JSON.parse(licenseResult.stdout), licensePolicy);
+const components = collectComponents(
+  JSON.parse(dependencyResult.stdout),
+  licenseMap(licensedPackages),
+);
 const generatedAt = new Date().toISOString();
 await mkdir(releaseDirectory, { recursive: true });
 await writeJson(join(releaseDirectory, "source-manifest.json"), {
@@ -73,6 +85,15 @@ await writeJson(join(releaseDirectory, "sbom.cdx.json"), {
   },
   components,
 });
+await writeJson(join(releaseDirectory, "license-inventory.json"), {
+  schemaVersion: 1,
+  generatedAt,
+  commit,
+  packageVersionCount: licensedPackages.length,
+  reviewedExceptionCount: licensedPackages.filter((entry) => entry.review === "reviewed-exception")
+    .length,
+  packages: licensedPackages,
+});
 const archiveName = `agentic-shopify-starter-${packageManifest.version}.tar`;
 const archivePath = join(releaseDirectory, archiveName);
 await git(["archive", "--format=tar", `--output=${archivePath}`, "HEAD"]);
@@ -84,6 +105,10 @@ await writeJson(join(releaseDirectory, "release-report.json"), {
   archive: { file: basename(archivePath), bytes: archive.byteLength, sha256: sha256(archive) },
   sourceFileCount: sourceFiles.length,
   componentCount: components.length,
+  licensedComponentCount: components.filter((component) => component.licenses).length,
+  reviewedLicenseExceptionCount: licensedPackages.filter(
+    (entry) => entry.review === "reviewed-exception",
+  ).length,
   signature: "unsigned-local-evidence",
   note: "Distribution requires protected CI provenance/attestation; this local report grants no release authority.",
 });
@@ -91,18 +116,20 @@ console.log(
   `Release evidence passed: ${sourceFiles.length} source files, ${components.length} components, ${archiveName}.`,
 );
 
-function collectComponents(trees) {
+function collectComponents(trees, licensesByPackage) {
   const collected = new Map();
   function visit(node) {
     for (const [name, value] of Object.entries(node?.dependencies ?? {})) {
       if (!value?.version) continue;
       const ref = `pkg:npm/${encodeURIComponent(name)}@${value.version}`;
+      const license = licensesByPackage.get(`${name}@${value.version}`);
       collected.set(ref, {
         type: "library",
         name,
         version: value.version,
         purl: ref,
         "bom-ref": ref,
+        ...(license ? { licenses: [{ expression: license }] } : {}),
       });
       visit(value);
     }

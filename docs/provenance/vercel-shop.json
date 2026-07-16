@@ -875,8 +875,8 @@
     {
       "path": "package.json",
       "sourceSha256": "ae662f2818fe83f3a91d3eabe6bedee2709d5703b11d7e2bdc26e4bd151fd85e",
-      "currentSha256": "f08cb2956e891b38791a00b807d21a7736978ba43f743f5e653927e8e7d9eaa9",
-      "modification": "Adds pinned safe theme-archive inventory plus browser, migration, update, and release commands."
+      "currentSha256": "52a03373fc166b60255f277553e5345639c335781fd062b448a4a6dbc674e770",
+      "modification": "Run the fail-closed production license policy alongside the exact lifecycle-script audit."
     },
     {
       "path": "postcss.config.mjs",

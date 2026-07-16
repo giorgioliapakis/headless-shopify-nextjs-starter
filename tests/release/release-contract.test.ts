@@ -15,6 +15,8 @@ describe("release contract", () => {
     expect(script).toContain('git(["status", "--porcelain"])');
     expect(script).toContain('git(["archive", "--format=tar"');
     expect(script).toContain('"sbom.cdx.json"');
+    expect(script).toContain('"license-inventory.json"');
+    expect(script).toContain("auditLicenseReport");
     expect(script).toContain('signature: "unsigned-local-evidence"');
     expect(script).toContain('path !== ".env.example"');
   });
@@ -33,6 +35,20 @@ describe("release contract", () => {
     }
   });
 
+  it("fails closed on unreviewed production licenses", async () => {
+    const policy = JSON.parse(await readFile("config/supply-chain/license-policy.json", "utf8"));
+    expect(policy.schemaVersion).toBe(1);
+    expect(policy.approvedExpressions).toContain("MIT");
+    expect(policy.approvedExpressions).not.toContain("LGPL-3.0-or-later");
+    for (const entry of policy.reviewedExceptions) {
+      expect(entry.packagePattern).toMatch(/^\^/);
+      expect(entry.packagePattern).toMatch(/\$$/);
+      expect(entry.reason.length).toBeGreaterThan(40);
+    }
+    const manifest = JSON.parse(await readFile("package.json", "utf8"));
+    expect(manifest.scripts["supply-chain:audit"]).toContain("audit-licenses.mjs");
+  });
+
   it("defines fail-closed merchant ownership for downstream updates", async () => {
     const config = JSON.parse(await readFile("config/foundation-update.json", "utf8"));
     expect(config).toMatchObject({ schemaVersion: 1, conflictPolicy: "fail-closed" });
@@ -45,6 +61,7 @@ describe("release contract", () => {
     expect(workflow).toContain("workflow_dispatch:");
     expect(workflow).toContain("actions/attest@a1948c3f048ba23858d222213b7c278aabede763");
     expect(workflow).toContain("actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a");
+    expect(workflow).toContain(".release/license-inventory.json");
     expect(workflow).not.toMatch(/gh release|npm publish|vercel deploy/);
   });
 });
