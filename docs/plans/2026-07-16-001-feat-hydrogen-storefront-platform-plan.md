@@ -375,7 +375,7 @@ details that Hydrogen is expected to replace.
 
 - A reviewer can compare pre- and post-Hydrogen behavior without reading either implementation.
 
-- [ ] **Unit 1: Pin Hydrogen and install its agent guidance with provenance**
+- [x] **Unit 1: Pin Hydrogen and install its agent guidance with provenance**
 
 **Goal:** Add the exact SDK and matching Shopify-maintained skills without accepting a moving preview tag
 or weakening clean-room/supply-chain guarantees.

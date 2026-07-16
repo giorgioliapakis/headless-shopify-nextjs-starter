@@ -713,8 +713,8 @@
     {
       "path": "lib/shopify/storefront.ts",
       "sourceSha256": "0329a52ff2066d1200c235165519dc3a7d4ad56129e1cb4e3a28fe6e652447d1",
-      "currentSha256": "782b5994c32f09acee217cbc66e86d8b581dbac2bf35280d56088e8cd4be93f9",
-      "modification": "Use a direct dated Storefront GraphQL transport and remove Hydrogen preview coupling."
+      "currentSha256": "8d9fe5093e2c06bac1adb3e9cc60b72395b33326d196e4b583957375bb7e774a",
+      "modification": "Redact malformed Shopify JSON responses before the characterized Hydrogen migration."
     },
     {
       "path": "lib/shopify/transforms/cart.ts",
@@ -771,8 +771,8 @@
     {
       "path": "package.json",
       "sourceSha256": "ae662f2818fe83f3a91d3eabe6bedee2709d5703b11d7e2bdc26e4bd151fd85e",
-      "currentSha256": "5a70b9c1a709e1a0e6566eb65bfe0008398d8315499a1239780440ab8a39c647",
-      "modification": "Pin the stable platform, exclude preview dependencies, and enforce type, unit, provenance, skill, and clean-room checks."
+      "currentSha256": "3a94ed273e9498e80521700a2532b551a7a66ae464e6dc930e5defb561449756",
+      "modification": "Pin the ADR-authorized Hydrogen SDK and add deterministic skill synchronization and contract-test commands."
     },
     {
       "path": "postcss.config.mjs",

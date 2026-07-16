@@ -11,7 +11,7 @@ The storefront-runtime track is defined in
   - [x] Publish the honest current capability inventory and performance budget policy.
   - [x] Capture deterministic Storefront transport, cart and route contracts.
   - [ ] Record the reproducible production-mode neutral performance baseline.
-- [ ] H1 — Exact Hydrogen package and matching agent-skill provenance.
+- [x] H1 — Exact Hydrogen package and matching agent-skill provenance.
 - [ ] H2 — Request-scoped Storefront client and credential-free GraphQL typing migration.
 - [ ] H3 — Shopify routing, redirect, Markets and cache-isolation integration.
 - [ ] H4 — Hydrogen cart, money, Shop Pay and consent-aware analytics conformance.

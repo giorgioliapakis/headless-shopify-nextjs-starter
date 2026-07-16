@@ -453,5 +453,247 @@
         }
       ]
     }
+  ],
+  "packages": [
+    {
+      "package": "@shopify/hydrogen",
+      "version": "0.0.0-preview-8a708a8-20260708155454",
+      "provenance": "docs/provenance/hydrogen-sdk.json",
+      "license": "MIT",
+      "skills": [
+        {
+          "sourcePath": "skills/hydrogen-analytics",
+          "target": "hydrogen-analytics",
+          "files": [
+            {
+              "path": "references/react.md",
+              "sha256": "ab5a068de6c7f6288dd20d6966e29f3f489ee9fce81b57e33a411b318677c44a"
+            },
+            {
+              "path": "SKILL.md",
+              "sha256": "2233c7f8a2c1bba84b8b0846bf76a9a035c2fd659c0df5c8d2dbf41fd08aff30"
+            }
+          ]
+        },
+        {
+          "sourcePath": "skills/hydrogen-cart-drawer",
+          "target": "hydrogen-cart-drawer",
+          "files": [
+            {
+              "path": "references/accessibility.md",
+              "sha256": "5da3162461fc3bee08f7a5b4235f45aa85e5847ab1c9e14d7cd9d12960e96ded"
+            },
+            {
+              "path": "SKILL.md",
+              "sha256": "9a3ae3e89f7d2817d0c41ad1786fd4bd8587028d0e9b54c50a779a641c447756"
+            }
+          ]
+        },
+        {
+          "sourcePath": "skills/hydrogen-cart-ui",
+          "target": "hydrogen-cart-ui",
+          "files": [
+            {
+              "path": "references/react.md",
+              "sha256": "9993af2bbdb572d26049aa187f17dfbef6014babf78017c7c522336abaaef79a"
+            },
+            {
+              "path": "SKILL.md",
+              "sha256": "9dcc388e944a1617325ee643deadff24038151a74e21532fb0affea6e2bd8205"
+            }
+          ]
+        },
+        {
+          "sourcePath": "skills/hydrogen-collection-browser",
+          "target": "hydrogen-collection-browser",
+          "files": [
+            {
+              "path": "references/nextjs.md",
+              "sha256": "3da2e0829e87d7d707812c4bbaffc88230af81474653f9279f121dcf69ad8c4e"
+            },
+            {
+              "path": "references/react.md",
+              "sha256": "f39d868829be1790afc8173630dc998a3e288025fb8e55e8a65439cb6afb2157"
+            },
+            {
+              "path": "SKILL.md",
+              "sha256": "464c04e3dedbcaa9d66b4feabaa1f132a4c382fbd62fd19b538542fc4ef4251a"
+            }
+          ]
+        },
+        {
+          "sourcePath": "skills/hydrogen-markets",
+          "target": "hydrogen-markets",
+          "files": [
+            {
+              "path": "references/nextjs.md",
+              "sha256": "db5176b0811929a702b8d64914ed812a46f1d04e38012dee259eac78192e10aa"
+            },
+            {
+              "path": "SKILL.md",
+              "sha256": "a87c42cebf6f20ee058b6084c28e26afe8ed5317b6650b58f249b3f12793e8af"
+            }
+          ]
+        },
+        {
+          "sourcePath": "skills/hydrogen-money",
+          "target": "hydrogen-money",
+          "files": [
+            {
+              "path": "SKILL.md",
+              "sha256": "182e25906a6b9935ebc11ea3902c968d0210621541e45f7b058de99bf7e6939d"
+            }
+          ]
+        },
+        {
+          "sourcePath": "skills/hydrogen-predictive-search",
+          "target": "hydrogen-predictive-search",
+          "files": [
+            {
+              "path": "references/react.md",
+              "sha256": "15c8f1b87d4bb3aea70bb3a94946f65be3de87efffe4e089963b234aa505b09b"
+            },
+            {
+              "path": "SKILL.md",
+              "sha256": "bb60f930c86c9c01a6691400b5bc2c56275743342caf75ab707aa6b98e8c30d5"
+            }
+          ]
+        },
+        {
+          "sourcePath": "skills/hydrogen-request-handlers",
+          "target": "hydrogen-request-handlers",
+          "files": [
+            {
+              "path": "references/frameworks.md",
+              "sha256": "8fb73e32ba51942e84d75baab6b899c20ae93c18c1a239232c04a5fd3573d849"
+            },
+            {
+              "path": "references/nextjs.md",
+              "sha256": "9af0981fa64dc845dd48723ca573e860c4d9e3602972ee8ef4a6302545867f06"
+            },
+            {
+              "path": "SKILL.md",
+              "sha256": "aa97a066b0cd94944f779375627d2ce04ce7f99bad7217d95360a1eaf4bba755"
+            }
+          ]
+        },
+        {
+          "sourcePath": "skills/hydrogen-routing",
+          "target": "hydrogen-routing",
+          "files": [
+            {
+              "path": "SKILL.md",
+              "sha256": "140bcc8c0a812948958d6d74db87497505a84858a6fe3352ff3bad65f60da066"
+            }
+          ]
+        },
+        {
+          "sourcePath": "skills/hydrogen-setup",
+          "target": "hydrogen-setup",
+          "files": [
+            {
+              "path": "references/analytics.md",
+              "sha256": "5feb7736617be16624adaab8acc90e76e893b237a8b418a86d953707051ab362"
+            },
+            {
+              "path": "references/customer-account.md",
+              "sha256": "c1454e85275def5a0f8517b6fda543dfcced335d02da1523fb9fcd8299ad9ba6"
+            },
+            {
+              "path": "references/home-page.md",
+              "sha256": "7d8dd9090800b53af164e057b49b9598e1bbf1286c2a628f07b949ee6a975b02"
+            },
+            {
+              "path": "references/navbar.md",
+              "sha256": "859097d3aa1fdb9be34e93860a514ec49017770f66c34215da05137f9bb63a2a"
+            },
+            {
+              "path": "references/product-page.md",
+              "sha256": "15fbd0b9e25ec1c0377318c5e22e10c5f423e8bebfb1b6c9291087b802050891"
+            },
+            {
+              "path": "references/react.md",
+              "sha256": "ee7dba8338b23fd1d9bd61d857ea1d8c4c079cb4400c6a523a0b87ffc29b4984"
+            },
+            {
+              "path": "SKILL.md",
+              "sha256": "6a878cb34a409ee6d7babbae34649b081757b66aeaaaebf6c628ad0ae5f78863"
+            }
+          ]
+        },
+        {
+          "sourcePath": "skills/hydrogen-shop-pay",
+          "target": "hydrogen-shop-pay",
+          "files": [
+            {
+              "path": "references/core.md",
+              "sha256": "e127aa26ff1df358558ffff8efa7df4071c0129388127050f36f7f069ecc2fa0"
+            },
+            {
+              "path": "references/react.md",
+              "sha256": "0b3dc3388485d54add94746dd894e6684e7573269fb6a78504c26b9a2acd0c44"
+            },
+            {
+              "path": "SKILL.md",
+              "sha256": "2f63d3ea42fcc61a805f06e1b81979d843ae6020126d9f3dabf03a6c94fbc4f3"
+            }
+          ]
+        },
+        {
+          "sourcePath": "skills/hydrogen-smoke-test",
+          "target": "hydrogen-smoke-test",
+          "files": [
+            {
+              "path": "SKILL.md",
+              "sha256": "88b5b71728a9fbd0cb389d309531b13f0815d95e0e18b2b5d00bebfbea4caac7"
+            }
+          ]
+        },
+        {
+          "sourcePath": "skills/hydrogen-storefront-client",
+          "target": "hydrogen-storefront-client",
+          "files": [
+            {
+              "path": "references/astro.md",
+              "sha256": "950689c373a3eef1cc82c7d71c50ac98e605114ed17dc521330ab1a5742c4506"
+            },
+            {
+              "path": "references/nextjs.md",
+              "sha256": "ec89f06fadd3678d5dfc6c58fb4f90306eb242cea2d9faf592966c52b766a917"
+            },
+            {
+              "path": "references/query-validation.md",
+              "sha256": "7e66c4957258b868f617865712504074c0fa43d109d7357ce0946ad91f040c5a"
+            },
+            {
+              "path": "references/react-router.md",
+              "sha256": "a218db58bf747942b350d1fafb21e7819b9d2e491b95798e15ae2237c1895f5c"
+            },
+            {
+              "path": "SKILL.md",
+              "sha256": "64649c8d7829e6faac0a043d9e1819ff3dbc7c4f91bbbe24bddb622c4e2378ce"
+            }
+          ]
+        },
+        {
+          "sourcePath": "skills/hydrogen-variant-form",
+          "target": "hydrogen-variant-form",
+          "files": [
+            {
+              "path": "references/nextjs.md",
+              "sha256": "d0b46593f1f5cf979e76bfd0ea1fa05c1fa43dcc0c6f78411b37729adcc7a730"
+            },
+            {
+              "path": "references/react.md",
+              "sha256": "639e9be715e234f2b12b8856b1c8a7e3bb2d4a739f7d5196bc21d2eb7dc929d2"
+            },
+            {
+              "path": "SKILL.md",
+              "sha256": "278d80058f6f22fc9132c0c3ed5875ad1c18b1f4c193cbc11bbe3152b5c9f0cb"
+            }
+          ]
+        }
+      ]
+    }
   ]
 }

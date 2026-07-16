@@ -1,0 +1,39 @@
+{
+  "package": "@shopify/hydrogen",
+  "version": "0.0.0-preview-8a708a8-20260708155454",
+  "license": "MIT",
+  "tarball": "https://registry.npmjs.org/@shopify/hydrogen/-/hydrogen-0.0.0-preview-8a708a8-20260708155454.tgz",
+  "shasum": "8f40a1bef510b6be13c507da2e7a43e6ae3e6e14",
+  "integrity": "sha512-JNd3ZRaMvSZLKDBsPqMa1a0zsCBuLtaoedkzyUOyvXq6eTqSAVhClxpig+I6O9EFrY1cRKh9S43AeTqDBJ9fqQ==",
+  "gitHead": "8a708a87f4d7640d47de3241f1f0ac8f93e65239",
+  "reviewedAt": "2026-07-16",
+  "reviewBy": "2026-08-15",
+  "expires": "2026-10-31",
+  "adr": "docs/adr/0002-hydrogen-preview-adoption.md",
+  "runtimeDependencies": {
+    "gql.tada": "^1.9.2"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0"
+  },
+  "lifecycleScripts": [],
+  "bin": {
+    "hydrogen": "./dist/cli/index.mjs"
+  },
+  "exports": [
+    ".",
+    "./customer-account",
+    "./customer-account-api-types",
+    "./customer-account.schema.json",
+    "./package.json",
+    "./react",
+    "./skills/*",
+    "./storefront-api-types",
+    "./storefront.schema.json"
+  ],
+  "notes": [
+    "The package contains build/test/codegen scripts but no install lifecycle script.",
+    "Agent skills are copied only from this installed package and verified by file checksum.",
+    "The optional response cache, GraphiQL, MCP, WebMCP and agent HTTP surfaces are not enabled by installation."
+  ]
+}
