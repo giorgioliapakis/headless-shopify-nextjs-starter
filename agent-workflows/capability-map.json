@@ -15,6 +15,7 @@
     { "id": "shopify.menus", "status": "core" },
     { "id": "content.pages-policies", "status": "core" },
     { "id": "content.blogs", "status": "core" },
+    { "id": "content.landing-pages", "status": "core" },
     { "id": "shopify.cart", "status": "core" },
     { "id": "checkout.hosted", "status": "core" },
     { "id": "shopify.redirects", "status": "core" },

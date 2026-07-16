@@ -23,6 +23,15 @@ allowlist in `lib/security/headers.ts` and rerunning the security/browser gates.
 - Keep an unmatched pattern in the downstream storefront as a one-off section. Record why it did not
   match; do not weaken a generic registry entry to force parity.
 - Promote a new foundation section only after the pattern repeats across independent stores.
+
+## Landing-page recipes
+
+Add approved performance/editorial pages to `shopConfig.recipes.landing` using a lowercase handle,
+metadata, indexing choice and the same validated section recipe used by the homepage. The foundation
+serves them at `/landing/[handle]`, includes indexable entries in the static sitemap shard and hard-404s
+unknown handles. Preserve a different existing merchant URL by creating a merchant-owned route that
+renders the same recipe; do not redirect an approved revenue URL merely to fit the generic prefix.
+
 - Store approved local media under the downstream project's public assets. Do not commit source capture
   files or unlicensed merchant assets to this starter.
 

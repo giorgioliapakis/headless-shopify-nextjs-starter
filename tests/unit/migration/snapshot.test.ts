@@ -31,6 +31,7 @@ describe("public snapshot", () => {
     ["/blogs/news", "blog"],
     ["/blogs/news/story", "article"],
     ["/pages/about", "page"],
+    ["/landing/campaign", "landing"],
     ["/policies/privacy-policy", "policy"],
     ["/search", "search"],
     ["/apps/example", "other"],

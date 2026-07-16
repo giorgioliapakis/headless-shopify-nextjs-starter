@@ -29,7 +29,10 @@ function xmlResponse(body: string): Response {
 
 async function renderStatic(): Promise<Response> {
   const policies = await getShopPolicies().catch(() => []);
-  const entries = ["/", ...policies.map(({ handle }) => `/policies/${handle}`)]
+  const landingPages = Object.entries(shopConfig.recipes.landing)
+    .filter(([, landing]) => landing.index)
+    .map(([handle]) => `/landing/${handle}`);
+  const entries = ["/", ...landingPages, ...policies.map(({ handle }) => `/policies/${handle}`)]
     .map((pathname) => `  <url><loc>${escapeXml(toAbsoluteUrl(pathname))}</loc></url>`)
     .join("\n");
   return xmlResponse(urlsetWrap(entries));

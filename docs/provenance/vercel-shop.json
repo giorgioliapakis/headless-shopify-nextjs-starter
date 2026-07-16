@@ -171,8 +171,8 @@
     {
       "path": "app/sitemap/[shard]/route.ts",
       "sourceSha256": "6d91305268942847e89556ff687fd43f6f89eab2cf3f11ab8b95d58afa20fc4c",
-      "currentSha256": "34f47586336dac38cdc6ff68aa01e22cc82f320da6bdd5f84a8b2f0048743964",
-      "modification": "Render bounded Shopify blog/article sitemap resources."
+      "currentSha256": "0899fd8c47246079b6c7c00fb6c915f8aaebd0d287a79a3c66de5736adbd6bec",
+      "modification": "Includes configured indexable landing-page recipes in the static sitemap shard."
     },
     {
       "path": "components.json",

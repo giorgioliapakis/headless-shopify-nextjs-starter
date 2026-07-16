@@ -147,6 +147,7 @@ export function classifyPath(path) {
   if (/^\/blogs\/[^/]+\/[^/]+\/?$/.test(path)) return "article";
   if (/^\/blogs\/[^/]+\/?$/.test(path)) return "blog";
   if (/^\/pages\/[^/]+\/?$/.test(path)) return "page";
+  if (/^\/landing\/[^/]+\/?$/.test(path)) return "landing";
   if (/^\/policies\/[^/]+\/?$/.test(path)) return "policy";
   if (/^\/search\/?$/.test(path)) return "search";
   return "other";

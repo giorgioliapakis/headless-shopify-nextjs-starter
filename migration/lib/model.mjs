@@ -26,6 +26,11 @@ const ROUTE_TARGETS = {
     strategy: "content-core",
     defaults: ["rich-text"],
   },
+  landing: {
+    target: "app/landing/[handle]/page.tsx",
+    strategy: "section-recipe",
+    defaults: [],
+  },
   policy: {
     target: "app/policies/[handle]/page.tsx",
     strategy: "content-core",

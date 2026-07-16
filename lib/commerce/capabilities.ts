@@ -12,6 +12,7 @@ export type CapabilityId =
   | "catalog.variants"
   | "checkout.hosted"
   | "content.blogs"
+  | "content.landing-pages"
   | "content.pages-policies"
   | "content.renderable-metaobjects"
   | "integrations.commerce-apps"
@@ -92,6 +93,7 @@ export function getCapabilityManifest(
       "app/policies/[handle]/page.tsx",
     ]),
     core("content.blogs", ["app/blogs/[handle]/page.tsx", "app/blogs/[handle]/[article]/page.tsx"]),
+    core("content.landing-pages", ["app/landing/[handle]/page.tsx"]),
     core("shopify.cart", ["app/cart/page.tsx", "components/cart/overlay.tsx"], "private"),
     core("checkout.hosted", ["components/cart/overlay-content.tsx"], "private"),
     core("shopify.redirects", ["proxy.ts"], "private"),
