@@ -4,7 +4,7 @@ import { classifyShopifyProxyRoute } from "@/lib/shopify/routing/policy";
 
 export async function proxy(request: NextRequest) {
   const route = classifyShopifyProxyRoute(request.nextUrl.pathname);
-  if (route === "blocked" || route === "checkout") {
+  if (route === "blocked" || route === "cart" || route === "checkout") {
     const { handleSafeShopifyProxyRoute } = await import("@/lib/shopify/routing/handler");
     const response = await handleSafeShopifyProxyRoute(request);
     if (response) return response;

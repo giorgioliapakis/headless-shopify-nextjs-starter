@@ -3,7 +3,7 @@ const STOREFRONT_API_PROXY = /^\/api\/(?:unstable|2\d{3}-\d{2})\/graphql\.json$/
 const AJAX_CART =
   /^(?:\/[a-z]{2}(?:-[a-z]{2})?)?\/cart(?:\.(?:js|json)|\/(?:add|update|change|clear)(?:\.(?:js|json))?)$/i;
 
-export type ShopifyProxyRoute = "blocked" | "checkout" | "next" | "redirect-candidate";
+export type ShopifyProxyRoute = "blocked" | "cart" | "checkout" | "next" | "redirect-candidate";
 
 const APPLICATION_ROUTE_PREFIXES = [
   "/api/draft",
@@ -45,6 +45,7 @@ export function classifyShopifyProxyRoute(pathname: string): ShopifyProxyRoute {
   }
 
   if (pathname === "/checkout" || CART_PERMALINK.test(pathname)) return "checkout";
+  if (pathname === "/api/cart") return "cart";
   return isKnownApplicationPath(pathname) ? "next" : "redirect-candidate";
 }
 
@@ -53,6 +54,34 @@ export function applyPrivateNoStoreHeaders(headers: Headers): void {
   headers.delete("cdn-cache-control");
   headers.delete("vercel-cdn-cache-control");
   headers.delete("surrogate-control");
+}
+
+export function isSameOriginMutation(request: Request): boolean {
+  const requestOrigin = new URL(request.url).origin;
+  const origin = request.headers.get("origin");
+  if (origin) return origin === requestOrigin;
+  const referer = request.headers.get("referer");
+  if (!referer) return false;
+  try {
+    return new URL(referer).origin === requestOrigin;
+  } catch {
+    return false;
+  }
+}
+
+export function hardenCartCookies(headers: Headers, production: boolean): void {
+  const cookies = headers.getSetCookie();
+  if (cookies.length === 0) return;
+  headers.delete("set-cookie");
+  for (const cookie of cookies) {
+    let value = cookie;
+    if (/^cart=/i.test(value)) {
+      if (!/;\s*HttpOnly/i.test(value)) value += "; HttpOnly";
+      if (production && !/;\s*Secure/i.test(value)) value += "; Secure";
+      if (!/;\s*Priority=/i.test(value)) value += "; Priority=High";
+    }
+    headers.append("set-cookie", value);
+  }
 }
 
 export const blockedShopifyProxyPaths = [

@@ -3,9 +3,11 @@ import { describe, expect, it, vi } from "vitest";
 import type { StorefrontEnvironment } from "@/lib/shopify/hydrogen/env";
 import { handleSafeShopifyProxyRoute } from "@/lib/shopify/routing/handler";
 import {
+  hardenCartCookies,
   blockedShopifyProxyPaths,
   classifyShopifyProxyRoute,
   isKnownApplicationPath,
+  isSameOriginMutation,
 } from "@/lib/shopify/routing/policy";
 import { resolveShopifyRedirect } from "@/lib/shopify/routing/redirects";
 import { shopifyRouteTemplates } from "@/lib/shopify/routing/templates";
@@ -60,6 +62,115 @@ describe("Hydrogen request lifecycle", () => {
     }
     expect(classifyShopifyProxyRoute("/legacy-campaign")).toBe("redirect-candidate");
     expect(classifyShopifyProxyRoute("/admin")).toBe("redirect-candidate");
+    expect(classifyShopifyProxyRoute("/api/cart")).toBe("cart");
+  });
+
+  it("keeps cart reads private and returns a settled empty envelope without a cookie", async () => {
+    const fetchMock = vi.fn();
+    const response = await handleSafeShopifyProxyRoute(
+      new Request("https://store.example/api/cart"),
+      { environment: privateEnvironment, fetch: fetchMock },
+    );
+    expect(response?.status).toBe(200);
+    await expect(response?.json()).resolves.toEqual({ cart: null });
+    expect(response?.headers.get("cache-control")).toContain("private");
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("rejects cross-origin, unsupported and oversized cart mutations before Shopify", async () => {
+    const cases = [
+      new Request("https://store.example/api/cart", {
+        method: "POST",
+        headers: { "content-type": "application/json", origin: "https://attacker.example" },
+        body: "{}",
+      }),
+      new Request("https://store.example/api/cart", {
+        method: "POST",
+        headers: { "content-type": "text/plain", origin: "https://store.example" },
+        body: "invalid",
+      }),
+      new Request("https://store.example/api/cart", {
+        method: "POST",
+        headers: {
+          "content-length": "65537",
+          "content-type": "application/json",
+          origin: "https://store.example",
+        },
+        body: "{}",
+      }),
+    ];
+    const fetchMock = vi.fn();
+    const responses = await Promise.all(
+      cases.map((request) =>
+        handleSafeShopifyProxyRoute(request, {
+          environment: privateEnvironment,
+          fetch: fetchMock,
+        }),
+      ),
+    );
+    expect(responses.map((response) => response?.status)).toEqual([403, 415, 413]);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("accepts same-origin cart mutations and hardens Hydrogen's cart cookie", async () => {
+    const money = { amount: "24.00", currencyCode: "USD" };
+    const fetchMock = vi.fn().mockResolvedValue(
+      Response.json({
+        data: {
+          cartCreate: {
+            cart: {
+              checkoutUrl: "https://neutral-fixture.myshopify.com/checkouts/fixture",
+              cost: {
+                checkoutChargeAmount: money,
+                subtotalAmount: money,
+                totalAmount: money,
+              },
+              discountCodes: [],
+              id: "gid://shopify/Cart/fixture-cart",
+              lines: { nodes: [] },
+              note: null,
+              totalQuantity: 1,
+              updatedAt: "2026-01-01T00:00:00Z",
+            },
+            userErrors: [],
+            warnings: [],
+          },
+        },
+      }),
+    );
+    const response = await handleSafeShopifyProxyRoute(
+      new Request("https://store.example/api/cart", {
+        method: "POST",
+        headers: { "content-type": "application/json", origin: "https://store.example" },
+        body: JSON.stringify({
+          lines: [{ merchandiseId: "gid://shopify/ProductVariant/1001", quantity: 1 }],
+        }),
+      }),
+      { environment: privateEnvironment, fetch: fetchMock },
+    );
+    expect(response?.status).toBe(200);
+    expect(response?.headers.get("set-cookie")).toMatch(
+      /^cart=fixture-cart; Path=\/; SameSite=Lax; Max-Age=1209600; HttpOnly; Priority=High$/,
+    );
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("uses browser-controlled same-origin evidence and preserves unrelated cookies", () => {
+    expect(
+      isSameOriginMutation(
+        new Request("https://store.example/api/cart", {
+          headers: { referer: "https://store.example/products/neutral-product" },
+        }),
+      ),
+    ).toBe(true);
+    const headers = new Headers();
+    headers.append("set-cookie", "cart=fixture; Path=/; SameSite=Lax; Max-Age=1");
+    headers.append("set-cookie", "preference=compact; Path=/");
+    hardenCartCookies(headers, true);
+    expect(headers.getSetCookie()).toEqual([
+      "cart=fixture; Path=/; SameSite=Lax; Max-Age=1; HttpOnly; Secure; Priority=High",
+      "preference=compact; Path=/",
+    ]);
   });
 
   it("handles hosted-checkout fallbacks privately without a network call", async () => {
