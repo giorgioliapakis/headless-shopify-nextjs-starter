@@ -30,6 +30,15 @@ const PHASE_STATUSES = new Set([
   "cancelled",
 ]);
 
+export class MigrationCommandError extends Error {
+  constructor(code, message, details = {}) {
+    super(message);
+    this.name = "MigrationCommandError";
+    this.code = code;
+    this.details = details;
+  }
+}
+
 export function parseArguments(argv) {
   const command = argv[0];
   if (!command || command.startsWith("-")) throw new Error(usage());
@@ -84,11 +93,13 @@ const handlers = {
     const themeSource = resolve(requiredString(options, "theme-source"));
     const checks = await runDoctorChecks(cwd, themeSource);
     if (checks.some((check) => check.status !== "pass")) {
-      throw new Error(
+      throw new MigrationCommandError(
+        "PREFLIGHT_FAILED",
         `Preflight failed: ${checks
           .filter((check) => check.status !== "pass")
           .map((check) => check.id)
           .join(", ")}`,
+        { checks },
       );
     }
     const inventory = await inspectThemeSource(themeSource);
@@ -402,6 +413,7 @@ async function runDoctorChecks(cwd, themeSource) {
         () => "pass",
         () => "fail",
       ),
+      remediation: `Restore ${path} from the selected foundation release`,
     })),
   );
   const pnpm = await execFileAsync("pnpm", ["--version"], {
@@ -418,8 +430,15 @@ async function runDoctorChecks(cwd, themeSource) {
       status: process.versions.node.startsWith("24.") ? "pass" : "fail",
       observed: process.versions.node,
       expected: "24.x",
+      remediation: "Install and select Node 24, then rerun the same command",
     },
-    { id: "pnpm", status: pnpm === "11.5.0" ? "pass" : "fail", observed: pnpm, expected: "11.5.0" },
+    {
+      id: "pnpm",
+      status: pnpm === "11.5.0" ? "pass" : "fail",
+      observed: pnpm,
+      expected: "11.5.0",
+      remediation: "Activate exact pnpm 11.5.0 through Corepack, then rerun the same command",
+    },
     {
       id: "theme-source",
       status: await access(themeSource).then(
@@ -427,6 +446,7 @@ async function runDoctorChecks(cwd, themeSource) {
         () => "fail",
       ),
       observed: basename(themeSource),
+      remediation: "Export the current published Shopify theme and pass its directory or .zip path",
     },
     ...files,
   ];
@@ -571,7 +591,28 @@ function usage() {
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((error) => {
-    process.stderr.write(`Migration command failed: ${safeError(error)}\n`);
+    const failure = formatFailure(error);
+    if (process.argv.slice(2).includes("--json")) {
+      process.stderr.write(`${JSON.stringify(failure, null, 2)}\n`);
+    } else {
+      process.stderr.write(
+        `Migration command failed [${failure.error.code}]: ${failure.error.message}\n`,
+      );
+      for (const check of failure.error.details?.checks ?? []) {
+        if (check.status !== "pass") process.stderr.write(`- ${check.id}: ${check.remediation}\n`);
+      }
+    }
     process.exitCode = 1;
   });
+}
+
+export function formatFailure(error) {
+  return {
+    ok: false,
+    error: {
+      code: error instanceof MigrationCommandError ? error.code : "COMMAND_FAILED",
+      message: safeError(error),
+      details: error instanceof MigrationCommandError ? error.details : undefined,
+    },
+  };
 }

@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 
 import { describe, expect, it } from "vitest";
 
-import { parseArguments } from "../../migration/cli.mjs";
+import { MigrationCommandError, formatFailure, parseArguments } from "../../migration/cli.mjs";
 
 describe("agent migration contract", () => {
   it("rejects secret-bearing CLI flags before dispatch", () => {
@@ -10,6 +10,30 @@ describe("agent migration contract", () => {
       /forbidden/,
     );
     expect(() => parseArguments(["snapshot", "--api-key=value"])).toThrow(/forbidden/);
+  });
+
+  it("turns a seeded setup failure into a bounded recovery report", () => {
+    const report = formatFailure(
+      new MigrationCommandError("PREFLIGHT_FAILED", "Preflight failed: pnpm", {
+        checks: [
+          {
+            id: "pnpm",
+            status: "fail",
+            expected: "11.5.0",
+            observed: "unavailable",
+            remediation: "Activate exact pnpm 11.5.0 through Corepack, then rerun the same command",
+          },
+        ],
+      }),
+    );
+    expect(report).toMatchObject({
+      ok: false,
+      error: {
+        code: "PREFLIGHT_FAILED",
+        details: { checks: [{ status: "fail", expected: "11.5.0" }] },
+      },
+    });
+    expect(JSON.stringify(report)).not.toMatch(/token|password|secret/i);
   });
 
   it("publishes every implemented command without granting launch authority", async () => {
