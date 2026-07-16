@@ -623,16 +623,20 @@
     {
       "path": "lib/cart/action.ts",
       "sourceSha256": "3d373ddbf5469c7a29b2ec2551e0ab863042c05d5885a0e2b0f9ebe20f60402c",
-      "currentSha256": "b72aae533155eb41bee5f164d44d2a34c54ad578dad0aa19ea432624c35ad091",
-      "modification": "Resolve buy-now Storefront domains through the canonical validated environment boundary."
+      "modification": "Remove the retired bespoke cart action stack after adopting Hydrogen cart server handlers and React bindings.",
+      "removed": true
     },
     {
       "path": "lib/cart/index.ts",
-      "sourceSha256": "0009722760e937ba6c96e24f264f7f048242f73b6c45500b2769d2a9943b6a5e"
+      "sourceSha256": "0009722760e937ba6c96e24f264f7f048242f73b6c45500b2769d2a9943b6a5e",
+      "removed": true,
+      "modification": "Remove legacy client-side cart arithmetic after Hydrogen became the sole cart state owner."
     },
     {
       "path": "lib/cart/server.ts",
-      "sourceSha256": "414436a44256231c10fb13d416af0ff3560f0e34ecb5fce1e18751e9db24ed8f"
+      "sourceSha256": "414436a44256231c10fb13d416af0ff3560f0e34ecb5fce1e18751e9db24ed8f",
+      "removed": true,
+      "modification": "Remove the duplicate shopify_cartId cookie implementation after adopting Hydrogen standard cart cookies."
     },
     {
       "path": "lib/collections/action.ts",
@@ -719,26 +723,26 @@
     {
       "path": "lib/shopify/errors.ts",
       "sourceSha256": "d6c8c98a41c38724324f447c48cbbb22e5a78fe1e472680540d72d5d46c2d222",
-      "currentSha256": "640c1e251e9dfd33960c7fc15a4a91ecc3e85d32950f1930fd80e6ac870ad989",
-      "modification": "Own the GraphQL error contract instead of importing Hydrogen types."
+      "currentSha256": "cc18fc50f47cdb184d2cb5f5cd4431fce2e7e85faa1a91a1fb847b9fa6c450ea",
+      "modification": "Keep only shared Storefront and user-error contracts after removing the duplicate cart mutation model."
     },
     {
       "path": "lib/shopify/fetch.ts",
       "sourceSha256": "9ea8c8fea450cbd64084a34041541f6c6d425027657e704ecec609a24008321f",
-      "currentSha256": "b885fcb59da9f1a22ebe107a6334f27fdae271c9504afd8d22f084a2425112bd",
-      "modification": "Validate all shared catalogue and cart documents with Hydrogen's bundled schema and migrate deprecated product lookup fields."
+      "currentSha256": "8336ffa49ce279e2810f23387f56bdf454e460b07c2c51b09770a66a33886da1",
+      "modification": "Retain catalogue reads while removing bespoke cart documents now owned by Hydrogen."
     },
     {
       "path": "lib/shopify/fragments.ts",
       "sourceSha256": "c83878f0dac9165482fd63a918f48b0faae59851a47feca24e2ae87ddc3e75a6",
-      "currentSha256": "8d88f591387fb9e56832c88ea02ff211501984e25596831718744f88860a97ae",
-      "modification": "Compose Storefront fragments through Hydrogen gql.tada, remove deprecated option values and retain one explicitly reviewed cart allocation field."
+      "currentSha256": "6ce2ce74c0ad67e8f69ea75cefee21fb7b215c6310879aecb1cae55cb85d92c7",
+      "modification": "Retain typed catalogue fragments while removing the unused legacy cart fragment."
     },
     {
       "path": "lib/shopify/operations/cart.ts",
       "sourceSha256": "5e6eb091193b8f3452fa0aa55fece637c23a62077a45d01428925ffbdb57253c",
-      "currentSha256": "2dc271c317f9e25879a4e797e1d6a72fbcdf28eaca41e52e69ae856505b6230b",
-      "modification": "Validate cart, delivery, discount and buyer-identity documents with Hydrogen's bundled Storefront schema."
+      "modification": "Remove duplicate cart operations after cart mutations moved to Hydrogen server handlers and market sync moved to a narrow adapter.",
+      "removed": true
     },
     {
       "path": "lib/shopify/operations/collections.ts",
@@ -790,7 +794,9 @@
     },
     {
       "path": "lib/shopify/transforms/cart.ts",
-      "sourceSha256": "c8a21dd04dfd780f0e2a3713135b7bca30e18526328333bc7dcfdde7a4b20ef9"
+      "sourceSha256": "c8a21dd04dfd780f0e2a3713135b7bca30e18526328333bc7dcfdde7a4b20ef9",
+      "removed": true,
+      "modification": "Remove the obsolete parallel cart model after Hydrogen became the canonical cart contract."
     },
     {
       "path": "lib/shopify/transforms/collection.ts",
@@ -831,8 +837,8 @@
     {
       "path": "lib/types.ts",
       "sourceSha256": "ce8c5d1200434827b94bf447824cc2e7f276e62280abdae60d13c9fd2034c6fe",
-      "currentSha256": "7d34cc57d97dfa06833852e77bd05131b5326d652005eb2e329f265ee49adac2",
-      "modification": "Add neutral Shopify blog and article domain contracts."
+      "currentSha256": "5b6f9c94c88dd44991372d3e644d3cd46c54c278c6dcbda3958856e98e79fa2d",
+      "modification": "Add blog contracts and remove the obsolete application-owned cart model in favor of Hydrogen types."
     },
     {
       "path": "lib/utils.ts",

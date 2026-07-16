@@ -343,6 +343,13 @@ export function neutralStorefrontFixtureData(
           neutralCart({ note: typeof variables.note === "string" ? variables.note : null }),
         ),
       };
+    case "CartBuyerIdentityUpdate":
+      return {
+        cartBuyerIdentityUpdate: {
+          cart: { id: String(variables.cartId ?? "gid://shopify/Cart/fixture-cart") },
+          userErrors: [],
+        },
+      };
     default:
       return null;
   }

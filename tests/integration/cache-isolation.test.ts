@@ -20,10 +20,10 @@ describe("commerce cache isolation", () => {
     expect(headers.get("vercel-cdn-cache-control")).toBeNull();
   });
 
-  it("keeps Hydrogen transport caching disabled and cart operations outside Cache Components", async () => {
+  it("keeps Hydrogen transport and cart mutations outside Cache Components", async () => {
     const [storefront, cart] = await Promise.all([
       readFile("lib/shopify/hydrogen/storefront.ts", "utf8"),
-      readFile("lib/shopify/operations/cart.ts", "utf8"),
+      readFile("lib/shopify/hydrogen/cart-handlers.ts", "utf8"),
     ]);
 
     expect(storefront).not.toMatch(/\bcache\s*:/);

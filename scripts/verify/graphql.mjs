@@ -4,9 +4,7 @@ import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 import process from "node:process";
 
-const expectedWarnings = [
-  "The field Cart.discountAllocations is deprecated. Use `cart.lines[].discountAllocations(lineLevelOnly: false)` and `cart.deliveryGroups[].discountAllocations` instead.",
-];
+const expectedWarnings = [];
 const executable = resolve(
   "node_modules/.bin",
   process.platform === "win32" ? "gql.tada.cmd" : "gql.tada",
@@ -38,5 +36,7 @@ if (
 }
 
 console.log(
-  `Validated Storefront documents with ${warningLines.length} reviewed deprecation warning.`,
+  warningLines.length === 0
+    ? "Validated Storefront documents with no warnings."
+    : `Validated Storefront documents with ${warningLines.length} reviewed warnings.`,
 );

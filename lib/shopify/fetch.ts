@@ -2,8 +2,6 @@ import { gql } from "@shopify/hydrogen";
 
 import { defaultLocale, getCountryCode, getLanguageCode } from "@/lib/i18n";
 import type {
-  Cart,
-  CartWarning,
   Collection,
   Filter,
   PageInfo,
@@ -12,15 +10,13 @@ import type {
   ProductDetails,
 } from "@/lib/types";
 
-import { assertStorefrontOk, type CartMutationPayload, unwrapCartMutation } from "./errors";
+import { assertStorefrontOk } from "./errors";
 import {
-  CART_FRAGMENT,
   COLLECTION_FIELDS_FRAGMENT,
   PRODUCT_CARD_FRAGMENT,
   PRODUCT_WITH_VARIANTS_FRAGMENT,
 } from "./fragments";
 import { storefront } from "./storefront";
-import { type ShopifyCart, transformShopifyCart } from "./transforms/cart";
 import { type ShopifyCollection, transformShopifyCollections } from "./transforms/collection";
 import { transformShopifyFilters } from "./transforms/filters";
 import {
@@ -189,82 +185,6 @@ const GET_COLLECTIONS_QUERY = gql(
   [COLLECTION_FIELDS_FRAGMENT],
 );
 
-const GET_CART_QUERY = gql(
-  `
-  query getCart($cartId: ID!) {
-    cart(id: $cartId) {
-      ...CartFields
-    }
-  }
-`,
-  [CART_FRAGMENT],
-);
-
-const CART_CREATE_MUTATION = gql(
-  `
-  mutation cartCreate($input: CartInput, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
-    cartCreate(input: $input) {
-      cart { ...CartFields }
-      userErrors { field message }
-      warnings { code message target }
-    }
-  }
-`,
-  [CART_FRAGMENT],
-);
-
-const CART_LINES_ADD_MUTATION = gql(
-  `
-  mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
-    cartLinesAdd(cartId: $cartId, lines: $lines) {
-      cart { ...CartFields }
-      userErrors { field message }
-      warnings { code message target }
-    }
-  }
-`,
-  [CART_FRAGMENT],
-);
-
-const CART_LINES_UPDATE_MUTATION = gql(
-  `
-  mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
-    cartLinesUpdate(cartId: $cartId, lines: $lines) {
-      cart { ...CartFields }
-      userErrors { field message }
-      warnings { code message target }
-    }
-  }
-`,
-  [CART_FRAGMENT],
-);
-
-const CART_LINES_REMOVE_MUTATION = gql(
-  `
-  mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
-    cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
-      cart { ...CartFields }
-      userErrors { field message }
-      warnings { code message target }
-    }
-  }
-`,
-  [CART_FRAGMENT],
-);
-
-const CART_NOTE_UPDATE_MUTATION = gql(
-  `
-  mutation cartNoteUpdate($cartId: ID!, $note: String!) {
-    cartNoteUpdate(cartId: $cartId, note: $note) {
-      cart { ...CartFields }
-      userErrors { field message }
-      warnings { code message target }
-    }
-  }
-`,
-  [CART_FRAGMENT],
-);
-
 export type SearchIndexProductsParams = {
   collection?: string;
   cursor?: string;
@@ -297,22 +217,6 @@ export type CollectionProductsResult = {
   priceRange?: PriceRange;
   products: ProductCard[];
 };
-
-export type CartMutationResult = { cart: Cart; warnings: CartWarning[] };
-
-export interface CartLineInput {
-  merchandiseId: string;
-  parent?: { lineId?: string; merchandiseId?: string };
-  quantity: number;
-}
-
-export function applyCartMutation(
-  payload: CartMutationPayload<ShopifyCart>,
-  operation: string,
-): CartMutationResult {
-  const { cart, warnings } = unwrapCartMutation(payload, operation);
-  return { cart: transformShopifyCart(cart), warnings };
-}
 
 // `products` drops variant/metafield filters, so /search must use the `search` field.
 export async function fetchSearchIndexProducts(
@@ -505,14 +409,6 @@ export async function fetchCollections({
   return transformShopifyCollections(response.data.collections.edges.map((edge) => edge.node));
 }
 
-export async function fetchCart(cartId: string): Promise<Cart | undefined> {
-  const response = await storefront.request<{ cart: ShopifyCart | null }>(GET_CART_QUERY, {
-    variables: { cartId },
-  });
-  assertStorefrontOk(response, "getCart");
-  return response.data.cart ? transformShopifyCart(response.data.cart) : undefined;
-}
-
 const NODE_HANDLES_QUERY = gql(`
   query nodeHandles($ids: [ID!]!) {
     nodes(ids: $ids) {
@@ -537,64 +433,4 @@ export async function fetchProductHandlesByIds(ids: string[]): Promise<Map<strin
     if (node?.id && node.handle) handles.set(node.id, node.handle);
   }
   return handles;
-}
-
-export async function createCartCore(locale: string = defaultLocale): Promise<CartMutationResult> {
-  const country = getCountryCode(locale);
-  const language = getLanguageCode(locale);
-
-  const response = await storefront.request<{ cartCreate: CartMutationPayload<ShopifyCart> }>(
-    CART_CREATE_MUTATION,
-    { variables: { input: { buyerIdentity: { countryCode: country } }, country, language } },
-  );
-  assertStorefrontOk(response, "cartCreate");
-  return applyCartMutation(response.data.cartCreate, "cartCreate");
-}
-
-export async function addToCartCore(
-  lines: CartLineInput[],
-  cartId: string,
-): Promise<CartMutationResult> {
-  const response = await storefront.request<{ cartLinesAdd: CartMutationPayload<ShopifyCart> }>(
-    CART_LINES_ADD_MUTATION,
-    { variables: { cartId, lines } },
-  );
-  assertStorefrontOk(response, "cartLinesAdd");
-  return applyCartMutation(response.data.cartLinesAdd, "cartLinesAdd");
-}
-
-export async function updateCartCore(
-  lines: { id: string; quantity: number }[],
-  cartId: string,
-): Promise<CartMutationResult> {
-  const response = await storefront.request<{ cartLinesUpdate: CartMutationPayload<ShopifyCart> }>(
-    CART_LINES_UPDATE_MUTATION,
-    { variables: { cartId, lines } },
-  );
-  assertStorefrontOk(response, "cartLinesUpdate");
-  return applyCartMutation(response.data.cartLinesUpdate, "cartLinesUpdate");
-}
-
-export async function removeFromCartCore(
-  lineIds: string[],
-  cartId: string,
-): Promise<CartMutationResult> {
-  const response = await storefront.request<{ cartLinesRemove: CartMutationPayload<ShopifyCart> }>(
-    CART_LINES_REMOVE_MUTATION,
-    { variables: { cartId, lineIds } },
-  );
-  assertStorefrontOk(response, "cartLinesRemove");
-  return applyCartMutation(response.data.cartLinesRemove, "cartLinesRemove");
-}
-
-export async function updateCartNoteCore(
-  note: string,
-  cartId: string,
-): Promise<CartMutationResult> {
-  const response = await storefront.request<{ cartNoteUpdate: CartMutationPayload<ShopifyCart> }>(
-    CART_NOTE_UPDATE_MUTATION,
-    { variables: { cartId, note } },
-  );
-  assertStorefrontOk(response, "cartNoteUpdate");
-  return applyCartMutation(response.data.cartNoteUpdate, "cartNoteUpdate");
 }

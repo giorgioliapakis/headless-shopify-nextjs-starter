@@ -3,11 +3,7 @@ import { resolve } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import {
-  CART_FRAGMENT,
-  PRODUCT_FRAGMENT,
-  PURCHASABLE_PRODUCT_VARIANT_FRAGMENT,
-} from "@/lib/shopify/fragments";
+import { PRODUCT_FRAGMENT, PURCHASABLE_PRODUCT_VARIANT_FRAGMENT } from "@/lib/shopify/fragments";
 
 function fragmentNames(document: string): string[] {
   return [...document.matchAll(/\bfragment\s+(\w+)\s+on\b/g)].map((match) => match[1]);
@@ -15,7 +11,6 @@ function fragmentNames(document: string): string[] {
 
 describe("Hydrogen Storefront document contract", () => {
   it.each([
-    ["cart", CART_FRAGMENT],
     ["product", PRODUCT_FRAGMENT],
     ["purchasable variant", PURCHASABLE_PRODUCT_VARIANT_FRAGMENT],
   ])("composes %s fragments without duplicate definitions", (_name, document) => {
@@ -28,7 +23,6 @@ describe("Hydrogen Storefront document contract", () => {
     const paths = [
       "lib/shopify/fetch.ts",
       "lib/shopify/fragments.ts",
-      "lib/shopify/operations/cart.ts",
       "lib/shopify/operations/collections.ts",
       "lib/shopify/operations/menu.ts",
       "lib/shopify/operations/pages.ts",

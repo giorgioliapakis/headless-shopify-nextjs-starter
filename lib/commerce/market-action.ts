@@ -3,8 +3,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { syncCartLocaleAction } from "@/lib/cart/action";
 import { isEnabledLocale, localeSwitchingEnabled, storefrontLocaleCookie } from "@/lib/i18n";
+import { syncHydrogenCartMarket } from "@/lib/shopify/hydrogen/cart-market";
 
 import { buildMarketReturnTo } from "./market";
 
@@ -18,6 +18,9 @@ export async function switchMarketAction(formData: FormData): Promise<void> {
   const returnTo = formData.get("returnTo");
   const safeReturnTo = buildMarketReturnTo(typeof returnTo === "string" ? returnTo : "/");
   const cookieStore = await cookies();
+  const cartToken = cookieStore.get("cart")?.value;
+  if (cartToken) await syncHydrogenCartMarket(cartToken, locale);
+
   cookieStore.set(storefrontLocaleCookie, locale, {
     httpOnly: true,
     maxAge: 60 * 60 * 24 * 365,
@@ -26,6 +29,5 @@ export async function switchMarketAction(formData: FormData): Promise<void> {
     secure: process.env.NODE_ENV === "production",
   });
 
-  await syncCartLocaleAction(locale);
   redirect(safeReturnTo);
 }
