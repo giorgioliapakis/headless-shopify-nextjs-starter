@@ -29,13 +29,13 @@ not production authority.
 2. Run credential-free preflight and start a new isolated run when the source changes:
 
    ```bash
-   pnpm migrate doctor --store-url https://shop.example --theme-source /absolute/path/to/theme --new-run
+   pnpm migrate doctor --store-url https://shop.example --theme-source /absolute/path/to/theme --theme-rights-confirmed --new-run
    ```
 
    `pnpm migrate preflight` is an exact alias for hosts that use that term. For example:
 
    ```bash
-   pnpm migrate preflight --store-url https://shop.example --theme-source /absolute/path/to/theme
+   pnpm migrate preflight --store-url https://shop.example --theme-source /absolute/path/to/theme --theme-rights-confirmed
    ```
 
 3. Inspect the target platform's versioned capability truth:

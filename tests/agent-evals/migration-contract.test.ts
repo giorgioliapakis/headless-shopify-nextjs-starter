@@ -36,6 +36,11 @@ describe("agent migration contract", () => {
     expect(JSON.stringify(report)).not.toMatch(/token|password|secret/i);
   });
 
+  it("requires an explicit downstream-only theme rights assertion", () => {
+    const source = readFile("migration/cli.mjs", "utf8");
+    return expect(source).resolves.toContain('"THEME_RIGHTS_REQUIRED"');
+  });
+
   it("publishes every implemented command without granting launch authority", async () => {
     const workflow = await readFile("agent-workflows/canonical/migrate-storefront.md", "utf8");
     for (const command of [

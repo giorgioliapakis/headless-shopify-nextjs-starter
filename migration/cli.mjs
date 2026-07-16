@@ -86,7 +86,23 @@ async function dispatch(parsed, cwd) {
 const handlers = {
   async doctor(options, positionals, cwd) {
     rejectPositionals(positionals);
-    rejectUnknown(options, ["json", "store-url", "theme-source", "new-run"]);
+    rejectUnknown(options, [
+      "json",
+      "store-url",
+      "theme-source",
+      "theme-rights-confirmed",
+      "new-run",
+    ]);
+    if (options["theme-rights-confirmed"] !== true) {
+      throw new MigrationCommandError(
+        "THEME_RIGHTS_REQUIRED",
+        "Confirm that the merchant may use the supplied theme source for this migration.",
+        {
+          remediation:
+            "Verify theme, font, media and app-license rights, then rerun with --theme-rights-confirmed",
+        },
+      );
+    }
     const validatedStoreUrl = validatePublicStoreUrl(requiredString(options, "store-url"));
     validatedStoreUrl.pathname = "/";
     validatedStoreUrl.search = "";
@@ -123,6 +139,12 @@ const handlers = {
       schemaVersion: 1,
       checkedAt: new Date().toISOString(),
       checks,
+      themeRights: {
+        asserted: true,
+        authority: "merchant-assertion",
+        scope: "downstream-migration-only",
+        foundationRedistribution: false,
+      },
     });
     await writeJsonAtomic(inventoryPath, inventory);
     let state = await setPhase(run.runDirectory, run.state, "preflight", "completed");
@@ -603,7 +625,7 @@ function formatResult(command, result) {
 }
 
 function usage() {
-  return `Usage: pnpm migrate <command> [options]\n\nCommands:\n  doctor|preflight --store-url <https-url> --theme-source <path> [--new-run]\n  capability\n  snapshot [--max-pages 100]\n  status\n  decision --id <id> --status <pending|accepted|rejected> --summary <text>\n  verify [--production]\n  resume\n\nAdd --json for machine-readable output. Secret-bearing flags are forbidden.`;
+  return `Usage: pnpm migrate <command> [options]\n\nCommands:\n  doctor|preflight --store-url <https-url> --theme-source <path> --theme-rights-confirmed [--new-run]\n  capability\n  snapshot [--max-pages 100]\n  status\n  decision --id <id> --status <pending|accepted|rejected> --summary <text>\n  verify [--production]\n  resume\n\nAdd --json for machine-readable output. Secret-bearing flags are forbidden.`;
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
@@ -617,6 +639,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       );
       for (const check of failure.error.details?.checks ?? []) {
         if (check.status !== "pass") process.stderr.write(`- ${check.id}: ${check.remediation}\n`);
+      }
+      if (failure.error.details?.remediation) {
+        process.stderr.write(`- remediation: ${failure.error.details.remediation}\n`);
       }
     }
     process.exitCode = 1;

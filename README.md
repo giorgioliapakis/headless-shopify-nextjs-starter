@@ -47,6 +47,7 @@ credential is required for this first pass.
 pnpm migrate doctor \
   --store-url https://shop.example \
   --theme-source /absolute/path/to/published-theme \
+  --theme-rights-confirmed \
   --new-run
 pnpm migrate capability
 pnpm migrate snapshot --max-pages 100
