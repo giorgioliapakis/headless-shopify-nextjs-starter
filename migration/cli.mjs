@@ -19,6 +19,7 @@ import {
   recordArtifact,
   sha256File,
   updateState,
+  verifyLedger,
   withWorkspaceLock,
   writeJsonAtomic,
   writeTextAtomic,
@@ -474,13 +475,15 @@ const handlers = {
   async status(options, positionals, cwd) {
     rejectPositionals(positionals);
     rejectUnknown(options, ["json"]);
-    const { state } = await currentRun(cwd);
+    const { runDirectory, state } = await currentRun(cwd);
+    const ledger = await readLedgerSummary(runDirectory);
     return {
       runId: state.runId,
       status: state.status,
       storeUrl: state.storeUrl,
       phases: state.phases,
       artifactCount: state.artifacts.length,
+      ledger,
       nextActions: state.nextActions,
       launchAuthority: "human-only",
     };
@@ -800,6 +803,7 @@ const handlers = {
       sourceDrift: sourceDrift
         ? { status: sourceDrift.status, affectedPaths: sourceDrift.affectedPaths }
         : { status: "not-evaluated", affectedPaths: [] },
+      ledger: await readLedgerSummary(runDirectory),
       phases: Object.fromEntries(
         Object.entries(state.phases).map(([id, value]) => [id, value.status]),
       ),
@@ -1112,6 +1116,17 @@ async function readThemeRightsDecisions(directory) {
       .sort()
       .map(async (name) => JSON.parse(await readFile(join(directory, name), "utf8"))),
   );
+}
+
+async function readLedgerSummary(runDirectory) {
+  const entries = verifyLedger(await readFile(join(runDirectory, "ledger.jsonl"), "utf8"));
+  return {
+    status: "current",
+    entries: entries.length,
+    lastSequence: entries.at(-1)?.sequence ?? 0,
+    lastHash: entries.at(-1)?.entryHash ?? null,
+    authority: "tamper-evident-review-state-only",
+  };
 }
 function optionalInteger(options, key, fallback) {
   const value = options[key] ?? fallback;

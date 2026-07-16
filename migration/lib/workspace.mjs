@@ -3,6 +3,7 @@ import { mkdir, open, readFile, rename, rm, stat, writeFile } from "node:fs/prom
 import { dirname, join, resolve } from "node:path";
 
 export const WORKSPACE_SCHEMA_VERSION = 1;
+const MAX_LEDGER_BYTES = 10 * 1024 * 1024;
 
 export function migrationRoot(cwd = process.cwd()) {
   return resolve(cwd, ".migration");
@@ -17,6 +18,7 @@ export async function createRun({ cwd = process.cwd(), storeUrl, themeSource }) 
   const now = new Date().toISOString();
   const state = {
     schemaVersion: WORKSPACE_SCHEMA_VERSION,
+    revision: 0,
     runId,
     createdAt: now,
     updatedAt: now,
@@ -53,12 +55,27 @@ export async function currentRun(cwd = process.cwd()) {
   if (state.schemaVersion !== WORKSPACE_SCHEMA_VERSION || state.runId !== runId) {
     throw new Error("Unsupported or inconsistent migration state");
   }
+  if (!Number.isInteger(state.revision)) state.revision = 0;
   return { runDirectory, state };
 }
 
 export async function updateState(runDirectory, state, patch = {}) {
-  const next = { ...state, ...patch, updatedAt: new Date().toISOString() };
-  await writeJsonAtomic(join(runDirectory, "state.json"), next);
+  const path = join(runDirectory, "state.json");
+  const persisted = JSON.parse(await readFile(path, "utf8"));
+  const expectedRevision = Number.isInteger(state.revision) ? state.revision : 0;
+  const observedRevision = Number.isInteger(persisted.revision) ? persisted.revision : 0;
+  if (persisted.runId !== state.runId || observedRevision !== expectedRevision) {
+    throw new Error(
+      `Migration state conflict: expected revision ${expectedRevision}, observed ${observedRevision}. Regenerate resume context before retrying.`,
+    );
+  }
+  const next = {
+    ...state,
+    ...patch,
+    revision: observedRevision + 1,
+    updatedAt: new Date().toISOString(),
+  };
+  await writeJsonAtomic(path, next);
   return next;
 }
 
@@ -81,13 +98,61 @@ export async function recordArtifact(runDirectory, state, { id, path, kind }) {
 
 export async function appendLedger(runDirectory, entry) {
   const ledgerPath = join(runDirectory, "ledger.jsonl");
+  const existing = await readFile(ledgerPath, "utf8").catch((error) => {
+    if (error?.code === "ENOENT") return "";
+    throw error;
+  });
+  if (Buffer.byteLength(existing) > MAX_LEDGER_BYTES) {
+    throw new Error(`Migration ledger exceeds the ${MAX_LEDGER_BYTES} byte limit`);
+  }
+  const verified = verifyLedger(existing);
+  const payload = redact({
+    sequence: verified.length + 1,
+    previousHash: verified.at(-1)?.entryHash ?? null,
+    at: new Date().toISOString(),
+    ...entry,
+  });
+  const next = {
+    ...payload,
+    entryHash: createHash("sha256").update(JSON.stringify(payload)).digest("hex"),
+  };
+  const serialized = `${JSON.stringify(next)}\n`;
+  if (Buffer.byteLength(existing) + Buffer.byteLength(serialized) > MAX_LEDGER_BYTES) {
+    throw new Error(`Migration ledger exceeds the ${MAX_LEDGER_BYTES} byte limit`);
+  }
   const handle = await open(ledgerPath, "a", 0o600);
   try {
-    await handle.write(`${JSON.stringify(redact({ at: new Date().toISOString(), ...entry }))}\n`);
+    await handle.write(serialized);
     await handle.sync();
   } finally {
     await handle.close();
   }
+}
+
+export function verifyLedger(input) {
+  const lines = input.split("\n").filter(Boolean);
+  const entries = [];
+  for (const [index, line] of lines.entries()) {
+    if (Buffer.byteLength(line) > 64 * 1024) throw new Error("Migration ledger entry is too large");
+    let entry;
+    try {
+      entry = JSON.parse(line);
+    } catch (error) {
+      throw new Error(`Migration ledger entry ${index + 1} is malformed`, { cause: error });
+    }
+    const { entryHash, ...payload } = entry;
+    const expectedHash = createHash("sha256").update(JSON.stringify(payload)).digest("hex");
+    const expectedPreviousHash = entries.at(-1)?.entryHash ?? null;
+    if (
+      entry.sequence !== index + 1 ||
+      entry.previousHash !== expectedPreviousHash ||
+      entryHash !== expectedHash
+    ) {
+      throw new Error(`Migration ledger integrity failed at entry ${index + 1}`);
+    }
+    entries.push(entry);
+  }
+  return entries;
 }
 
 export async function withWorkspaceLock(cwd, command, callback) {

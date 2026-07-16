@@ -73,6 +73,12 @@ The storefront-runtime track is defined in
 
 - [ ] Generalize only exercised state, checkpoint, context, lock/conflict, invalidation, ledger, approval,
       and capability-map boundaries.
+  - [x] Add atomic state revisions, stale-writer rejection, workspace locking and a bounded hash-chained
+        redacted review-state ledger.
+  - [x] Bind source recapture to selective reconstruction/verification/review invalidation and trusted
+        resume artifact checks.
+  - [ ] Bind foundation/skill/host changes to selective checkpoint invalidation.
+  - [ ] Verify externally signed privileged approvals; repository decision/ledger files remain non-authoritative.
 - [ ] Define mocked PR and authenticated scheduled/release host runners plus an expiring
       host/model/skill qualification matrix.
 - [x] Implement typed Shopify products, variants, collections, menus, pages, policies, search, cart,

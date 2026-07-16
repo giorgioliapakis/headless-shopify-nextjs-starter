@@ -134,6 +134,11 @@ not production authority.
     `pnpm migrate resume --json`. Raw evidence is never included. Missing, modified or path-escaping
     artifacts degrade the context and become explicit next actions.
 
+    State updates carry monotonic revisions and reject stale writers even if an old agent context still
+    exists. The bounded redacted ledger is hash-chained so accidental/history edits are detected before
+    another event is appended. This is tamper-evident review state inside an agent-writable workspace,
+    not non-forgeable human authorization.
+
 ## Completion protocol
 
 Report each phase as pending, in progress, partial, completed, failed, blocked or cancelled. A migration

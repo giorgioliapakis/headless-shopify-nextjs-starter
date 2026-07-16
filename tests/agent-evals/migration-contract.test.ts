@@ -71,6 +71,7 @@ describe("agent migration contract", () => {
   it("keeps migration schemas versioned", async () => {
     for (const file of [
       "run-state.schema.json",
+      "ledger-entry.schema.json",
       "public-snapshot.schema.json",
       "decision.schema.json",
       "decision-validity.schema.json",

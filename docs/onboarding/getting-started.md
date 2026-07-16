@@ -89,6 +89,11 @@ The command rejects bulk approval, binds each outcome to the exact theme source/
 foundation redistribution and leaves reconstruction review open until all items are resolved. These are
 local review records, not signed launch approvals.
 
+Migration state uses monotonic revisions and a single-writer lock; an agent resuming from stale context
+must run `pnpm migrate resume --json` instead of overwriting newer work. The redacted ledger is bounded
+and hash-chained to expose edits, but because it lives in the agent-writable run it is evidence—not
+cryptographic human authorization.
+
 ## 3. Generate the credential-free migration model
 
 ```bash

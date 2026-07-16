@@ -7,6 +7,7 @@
   "required": [
     "schemaVersion",
     "runId",
+    "revision",
     "createdAt",
     "updatedAt",
     "storeUrl",
@@ -19,6 +20,7 @@
   "properties": {
     "schemaVersion": { "const": 1 },
     "runId": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,80}$" },
+    "revision": { "type": "integer", "minimum": 0 },
     "createdAt": { "type": "string", "format": "date-time" },
     "updatedAt": { "type": "string", "format": "date-time" },
     "storeUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
