@@ -13,6 +13,8 @@ needs, accessibility contract, client-JavaScript cost and source owner. The neut
 Header and footer occupy the global layout slot. The other entries can appear in a page recipe. Disabled
 sections render nothing. Every shipped recipe section is a Server Component; native HTML provides FAQ
 interaction, and the newsletter form remains inert until an approved provider endpoint is configured.
+Enabling an external newsletter endpoint also requires adding that exact origin to the CSP `form-action`
+allowlist in `lib/security/headers.ts` and rerunning the security/browser gates.
 
 ## Reconstruction rules
 

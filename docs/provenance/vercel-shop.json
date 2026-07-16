@@ -180,7 +180,9 @@
     },
     {
       "path": "components/action-bar/predictive-search-results.tsx",
-      "sourceSha256": "9b3f944d038f8234c1b521aa98245b1e94f225f114bbc59aa80283ed147922e0"
+      "sourceSha256": "9b3f944d038f8234c1b521aa98245b1e94f225f114bbc59aa80283ed147922e0",
+      "currentSha256": "538c0a982f1c9aa7b7d4e1ca12d49aa2fe50159dea820f730f561c4397210f45",
+      "modification": "Reconstruct Shopify predictive-search emphasis from an explicit client-safe allowlist."
     },
     {
       "path": "components/analytics.tsx",
@@ -314,7 +316,9 @@
     },
     {
       "path": "components/content/rich-text-page.tsx",
-      "sourceSha256": "769c8015df57314074c1aa74b640a8e5984d351d9aae266e0596b759c76a34cf"
+      "sourceSha256": "769c8015df57314074c1aa74b640a8e5984d351d9aae266e0596b759c76a34cf",
+      "currentSha256": "8dd3d1e29955b44405fef5539de0cb8171c281b8f6494d2d3891d189feed3b7d",
+      "modification": "Sanitize Shopify page and policy HTML through the local editorial allowlist before rendering."
     },
     {
       "path": "components/footer/social-links.tsx",
@@ -358,7 +362,9 @@
     },
     {
       "path": "components/product-detail/about-item.tsx",
-      "sourceSha256": "9dab114b23b3a2615ef7038596aa7909671f0f241e1f261c8997686a60ab4396"
+      "sourceSha256": "9dab114b23b3a2615ef7038596aa7909671f0f241e1f261c8997686a60ab4396",
+      "currentSha256": "159682dda5e5eec21efbb596437aa4d90f67aca2084efec2f2d2361e4e61bc17",
+      "modification": "Sanitize Shopify product HTML through the local editorial allowlist before rendering."
     },
     {
       "path": "components/product-detail/bundle-components.tsx",
@@ -861,14 +867,14 @@
     {
       "path": "next.config.ts",
       "sourceSha256": "46e1f4b08ae4f3d951af147c2f5eb7d10d2642d4b7e47e5c2c08f9a2413d4f5f",
-      "currentSha256": "9e3730f8a978f69d9b7f3abce62f8e9221af2c90c37982fba5a737a85f4fa632",
-      "modification": "Accept canonical Hydrogen Storefront environment names while preserving bounded migration aliases."
+      "currentSha256": "a04c87753c9101eb799e824d4d1e5f47baefdce8c72ff71521c71c954aa5625f",
+      "modification": "Apply storefront security headers alongside the existing Next image, cache and rewrite configuration."
     },
     {
       "path": "package.json",
       "sourceSha256": "ae662f2818fe83f3a91d3eabe6bedee2709d5703b11d7e2bdc26e4bd151fd85e",
-      "currentSha256": "51acaabfc0cef3164534a6e5e3d4db1a101447ae40c631f9705dd6d0e04ecdd9",
-      "modification": "Remove legacy GraphQL codegen and enforce credential-free Hydrogen gql.tada validation."
+      "currentSha256": "2fedf3fcb775e810933391bf05831244977ab4f635fbc6d8f08e91003c588bcd",
+      "modification": "Add executable GraphQL, bundle and secretless production verification gates."
     },
     {
       "path": "postcss.config.mjs",

@@ -29,15 +29,18 @@ browser extensions.
 | Lighthouse accessibility            |                                                100 |
 | Lighthouse best practices           |                                                100 |
 | Lighthouse SEO (indexable routes)   |                                                100 |
+| Total emitted client JavaScript     |                              <= 450,000 gzip bytes |
+| Largest emitted client chunk        |                               <= 90,000 gzip bytes |
+| Total emitted CSS                   |                               <= 30,000 gzip bytes |
 | Route-level JavaScript regression   | <= +5 KiB compressed without an approved exception |
 | Layout shift in scripted route flow |                                            <= 0.10 |
 | Accessibility violations            |                              0 serious or critical |
 
-The absolute per-route JavaScript, image-byte, request-count and server-timing ceilings are intentionally
-marked **calibration required** until the deterministic browser fixture records the first reproducible
-baseline. Agents must not invent permissive numbers. The baseline artifact will be reviewed, committed as
-versioned JSON and tightened where practical; a missing required route or missing measurement fails the
-gate rather than silently skipping it.
+Absolute emitted asset and GraphQL document ceilings are enforced by `pnpm budget:bundle` and
+`pnpm budget:query`; values live in `config/performance-budgets.json`. Per-route image bytes, request
+count, Lighthouse and Server-Timing baselines remain **calibration required** until the deterministic
+interactive browser pass is explicitly authorized and recorded. A missing required route or measurement
+fails rather than silently skipping it.
 
 ## Architectural budgets
 
@@ -74,7 +77,6 @@ data, missing content/status behavior or a field Core Web Vital failure. Expired
 
 ## Current state
 
-The field targets and regression rule are active policy. The deterministic browser fixture, absolute
-resource ceilings and CI enforcement are not implemented yet; they are Unit 7 deliverables in the active
-Hydrogen plan. Until then, the repository must describe this as a budget contract in progress rather than
-claiming verified 95/100 production scores.
+The field targets, GraphQL ceilings, emitted JS/CSS limits, secretless production build and CI enforcement
+are active. Lighthouse, axe, visual and per-route network baselines remain pending the required interactive
+browser run; the repository does not claim those scores until its versioned artifacts exist.

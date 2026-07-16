@@ -15,6 +15,8 @@ const requiredRoutes = [
   "app/blogs/[handle]/[article]/page.tsx",
   "app/policies/[handle]/page.tsx",
   "app/cart/page.tsx",
+  "app/api/health/route.ts",
+  "app/api/readiness/route.ts",
   "app/not-found.tsx",
   "app/robots.ts",
   "app/sitemap.xml/route.ts",

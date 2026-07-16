@@ -6,6 +6,8 @@ import {
   PHASE_PRODUCTION_SERVER,
 } from "next/constants";
 
+import { storefrontSecurityHeaders } from "./lib/security/headers";
+
 function assertRequiredEnv() {
   const missingShopify: string[] = [];
   if (!process.env.PUBLIC_STORE_DOMAIN && !process.env.SHOPIFY_STORE_DOMAIN) {
@@ -38,6 +40,14 @@ const nextConfig: NextConfig = {
   },
   reactCompiler: true,
   turbopack: { root: process.cwd() },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: storefrontSecurityHeaders(process.env.NODE_ENV === "production"),
+      },
+    ];
+  },
   async rewrites() {
     return {
       beforeFiles: [

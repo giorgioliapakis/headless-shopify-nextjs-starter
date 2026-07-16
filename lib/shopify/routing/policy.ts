@@ -13,6 +13,8 @@ export type ShopifyProxyRoute =
 
 const APPLICATION_ROUTE_PREFIXES = [
   "/api/draft",
+  "/api/health",
+  "/api/readiness",
   "/api/webhooks/shopify",
   "/blogs",
   "/cart",

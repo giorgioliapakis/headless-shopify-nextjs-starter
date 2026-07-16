@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Price } from "@/components/product/price";
+import { sanitizeShopifyHighlightHtml } from "@/lib/security/highlight";
 import type {
   PredictiveSearchCollection,
   PredictiveSearchProduct,
@@ -162,8 +163,8 @@ function SuggestionItem({
       <Search className="size-3.5 shrink-0 text-muted-foreground" />
       <span
         className="truncate [&_b]:font-semibold"
-        // oxlint-disable-next-line react/no-danger -- styledText from Shopify API contains safe markup (<b> tags)
-        dangerouslySetInnerHTML={{ __html: suggestion.styledText }}
+        // oxlint-disable-next-line react/no-danger -- only reconstructed emphasis tags survive.
+        dangerouslySetInnerHTML={{ __html: sanitizeShopifyHighlightHtml(suggestion.styledText) }}
       />
     </button>
   );

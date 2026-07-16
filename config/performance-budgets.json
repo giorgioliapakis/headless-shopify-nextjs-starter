@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "assets": {
+    "baseline": "tests/performance/neutral-assets-baseline.json",
+    "regressionToleranceBytes": 5120,
+    "totalClientJavaScriptGzipBytes": 450000,
+    "largestClientChunkGzipBytes": 90000,
+    "totalCssGzipBytes": 30000
+  },
+  "graphql": {
+    "maximumDocumentBytes": 24000,
+    "maximumLiteralPageSize": 250,
+    "maximumOperations": 60
+  },
+  "routes": {
+    "required": [
+      "/",
+      "/collections/neutral-collection",
+      "/products/neutral-product",
+      "/search",
+      "/cart"
+    ],
+    "lighthouse": {
+      "accessibility": 1,
+      "bestPractices": 1,
+      "performance": 0.95,
+      "seo": 1
+    }
+  }
+}

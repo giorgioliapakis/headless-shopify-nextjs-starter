@@ -1,6 +1,7 @@
 import "server-only";
 import { handleShopifyRoutes } from "@shopify/hydrogen";
 
+import { appendServerTiming } from "@/lib/observability/server-timing";
 import { hydrogenCartHandlers } from "@/lib/shopify/hydrogen/cart-handlers";
 import { createRequestStorefrontClient } from "@/lib/shopify/hydrogen/storefront";
 import { shopConfig } from "@/shop.config";
@@ -22,6 +23,7 @@ export async function handleSafeShopifyProxyRoute(
   request: Request,
   options?: SafeShopifyRouteOptions,
 ): Promise<Response | null> {
+  const startedAt = performance.now();
   const route = classifyShopifyProxyRoute(new URL(request.url).pathname);
   if (route === "next") return null;
   if (route === "redirect-candidate") return null;
@@ -87,5 +89,11 @@ export async function handleSafeShopifyProxyRoute(
   const mutableResponse = new Response(response.body, response);
   applyPrivateNoStoreHeaders(mutableResponse.headers);
   hardenCartCookies(mutableResponse.headers, process.env.NODE_ENV === "production");
+  appendServerTiming(
+    mutableResponse.headers,
+    "shopify_route",
+    performance.now() - startedAt,
+    route,
+  );
   return mutableResponse;
 }

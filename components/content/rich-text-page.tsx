@@ -1,6 +1,7 @@
 import { Container } from "@/components/ui/container";
 import { Page } from "@/components/ui/page";
 import { Prose } from "@/components/ui/prose";
+import { sanitizeShopifyHtml } from "@/lib/security/html";
 
 interface RichTextPageProps {
   body: string;
@@ -14,8 +15,8 @@ export function RichTextPage({ body, title }: RichTextPageProps) {
         <Prose>
           <h1>{title}</h1>
           <div
-            // oxlint-disable-next-line react/no-danger -- Shopify sanitizes rich text stored in Pages and policies.
-            dangerouslySetInnerHTML={{ __html: body }}
+            // oxlint-disable-next-line react/no-danger -- reconstructed through the local rich-text allowlist.
+            dangerouslySetInnerHTML={{ __html: sanitizeShopifyHtml(body) }}
           />
         </Prose>
       </Container>

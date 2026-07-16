@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Page } from "@/components/ui/page";
 import { Prose } from "@/components/ui/prose";
+import { sanitizeShopifyHtml } from "@/lib/security/html";
 import type { Article } from "@/lib/types";
 
 export function ArticlePage({ article, locale }: { article: Article; locale: string }) {
@@ -42,8 +43,8 @@ export function ArticlePage({ article, locale }: { article: Article; locale: str
           ) : null}
           <Prose>
             <div
-              // oxlint-disable-next-line react/no-danger -- Shopify sanitizes published article HTML.
-              dangerouslySetInnerHTML={{ __html: article.contentHtml }}
+              // oxlint-disable-next-line react/no-danger -- reconstructed through the local rich-text allowlist.
+              dangerouslySetInnerHTML={{ __html: sanitizeShopifyHtml(article.contentHtml) }}
             />
           </Prose>
         </article>
