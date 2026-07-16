@@ -75,6 +75,7 @@ describe("reconstruction model", () => {
       unknownSections: 1,
       appBlockCount: 1,
       brandObservationSources: 1,
+      passwordGatedPages: 0,
     });
     expect(model.routes[0]).toMatchObject({
       target: "app/page.tsx",

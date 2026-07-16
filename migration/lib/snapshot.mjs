@@ -111,13 +111,24 @@ async function capturePage(url, { approvedOrigin, get, runDirectory }) {
     if (response.status >= 200 && response.status < 300 && /text\/html/i.test(contentType)) {
       const evidencePath = join("evidence", "public", "pages", `${bodySha256}.html`);
       await writeTextAtomic(join(runDirectory, evidencePath), response.body);
-      Object.assign(page, extractHtmlMetadata(response.body), { evidencePath });
+      Object.assign(page, extractHtmlMetadata(response.body), {
+        evidencePath,
+        accessState: detectAccessState(response.body),
+      });
       page.links = extractSameOriginLinks(response.body, page.url, approvedOrigin);
     }
     return page;
   } catch (error) {
     return { url, path, type: classifyPath(path), status: 0, error: safeError(error) };
   }
+}
+
+export function detectAccessState(html) {
+  return /(?:template-password|shopify-section-main-password|<form\b[^>]*action=["'][^"']*\/password)/i.test(
+    html,
+  )
+    ? "password-gated"
+    : "public";
 }
 
 export function extractSameOriginLinks(html, baseUrl, approvedOrigin) {
@@ -204,9 +215,11 @@ function extractHtmlMetadata(html) {
 function summarizePages(pages, discoveredCount, selectedCount) {
   const byType = {};
   let successfulCount = 0;
+  let passwordGateCount = 0;
   for (const page of pages) {
     byType[page.type] = (byType[page.type] ?? 0) + 1;
     if (page.status >= 200 && page.status < 400) successfulCount += 1;
+    if (page.accessState === "password-gated") passwordGateCount += 1;
   }
   return {
     discoveredCount,
@@ -214,6 +227,7 @@ function summarizePages(pages, discoveredCount, selectedCount) {
     capturedCount: pages.length,
     successfulCount,
     failedCount: pages.length - successfulCount,
+    passwordGateCount,
     byType,
   };
 }

@@ -99,6 +99,9 @@ export function buildReconstructionModel({ snapshot, theme, capabilityMap }) {
     .filter((file) => file.structure?.observations)
     .map((file) => ({ sourcePath: file.path, ...file.structure.observations }));
   const unknownRoutes = routes.filter((route) => route.status === "unknown").length;
+  const passwordGatedPages = (snapshot.pages ?? []).filter(
+    (page) => page.accessState === "password-gated",
+  ).length;
   const unknownSections = themeSections.filter(
     (section) => section.status === "downstream-required",
   ).length;
@@ -151,6 +154,7 @@ export function buildReconstructionModel({ snapshot, theme, capabilityMap }) {
       unknownSections,
       appBlockCount: appBlocks.length,
       brandObservationSources: brandObservations.length,
+      passwordGatedPages,
     },
   };
 }

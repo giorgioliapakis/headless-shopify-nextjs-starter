@@ -7,6 +7,7 @@ import { describe, expect, it } from "vitest";
 import {
   capturePublicSnapshot,
   classifyPath,
+  detectAccessState,
   extractSameOriginLinks,
   isDisallowed,
   parseRobots,
@@ -101,5 +102,14 @@ describe("public snapshot", () => {
         "https://example.com",
       ),
     ).toHaveLength(200);
+  });
+
+  it("does not mistake a 200 Shopify password page for public evidence", () => {
+    expect(
+      detectAccessState(
+        '<body class="template-password"><form action="/password"><input type="password"></form></body>',
+      ),
+    ).toBe("password-gated");
+    expect(detectAccessState("<body><main>Public store</main></body>")).toBe("public");
   });
 });

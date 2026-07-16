@@ -64,6 +64,9 @@ export function buildCaptureManifest(model) {
 
 export function buildReconstructionReadiness(model, captureManifest) {
   const blockers = [];
+  if (model.summary.passwordGatedPages) {
+    blockers.push({ code: "SOURCE_PASSWORD_GATED", count: model.summary.passwordGatedPages });
+  }
   if (model.summary.unknownRoutes) {
     blockers.push({ code: "UNKNOWN_ROUTES", count: model.summary.unknownRoutes });
   }
@@ -121,6 +124,8 @@ function stableId(path) {
 function actionFor(code) {
   const actions = {
     UNKNOWN_ROUTES: "Classify and implement each unknown route in merchant-owned files",
+    SOURCE_PASSWORD_GATED:
+      "Obtain an approved credential-free source capture path before reconstruction",
     UNKNOWN_SECTIONS: "Map or implement each unknown section downstream",
     APP_BLOCKS_REQUIRE_ADAPTER:
       "Inventory app behavior and prove a provider-specific downstream adapter",

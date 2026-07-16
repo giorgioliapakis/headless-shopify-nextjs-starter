@@ -244,7 +244,9 @@ const handlers = {
         kind: "report",
       });
       const status =
-        snapshot.summary.failedCount || snapshot.summary.selectedCount === 0
+        snapshot.summary.failedCount ||
+        snapshot.summary.passwordGateCount ||
+        snapshot.summary.selectedCount === 0
           ? "partial"
           : "completed";
       state = await setPhase(
@@ -254,9 +256,11 @@ const handlers = {
         status,
         snapshot.summary.selectedCount === 0
           ? "No public pages were permitted by discovery and robots rules"
-          : snapshot.summary.failedCount
-            ? "Some public pages could not be captured"
-            : undefined,
+          : snapshot.summary.passwordGateCount
+            ? "Source storefront is password-gated"
+            : snapshot.summary.failedCount
+              ? "Some public pages could not be captured"
+              : undefined,
       );
       state = await updateState(run.runDirectory, state, { nextActions: readiness.nextActions });
       await appendLedger(run.runDirectory, {

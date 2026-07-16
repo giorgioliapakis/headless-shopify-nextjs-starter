@@ -24,6 +24,7 @@ describe("migration capture and readiness model", () => {
       themeSectionCount: 3,
       unknownRoutes: 0,
       unknownSections: 1,
+      passwordGatedPages: 1,
     },
   };
 
@@ -44,6 +45,7 @@ describe("migration capture and readiness model", () => {
     const readiness = buildReconstructionReadiness(model, capture);
     expect(readiness).toMatchObject({ status: "blocked", launchReady: false });
     expect(readiness.blockers.map((blocker) => blocker.code)).toEqual([
+      "SOURCE_PASSWORD_GATED",
       "UNKNOWN_SECTIONS",
       "APP_BLOCKS_REQUIRE_ADAPTER",
     ]);
