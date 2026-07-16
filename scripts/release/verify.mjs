@@ -12,6 +12,7 @@ const prohibited = [
   /^\.env(?:\.|$)/,
   /^\.migration\//,
   /^\.context\//,
+  /^\.artifacts\//,
   /^source-theme\//,
   /^test-results\//,
   /^\.next\//,
