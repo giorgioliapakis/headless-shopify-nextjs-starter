@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Suspense } from "react";
+import { Suspense, type CSSProperties } from "react";
 
 import { AnalyticsComponents } from "@/components/analytics";
 import { CartDrawerProvider } from "@/components/cart/drawer-context";
@@ -14,6 +14,7 @@ import { Nav } from "@/components/nav";
 import { SiteSchema } from "@/components/schema/site-schema";
 import { ShopifyAnalyticsBoundary } from "@/components/shopify/analytics-boundary";
 import { ShopifyRuntime } from "@/components/shopify/runtime";
+import { themeToCssVariables } from "@/config/schema/theme";
 import { getLocale } from "@/lib/params";
 import { buildAlternates } from "@/lib/seo";
 import { shopConfig } from "@/shop.config";
@@ -35,6 +36,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html lang={locale}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} flex min-h-dvh flex-col font-sans antialiased`}
+        style={themeToCssVariables(shopConfig.theme) as CSSProperties}
       >
         <a
           href="#main-content"

@@ -1,6 +1,12 @@
 {
   "schemaVersion": 1,
   "source": "lib/commerce/capabilities.ts",
+  "customization": {
+    "themeSchema": "config/schema/theme.ts",
+    "sectionSchema": "config/schema/sections.ts",
+    "sectionRegistry": "components/sections/registry.tsx",
+    "merchantOwned": ["config/presets/**", "public/merchant/**"]
+  },
   "capabilities": [
     { "id": "catalog.products", "status": "core" },
     { "id": "catalog.variants", "status": "core" },

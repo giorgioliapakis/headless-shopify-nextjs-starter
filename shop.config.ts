@@ -1,3 +1,7 @@
+import { neutralHomeRecipe } from "@/config/presets/neutral-home";
+import { neutralThemePreset } from "@/config/presets/neutral-theme";
+import type { SectionRecipe } from "@/config/schema/sections";
+import type { ThemeConfig } from "@/config/schema/theme";
 import type { MenuItem } from "@/lib/shopify/types/menu";
 
 export type SocialPlatform =
@@ -28,7 +32,9 @@ export interface ShopConfig {
     complementaryProducts: { enabled: boolean };
     relatedProducts: { enabled: boolean };
   };
+  recipes: { home: SectionRecipe };
   site: { name: string; socialLinks: SocialLink[]; url: string };
+  theme: ThemeConfig;
 }
 
 function trimTrailingSlash(value: string): string {
@@ -67,9 +73,11 @@ export const shopConfig = {
     complementaryProducts: { enabled: false },
     relatedProducts: { enabled: false },
   },
+  recipes: { home: neutralHomeRecipe },
   site: {
     name: process.env.NEXT_PUBLIC_SITE_NAME ?? "Your Store",
     socialLinks: [],
     url: trimTrailingSlash(process.env.NEXT_PUBLIC_BASE_URL || defaultUrl),
   },
+  theme: neutralThemePreset,
 } satisfies ShopConfig;

@@ -118,6 +118,11 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--merchant-font-body, var(--font-geist-sans));
+    font-size: calc(1rem * var(--merchant-type-scale, 1));
+  }
+  :where(h1, h2, h3, h4, h5, h6) {
+    font-family: var(--merchant-font-heading, var(--font-geist-sans));
   }
   button,
   [role="button"] {

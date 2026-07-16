@@ -104,7 +104,9 @@
     },
     {
       "path": "app/globals.css",
-      "sourceSha256": "54324c3eec08af906a48df5e5596d63886eecd28c49b141230398086961993f4"
+      "sourceSha256": "54324c3eec08af906a48df5e5596d63886eecd28c49b141230398086961993f4",
+      "currentSha256": "5111c6d912d94ccdda77511569ffdce9aefe5c197e75dd3dc18a49ed2e43b717",
+      "modification": "Apply validated merchant theme variables for typography and scale without accepting arbitrary CSS."
     },
     {
       "path": "app/llms.txt/route.ts",
@@ -128,7 +130,9 @@
     },
     {
       "path": "app/page.tsx",
-      "sourceSha256": "a45216a9b1d538641b0df22656ecde859d58300bf1caee3bc364ba5a74b46c1a"
+      "sourceSha256": "a45216a9b1d538641b0df22656ecde859d58300bf1caee3bc364ba5a74b46c1a",
+      "currentSha256": "728e6aa61c2a29f9a5ebf4f0bfb79ecaf0affd8f2baef85f0f223840358487c2",
+      "modification": "Render the neutral homepage from the versioned merchant-owned section recipe."
     },
     {
       "path": "app/pages/[handle]/page.tsx",
@@ -426,7 +430,9 @@
     },
     {
       "path": "components/product/products-grid.tsx",
-      "sourceSha256": "84ebc2bee25e3a87e498fd0f311bfe8df936a5431de6682b33542e76af59ed3c"
+      "sourceSha256": "84ebc2bee25e3a87e498fd0f311bfe8df936a5431de6682b33542e76af59ed3c",
+      "currentSha256": "f1eec5a6a5b8eec109854d4341d625237b13aa9ffe0e233d7c9ebae9163d49b8",
+      "modification": "Allow registry-backed product sections to scope the existing search grid to a collection."
     },
     {
       "path": "components/product/products-slider.tsx",
@@ -482,7 +488,9 @@
     },
     {
       "path": "components/ui/button.tsx",
-      "sourceSha256": "59b63f4f2ca9d362454a86a35e83e1ca8875c2e8583755a7217e807074a5ba9c"
+      "sourceSha256": "59b63f4f2ca9d362454a86a35e83e1ca8875c2e8583755a7217e807074a5ba9c",
+      "currentSha256": "4746adbdf4c8ccf24da7ebb94dc17bf333027a88c1945392d3e7a3dd722f292a",
+      "modification": "Drive transition duration from the validated merchant motion token."
     },
     {
       "path": "components/ui/card.tsx",
@@ -498,7 +506,9 @@
     },
     {
       "path": "components/ui/container.tsx",
-      "sourceSha256": "04b3587ff8c6df0ad227c14139b04fa9c8ad61987a314f64251ce25bab90a4a2"
+      "sourceSha256": "04b3587ff8c6df0ad227c14139b04fa9c8ad61987a314f64251ce25bab90a4a2",
+      "currentSha256": "c7339ddb47c5edab8b51fd22858efcdf5eb45af97baff44c2b1a8fed09e77a18",
+      "modification": "Drive the shared container width from the validated merchant layout token."
     },
     {
       "path": "components/ui/country-flag.tsx",
@@ -558,7 +568,9 @@
     },
     {
       "path": "components/ui/sections.tsx",
-      "sourceSha256": "1cc07414831ff166a93a1abc7852fce486299d029ebbaccc1d0a205412f017a1"
+      "sourceSha256": "1cc07414831ff166a93a1abc7852fce486299d029ebbaccc1d0a205412f017a1",
+      "currentSha256": "01e03aa8f215d49af55bc579cf246ee54e073ea12958e59b196c9b5e953d89fd",
+      "modification": "Drive shared section spacing from the validated merchant density token."
     },
     {
       "path": "components/ui/select.tsx",
