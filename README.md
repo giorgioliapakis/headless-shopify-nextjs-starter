@@ -136,6 +136,7 @@ mode refuses any real merchant domain, token or private credential and fails on 
 - [Migration trust boundaries](docs/security/trust-boundaries.md)
 - [Migration workflow](agent-workflows/canonical/migrate-storefront.md)
 - [Hydrogen compatibility](docs/compatibility/hydrogen.md)
+- [Migration compatibility and scale envelope](docs/compatibility/migration-envelope.md)
 - [Hydrogen upgrade runbook](docs/runbooks/hydrogen-upgrade.md)
 - [Downstream foundation update runbook](docs/runbooks/foundation-updates.md)
 - [Foundation release runbook](docs/runbooks/release.md)

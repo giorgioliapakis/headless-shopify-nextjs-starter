@@ -67,4 +67,21 @@ describe("agent migration contract", () => {
       expect(schema.$id).toContain("v1");
     }
   });
+
+  it("pre-registers bounded compatibility and non-advisable outcomes", async () => {
+    const map = JSON.parse(await readFile("agent-workflows/capability-map.json", "utf8"));
+    const envelope = await readFile(map.compatibilityEnvelope, "utf8");
+    for (const outcome of [
+      "compatible",
+      "compatible-with-downstream-work",
+      "blocked",
+      "not-advisable",
+    ]) {
+      expect(envelope).toContain(`\`${outcome}\``);
+    }
+    for (const bound of ["5,000", "50 MiB", "500", "250/product", "10/product", "3 levels"]) {
+      expect(envelope).toContain(bound);
+    }
+    expect(envelope).toContain("Technical compatibility is not migration advice");
+  });
 });

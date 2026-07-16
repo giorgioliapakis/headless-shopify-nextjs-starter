@@ -1,6 +1,7 @@
 {
   "schemaVersion": 1,
   "source": "lib/commerce/capabilities.ts",
+  "compatibilityEnvelope": "docs/compatibility/migration-envelope.md",
   "customization": {
     "themeSchema": "config/schema/theme.ts",
     "sectionSchema": "config/schema/sections.ts",
