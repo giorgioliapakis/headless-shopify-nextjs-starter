@@ -64,6 +64,11 @@ not production authority.
    older source-bound review decisions only when observed source content changed, and never silently
    treats an overwritten “current” file as the original evidence.
 
+   Theme directories with Git metadata must be clean and bound to one exact commit. Never bypass a
+   rejected submodule, filter, alternate object database, nested repository or worktree indirection. The
+   command re-hashes and revalidates the supplied theme immediately before public capture; source changes
+   require `--new-run` so theme and storefront evidence cannot be silently mixed.
+
 5. Inspect progress at any time. Never infer completion from files or agent silence:
 
    ```bash

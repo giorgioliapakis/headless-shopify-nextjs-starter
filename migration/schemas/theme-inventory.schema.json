@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-shopify-starter.invalid/schemas/theme-inventory-v1.json",
+  "title": "Theme inventory v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "kind",
+    "source",
+    "name",
+    "fileCount",
+    "bytes",
+    "manifestSha256",
+    "files",
+    "provenance",
+    "inspection",
+    "requiresArchiveInspection"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "kind": { "enum": ["directory", "zip"] },
+    "source": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "fileCount": { "type": "integer", "minimum": 0, "maximum": 5000 },
+    "bytes": { "type": "integer", "minimum": 0, "maximum": 52428800 },
+    "manifestSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "files": {
+      "type": "array",
+      "maxItems": 5000,
+      "items": {
+        "type": "object",
+        "required": ["path", "bytes", "sha256"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "bytes": { "type": "integer", "minimum": 0 },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "structure": { "type": "object" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["kind", "sourceIdentity", "immutableSourceMatch", "execution"],
+      "properties": {
+        "kind": {
+          "enum": ["merchant-supplied-archive", "merchant-supplied-directory", "local-git-worktree"]
+        },
+        "sourceIdentity": { "type": "string", "minLength": 40 },
+        "immutableSourceMatch": { "type": "string", "minLength": 1 },
+        "execution": { "type": "string", "minLength": 1 },
+        "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "gitMetadata": { "type": "string" },
+        "hooks": { "type": "string" },
+        "filters": { "type": "string" },
+        "submodules": { "type": "string" },
+        "credentialHelpers": { "type": "string" },
+        "network": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "inspection": { "type": "string", "minLength": 1 },
+    "requiresArchiveInspection": { "const": false },
+    "archiveBytes": { "type": "integer", "minimum": 0, "maximum": 52428800 },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  },
+  "additionalProperties": false
+}

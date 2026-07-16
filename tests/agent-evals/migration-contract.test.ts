@@ -77,6 +77,7 @@ describe("agent migration contract", () => {
       "capture-manifest.schema.json",
       "review-package.schema.json",
       "source-drift.schema.json",
+      "theme-inventory.schema.json",
     ]) {
       const schema = JSON.parse(await readFile(`migration/schemas/${file}`, "utf8"));
       expect(schema.$schema).toContain("2020-12");

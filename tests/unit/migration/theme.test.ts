@@ -1,11 +1,15 @@
+import { execFile } from "node:child_process";
 import { mkdtemp, mkdir, readFile, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { promisify } from "node:util";
 
 import { describe, expect, it } from "vitest";
 
 import { inspectThemeSource } from "../../../migration/lib/theme.mjs";
 import { writeStoredZip } from "../../helpers/zip";
+
+const execFileAsync = promisify(execFile);
 
 describe("theme source inventory", () => {
   it("creates a deterministic read-only inventory", async () => {
@@ -21,6 +25,10 @@ describe("theme source inventory", () => {
     });
     expect(first.manifestSha256).toBe(second.manifestSha256);
     expect(first.files?.[0].path).toBe("sections/hero.liquid");
+    expect(first.provenance).toMatchObject({
+      kind: "merchant-supplied-directory",
+      immutableSourceMatch: "file-manifest-only-no-vcs-commit",
+    });
   });
 
   it("rejects symlinks and enforced size bounds", async () => {
@@ -55,9 +63,69 @@ describe("theme source inventory", () => {
       fileCount: 4,
       requiresArchiveInspection: false,
       inspection: "read-only-lazy-entry-inventory",
+      provenance: { immutableSourceMatch: "archive-sha256-and-entry-manifest" },
     });
     const template = theme.files?.find((file) => file.path === "templates/index.json");
     expect(template?.structure?.appBlockTypes).toHaveLength(1);
+  });
+
+  it("binds a clean local Git theme to its exact commit without trusting repository config", async () => {
+    const root = await createGitTheme();
+    const theme = await inspectThemeSource(root);
+    const { stdout: commit } = await execFileAsync("git", ["-C", root, "rev-parse", "HEAD"], {
+      encoding: "utf8",
+    });
+
+    expect(theme.provenance).toMatchObject({
+      kind: "local-git-worktree",
+      commit: commit.trim(),
+      immutableSourceMatch: "clean-worktree-head-and-file-manifest",
+      hooks: "disabled",
+      filters: "rejected",
+      submodules: "rejected",
+      credentialHelpers: "unavailable",
+      network: "not-invoked",
+    });
+  });
+
+  it("rejects dirty, nested and executable-driver Git sources", async () => {
+    const dirty = await createGitTheme();
+    await writeFile(join(dirty, "sections", "hero.liquid"), "changed");
+    await expect(inspectThemeSource(dirty)).rejects.toThrow(/match HEAD exactly/);
+
+    const nested = await createGitTheme();
+    await mkdir(join(nested, "sections", "nested", ".git"), { recursive: true });
+    await expect(inspectThemeSource(nested)).rejects.toThrow(/nested Git repository/);
+
+    const filtered = await createGitTheme();
+    await writeFile(join(filtered, ".gitattributes"), "*.liquid filter=merchant-command\n");
+    await expect(inspectThemeSource(filtered)).rejects.toThrow(/executable attribute drivers/);
+  });
+
+  it("rejects submodule and worktree-indirection Git metadata", async () => {
+    const submodule = await createGitTheme();
+    await writeFile(join(submodule, ".gitmodules"), '[submodule "unsafe"]\n');
+    await expect(inspectThemeSource(submodule)).rejects.toThrow(/unsupported metadata/);
+
+    const gitlink = await createGitTheme();
+    const { stdout: commit } = await execFileAsync("git", ["-C", gitlink, "rev-parse", "HEAD"], {
+      encoding: "utf8",
+    });
+    await execFileAsync("git", [
+      "-C",
+      gitlink,
+      "update-index",
+      "--add",
+      "--cacheinfo",
+      `160000,${commit.trim()},vendor/unsafe`,
+    ]);
+    await expect(inspectThemeSource(gitlink)).rejects.toThrow(/submodule entry/);
+
+    const indirection = await mkdtemp(join(tmpdir(), "theme-git-indirection-"));
+    await mkdir(join(indirection, "sections"));
+    await writeFile(join(indirection, "sections", "hero.liquid"), "synthetic");
+    await writeFile(join(indirection, ".git"), "gitdir: /tmp/untrusted\n");
+    await expect(inspectThemeSource(indirection)).rejects.toThrow(/not a link or indirection file/);
   });
 
   it("rejects malformed and symlink-bearing archives", async () => {
@@ -97,3 +165,29 @@ describe("theme source inventory", () => {
     expect(JSON.stringify(settings?.structure)).not.toContain("editorial copy");
   });
 });
+
+async function createGitTheme() {
+  const root = await mkdtemp(join(tmpdir(), "theme-git-"));
+  await mkdir(join(root, "sections"));
+  await writeFile(join(root, "sections", "hero.liquid"), "synthetic theme source");
+  await execFileAsync("git", ["init", "--quiet", "--initial-branch=main", root]);
+  await execFileAsync("git", ["-C", root, "add", "sections/hero.liquid"]);
+  await execFileAsync(
+    "git",
+    [
+      "-C",
+      root,
+      "-c",
+      "user.name=Fixture",
+      "-c",
+      "user.email=fixture@example.invalid",
+      "commit",
+      "--quiet",
+      "--no-gpg-sign",
+      "-m",
+      "fixture",
+    ],
+    { env: { ...process.env, GIT_CONFIG_NOSYSTEM: "1", GIT_CONFIG_GLOBAL: "/dev/null" } },
+  );
+  return root;
+}

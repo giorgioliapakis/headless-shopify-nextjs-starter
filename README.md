@@ -60,7 +60,10 @@ pnpm migrate resume --json
 
 The snapshot is bounded, same-origin, DNS-pinned, robots-aware and treated as untrusted evidence. Theme
 source is inventoried read-only; archives are lazily path/size/type validated, never extracted or
-executed. State, evidence and logs remain in
+executed. A local Git source must be a clean, ordinary worktree: the inspector binds it to its exact HEAD
+and manifest through staged minimal metadata while disabling hooks and credential access and rejecting
+filters, submodules, alternates, nested repositories and worktree indirection. The theme identity is
+checked again before public capture so a changed source requires a new isolated run. State, evidence and logs remain in
 ignored `.migration/`. Secret-bearing CLI flags are rejected. Protected Shopify Admin discovery is a
 future allowlisted OS-keychain broker—not an access token passed to an agent.
 

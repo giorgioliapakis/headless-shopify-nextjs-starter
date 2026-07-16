@@ -49,6 +49,13 @@ Export the theme that is actually live—not a stale development copy. Keep it o
 inside an ignored merchant-only source directory. The migration inventory reads it without executing
 Liquid, scripts, hooks or archive entries; ZIP files are never extracted.
 
+A directory with local Git metadata must be a clean, normal checkout at one exact commit. Worktrees,
+submodules, nested repositories, object alternates and executable attribute filters are refused. Hooks,
+credential helpers, LFS smudge and network access are unavailable to the inspection command. Commit or
+remove unrelated dirty/ignored files first, or use a Shopify-exported ZIP. The source identity is checked
+again before the public crawl; if it changed, start a new run so evidence from different source versions
+cannot be mixed.
+
 Confirm rights before ingestion. This assertion is downstream-only and does not grant permission to
 publish the theme or its assets in the starter:
 
@@ -72,7 +79,8 @@ pnpm migrate review
 Review these ignored artifacts before allowing an agent to rebuild pages:
 
 - `snapshots/public-v1.json` — bounded public route/content metadata;
-- `snapshots/theme-inventory-v1.json` — hashes, safe JSON structure and brand observations;
+- `snapshots/theme-inventory-v1.json` — hashes, immutable archive/Git identity, safe JSON structure and
+  brand observations;
 - `model/reconstruction-plan-v1.json` — route/section candidates and explicit unknowns;
 - `model/capture-manifest-v1.json` — required source/preview viewports and interaction states;
 - `reports/reconstruction-readiness-v1.json` — blockers, review decisions and next actions.

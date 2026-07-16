@@ -143,6 +143,19 @@ const handlers = {
         throw new Error(
           "The active run belongs to a different source. Pass --new-run to create an isolated run.",
         );
+      } else {
+        const previousInventory = await readOptionalJson(
+          join(run.runDirectory, "snapshots", "theme-inventory-v1.json"),
+        );
+        if (
+          previousInventory &&
+          (previousInventory.manifestSha256 !== inventory.manifestSha256 ||
+            previousInventory.provenance?.sourceIdentity !== inventory.provenance?.sourceIdentity)
+        ) {
+          throw new Error(
+            "The theme source identity changed. Pass --new-run to preserve the earlier run and its evidence.",
+          );
+        }
       }
     }
     const reportPath = join(run.runDirectory, "reports", "preflight.json");
@@ -235,6 +248,19 @@ const handlers = {
     const run = await requireRun(cwd, "preflight");
     let state = await setPhase(run.runDirectory, run.state, "public-snapshot", "in_progress");
     try {
+      const theme = await readRequiredJson(
+        join(run.runDirectory, "snapshots", "theme-inventory-v1.json"),
+        "Run preflight before public snapshot",
+      );
+      const currentTheme = await inspectThemeSource(state.themeSource);
+      if (
+        currentTheme.manifestSha256 !== theme.manifestSha256 ||
+        currentTheme.provenance?.sourceIdentity !== theme.provenance?.sourceIdentity
+      ) {
+        throw new Error(
+          "Theme source changed after preflight; create a new isolated migration run from the new source identity",
+        );
+      }
       const currentPath = join(run.runDirectory, "snapshots", "public-v1.json");
       let previousSnapshot = await readOptionalJson(currentPath);
       if (previousSnapshot) {
@@ -310,9 +336,6 @@ const handlers = {
           },
         });
       }
-      const theme = await readOptionalJson(
-        join(run.runDirectory, "snapshots", "theme-inventory-v1.json"),
-      );
       const capabilityMap =
         (await readOptionalJson(join(run.runDirectory, "model", "capabilities.json"))) ??
         JSON.parse(await readFile(join(cwd, "agent-workflows", "capability-map.json"), "utf8"));
@@ -871,6 +894,14 @@ function summarizeTheme(value) {
     bytes: value.bytes,
     fileCount: value.fileCount ?? null,
     sha256: value.sha256 ?? value.manifestSha256,
+    provenance: value.provenance
+      ? {
+          kind: value.provenance.kind,
+          commit: value.provenance.commit ?? null,
+          sourceIdentity: value.provenance.sourceIdentity,
+          immutableSourceMatch: value.provenance.immutableSourceMatch,
+        }
+      : null,
     requiresArchiveInspection: value.requiresArchiveInspection,
   };
 }

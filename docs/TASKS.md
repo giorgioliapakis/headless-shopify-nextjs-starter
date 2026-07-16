@@ -93,6 +93,11 @@ The storefront-runtime track is defined in
       DNS/redirect/network isolation.
 - [ ] Implement archive-safe and Git-safe theme ingestion, immutable source matching, and downstream
       rights/license provenance.
+  - [x] Lazily inspect bounded ZIPs without extraction and reject traversal, links and special entries.
+  - [x] Bind ordinary clean local Git worktrees to HEAD with controlled metadata; reject hooks/filters,
+        submodules, alternates, nested repositories and worktree indirection.
+  - [x] Revalidate the theme manifest/source identity before public capture and require a new run on drift.
+  - [ ] Inventory downstream per-asset license/redistribution decisions beyond the merchant rights assertion.
 - [ ] Implement credential-free preliminary compatibility, then brokered allowlisted Storefront/Admin
       reads with exact scopes and removal guidance.
 - [ ] Reconcile sitemaps, navigation, links, redirects, templates, assets, apps, metadata, analytics,
