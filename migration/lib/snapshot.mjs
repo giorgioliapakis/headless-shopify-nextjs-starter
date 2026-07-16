@@ -22,11 +22,17 @@ export async function capturePublicSnapshot({
   const robotsResponse = await fetchOptional(new URL("/robots.txt", root), { approvedOrigin, get });
   const robots = parseRobots(robotsResponse?.body ?? "");
   const sitemap = await discoverSitemapUrls(new URL("/sitemap.xml", root), { approvedOrigin, get });
-  const candidates = uniqueUrls([root.toString(), ...sitemap.urls], root).slice(0, MAX_URLS);
+  const rootPage = isDisallowed(root.pathname, robots)
+    ? null
+    : await capturePage(root.toString(), { approvedOrigin, get, runDirectory });
+  const candidates = uniqueUrls(
+    [root.toString(), ...(rootPage?.links ?? []), ...sitemap.urls],
+    root,
+  ).slice(0, MAX_URLS);
   const allowed = candidates.filter((url) => !isDisallowed(new URL(url).pathname, robots));
   const selected = allowed.slice(0, maxPages);
   const pages = await mapConcurrent(selected, 4, async (url) =>
-    capturePage(url, { approvedOrigin, get, runDirectory }),
+    rootPage?.url === url ? rootPage : capturePage(url, { approvedOrigin, get, runDirectory }),
   );
   const capturedAt = new Date().toISOString();
   return {
@@ -106,11 +112,34 @@ async function capturePage(url, { approvedOrigin, get, runDirectory }) {
       const evidencePath = join("evidence", "public", "pages", `${bodySha256}.html`);
       await writeTextAtomic(join(runDirectory, evidencePath), response.body);
       Object.assign(page, extractHtmlMetadata(response.body), { evidencePath });
+      page.links = extractSameOriginLinks(response.body, page.url, approvedOrigin);
     }
     return page;
   } catch (error) {
     return { url, path, type: classifyPath(path), status: 0, error: safeError(error) };
   }
+}
+
+export function extractSameOriginLinks(html, baseUrl, approvedOrigin) {
+  const result = [];
+  const seen = new Set();
+  for (const match of html.matchAll(/<a\s[^>]*href\s*=\s*["']([^"']+)["'][^>]*>/gi)) {
+    const raw = decodeXml(match[1].trim());
+    if (!raw || raw.startsWith("#")) continue;
+    let url;
+    try {
+      url = new URL(raw, baseUrl);
+    } catch {
+      continue;
+    }
+    url.hash = "";
+    if (url.protocol !== "https:" || url.origin !== approvedOrigin) continue;
+    const normalized = url.toString();
+    if (!seen.has(normalized)) result.push(normalized);
+    seen.add(normalized);
+    if (result.length >= 200) break;
+  }
+  return result;
 }
 
 export function parseSitemapLocations(xml) {

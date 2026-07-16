@@ -64,7 +64,9 @@ Snapshotting also produces a route/template/section reconstruction plan. Known p
 commerce core or registered sections; heuristic mappings require review, while app blocks and unknown
 patterns remain merchant-owned downstream work. Bounded theme-setting observations provide color, font,
 logo-reference and layout candidates without copying Liquid or editorial content; the agent must map
-these observations into semantic tokens and confirm them visually.
+these observations into semantic tokens and confirm them visually. The same command emits a deterministic
+source/preview capture manifest and a readiness report that keeps unknown routes, sections and app blocks
+explicitly blocking instead of silently treating a successful crawl as parity.
 
 Use `--json` for agent-readable success and failure reports. Failed prerequisite checks include a bounded
 remediation and never create a partially initialized run.

@@ -7,6 +7,7 @@ import { describe, expect, it } from "vitest";
 import {
   capturePublicSnapshot,
   classifyPath,
+  extractSameOriginLinks,
   isDisallowed,
   parseRobots,
   parseSitemapLocations,
@@ -47,11 +48,15 @@ describe("public snapshot", () => {
       ],
       [
         "https://example.com/",
-        '<html><head><title>Home</title><meta name="description" content="Neutral store"></head><body><h1>Welcome</h1></body></html>',
+        '<html><head><title>Home</title><meta name="description" content="Neutral store"></head><body><h1>Welcome</h1><a href="/pages/about?from=nav">About</a><a href="https://outside.example/collect">Outside</a></body></html>',
       ],
       [
         "https://example.com/products/tee",
         "<html><head><title>Tee</title></head><body><h1>Neutral tee</h1></body></html>",
+      ],
+      [
+        "https://example.com/pages/about?from=nav",
+        "<html><head><title>About</title></head><body><h1>About us</h1></body></html>",
       ],
     ]);
     const get = async (input: string) => {
@@ -77,9 +82,24 @@ describe("public snapshot", () => {
       maxPages: 10,
       get,
     });
-    expect(snapshot.summary).toMatchObject({ capturedCount: 2, successfulCount: 2 });
-    expect(snapshot.pages[1]).toMatchObject({ type: "product", title: "Tee" });
-    const evidence = await readFile(join(runDirectory, snapshot.pages[1].evidencePath!), "utf8");
+    expect(snapshot.summary).toMatchObject({ capturedCount: 3, successfulCount: 3 });
+    expect(snapshot.pages[1]).toMatchObject({ type: "page", title: "About" });
+    expect(snapshot.pages[2]).toMatchObject({ type: "product", title: "Tee" });
+    expect(snapshot.pages[0].links).toEqual(["https://example.com/pages/about?from=nav"]);
+    const evidence = await readFile(join(runDirectory, snapshot.pages[2].evidencePath!), "utf8");
     expect(evidence).toContain("Neutral tee");
+  });
+
+  it("normalizes only bounded same-origin HTTPS navigation", () => {
+    const links = Array.from({ length: 205 }, (_, index) => `<a href="/pages/${index}">P</a>`).join(
+      "",
+    );
+    expect(
+      extractSameOriginLinks(
+        `<a href="mailto:test@example.com">Mail</a><a href="https://other.example/">Other</a>${links}`,
+        "https://example.com/",
+        "https://example.com",
+      ),
+    ).toHaveLength(200);
   });
 });

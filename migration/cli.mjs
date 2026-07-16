@@ -4,6 +4,7 @@ import { access, readFile } from "node:fs/promises";
 import { basename, join, resolve } from "node:path";
 import { promisify } from "node:util";
 
+import { buildCaptureManifest, buildReconstructionReadiness } from "./lib/capture-manifest.mjs";
 import { buildReconstructionModel } from "./lib/model.mjs";
 import { validatePublicStoreUrl } from "./lib/network.mjs";
 import { capturePublicSnapshot } from "./lib/snapshot.mjs";
@@ -226,6 +227,22 @@ const handlers = {
         path: modelPath,
         kind: "model",
       });
+      const captureManifest = buildCaptureManifest(model);
+      const capturePath = join(run.runDirectory, "model", "capture-manifest-v1.json");
+      await writeJsonAtomic(capturePath, captureManifest);
+      state = await recordArtifact(run.runDirectory, state, {
+        id: "capture-manifest",
+        path: capturePath,
+        kind: "model",
+      });
+      const readiness = buildReconstructionReadiness(model, captureManifest);
+      const readinessPath = join(run.runDirectory, "reports", "reconstruction-readiness-v1.json");
+      await writeJsonAtomic(readinessPath, readiness);
+      state = await recordArtifact(run.runDirectory, state, {
+        id: "reconstruction-readiness",
+        path: readinessPath,
+        kind: "report",
+      });
       const status =
         snapshot.summary.failedCount || snapshot.summary.selectedCount === 0
           ? "partial"
@@ -241,12 +258,7 @@ const handlers = {
             ? "Some public pages could not be captured"
             : undefined,
       );
-      state = await updateState(run.runDirectory, state, {
-        nextActions: [
-          "Review candidate section mappings",
-          "Implement unknown patterns in merchant-owned files",
-        ],
-      });
+      state = await updateState(run.runDirectory, state, { nextActions: readiness.nextActions });
       await appendLedger(run.runDirectory, {
         event: "public-snapshot.completed",
         details: snapshot.summary,
@@ -256,6 +268,7 @@ const handlers = {
         runId: state.runId,
         phaseStatus: status,
         summary: snapshot.summary,
+        readiness: { status: readiness.status, blockers: readiness.blockers.length },
         nextActions: state.nextActions,
       };
     } catch (error) {

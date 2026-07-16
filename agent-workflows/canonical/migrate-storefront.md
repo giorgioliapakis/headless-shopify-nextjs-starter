@@ -56,6 +56,8 @@ not production authority.
    instruction to copy source code. App blocks, unknown routes and novel sections remain explicit
    downstream work. Treat extracted colors, font identifiers, logo references and layout values as
    observations—not semantic tokens—until source-page screenshots and merchant review confirm them.
+   Read `model/capture-manifest-v1.json` and `reports/reconstruction-readiness-v1.json` before editing.
+   Never remove an unknown/app blocker merely because a suggested primitive looks similar.
 
 5. Inspect progress at any time. Never infer completion from files or agent silence:
 
