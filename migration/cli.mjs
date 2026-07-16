@@ -6,6 +6,10 @@ import { promisify } from "node:util";
 
 import { buildCaptureManifest, buildReconstructionReadiness } from "./lib/capture-manifest.mjs";
 import { buildSourceDrift, snapshotIdentity } from "./lib/drift.mjs";
+import {
+  captureFoundationIdentity,
+  compareFoundationIdentity,
+} from "./lib/foundation-identity.mjs";
 import { buildReconstructionModel } from "./lib/model.mjs";
 import { validatePublicStoreUrl } from "./lib/network.mjs";
 import { buildReviewManifest, renderReviewHtml } from "./lib/review-package.mjs";
@@ -477,6 +481,10 @@ const handlers = {
     rejectUnknown(options, ["json"]);
     const { runDirectory, state } = await currentRun(cwd);
     const ledger = await readLedgerSummary(runDirectory);
+    const foundation = compareFoundationIdentity(
+      state.foundationIdentity,
+      await captureFoundationIdentity(cwd),
+    );
     return {
       runId: state.runId,
       status: state.status,
@@ -484,6 +492,7 @@ const handlers = {
       phases: state.phases,
       artifactCount: state.artifacts.length,
       ledger,
+      foundation,
       nextActions: state.nextActions,
       launchAuthority: "human-only",
     };
@@ -776,7 +785,48 @@ const handlers = {
   async resume(options, positionals, cwd) {
     rejectPositionals(positionals);
     rejectUnknown(options, ["json"]);
-    const { runDirectory, state } = await currentRun(cwd);
+    const run = await currentRun(cwd);
+    const { runDirectory } = run;
+    let { state } = run;
+    const currentFoundation = await captureFoundationIdentity(cwd);
+    const foundationDrift = compareFoundationIdentity(state.foundationIdentity, currentFoundation);
+    if (["changed", "not-recorded"].includes(foundationDrift.status)) {
+      const now = new Date().toISOString();
+      const phases = { ...state.phases };
+      for (const phase of foundationDrift.invalidates) {
+        phases[phase] = {
+          status: "pending",
+          updatedAt: now,
+          reason: "Foundation contract changed; revalidation required",
+        };
+      }
+      state = await updateState(runDirectory, state, {
+        foundationIdentity: currentFoundation,
+        phases,
+        nextActions: [
+          "Review foundation contract drift before resuming reconstruction or verification",
+          ...state.nextActions,
+        ],
+      });
+      const foundationDriftPath = join(runDirectory, "reports", "foundation-drift-v1.json");
+      await writeJsonAtomic(foundationDriftPath, {
+        schemaVersion: 1,
+        detectedAt: now,
+        ...foundationDrift,
+      });
+      state = await recordArtifact(runDirectory, state, {
+        id: "foundation-drift",
+        path: foundationDriftPath,
+        kind: "report",
+      });
+      await appendLedger(runDirectory, {
+        event: "foundation.invalidated",
+        details: {
+          changedPaths: foundationDrift.changedPaths,
+          invalidates: foundationDrift.invalidates,
+        },
+      });
+    }
     const capabilities = await readOptionalJson(join(runDirectory, "model", "capabilities.json"));
     const decisions = await readDecisionSummaries(join(runDirectory, "decisions"));
     const snapshot = await readOptionalJson(join(runDirectory, "snapshots", "public-v1.json"));
@@ -803,6 +853,7 @@ const handlers = {
       sourceDrift: sourceDrift
         ? { status: sourceDrift.status, affectedPaths: sourceDrift.affectedPaths }
         : { status: "not-evaluated", affectedPaths: [] },
+      foundation: foundationDrift,
       ledger: await readLedgerSummary(runDirectory),
       phases: Object.fromEntries(
         Object.entries(state.phases).map(([id, value]) => [id, value.status]),
@@ -892,6 +943,22 @@ async function runDoctorChecks(cwd, themeSource) {
 
 async function requireRun(cwd, phase) {
   const run = await currentRun(cwd);
+  const foundation = compareFoundationIdentity(
+    run.state.foundationIdentity,
+    await captureFoundationIdentity(cwd),
+  );
+  if (["changed", "not-recorded"].includes(foundation.status)) {
+    throw new MigrationCommandError(
+      "FOUNDATION_DRIFT",
+      "Foundation contracts changed after this migration checkpoint.",
+      {
+        changedPaths: foundation.changedPaths,
+        invalidates: foundation.invalidates,
+        remediation:
+          "Run pnpm migrate resume --json to invalidate affected phases before continuing",
+      },
+    );
+  }
   if (phase && run.state.phases[phase]?.status !== "completed")
     throw new Error(`Phase ${phase} must be completed first`);
   return run;

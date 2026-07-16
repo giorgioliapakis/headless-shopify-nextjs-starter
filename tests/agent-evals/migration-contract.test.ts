@@ -72,6 +72,8 @@ describe("agent migration contract", () => {
     for (const file of [
       "run-state.schema.json",
       "ledger-entry.schema.json",
+      "foundation-identity.schema.json",
+      "foundation-drift.schema.json",
       "public-snapshot.schema.json",
       "decision.schema.json",
       "decision-validity.schema.json",

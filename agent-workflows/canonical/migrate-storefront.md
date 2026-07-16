@@ -139,6 +139,11 @@ not production authority.
     another event is appended. This is tamper-evident review state inside an agent-writable workspace,
     not non-forgeable human authorization.
 
+    The run also hashes the foundation-owned runtime, migration schemas, capability map and pinned skill
+    contracts while excluding merchant-owned paths. If that identity changes, ordinary commands stop and
+    `resume` preserves preflight/source evidence while resetting reconstruction, verification and review.
+    Review the generated foundation-drift report before continuing.
+
 ## Completion protocol
 
 Report each phase as pending, in progress, partial, completed, failed, blocked or cancelled. A migration

@@ -13,6 +13,7 @@
     "storeUrl",
     "themeSource",
     "status",
+    "foundationIdentity",
     "phases",
     "artifacts",
     "nextActions"
@@ -26,6 +27,7 @@
     "storeUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
     "themeSource": { "type": "string", "minLength": 1 },
     "status": { "enum": ["active", "completed", "cancelled"] },
+    "foundationIdentity": { "type": "object" },
     "phases": {
       "type": "object",
       "additionalProperties": { "$ref": "#/$defs/phase" },

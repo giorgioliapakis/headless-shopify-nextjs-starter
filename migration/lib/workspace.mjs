@@ -2,6 +2,8 @@ import { createHash, randomUUID } from "node:crypto";
 import { mkdir, open, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 
+import { captureFoundationIdentity } from "./foundation-identity.mjs";
+
 export const WORKSPACE_SCHEMA_VERSION = 1;
 const MAX_LEDGER_BYTES = 10 * 1024 * 1024;
 
@@ -16,6 +18,7 @@ export async function createRun({ cwd = process.cwd(), storeUrl, themeSource }) 
   const runDirectory = join(root, "runs", runId);
   await mkdir(runDirectory, { recursive: false, mode: 0o700 });
   const now = new Date().toISOString();
+  const foundationIdentity = await captureFoundationIdentity(cwd);
   const state = {
     schemaVersion: WORKSPACE_SCHEMA_VERSION,
     revision: 0,
@@ -25,6 +28,7 @@ export async function createRun({ cwd = process.cwd(), storeUrl, themeSource }) 
     storeUrl,
     themeSource,
     status: "active",
+    foundationIdentity,
     phases: {
       preflight: { status: "pending", updatedAt: now },
       "public-snapshot": { status: "pending", updatedAt: now },

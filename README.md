@@ -78,6 +78,10 @@ explicitly blocking instead of silently treating a successful crawl as parity. R
 content-addressed, retain immutable originals, report route-level source drift and stale earlier review
 decisions instead of overwriting their evidence silently.
 
+Each run also content-addresses foundation-owned runtime, migration, schema and pinned-skill contracts.
+Foundation drift preserves preflight/source evidence but forces reconstruction, verification and review
+back to pending through `pnpm migrate resume`; merchant-owned extension paths are excluded.
+
 Preflight also emits a hash/reference-only rights inventory for observed fonts, media, client scripts and
 app output. The initial theme-source assertion permits inspection; it never grants automatic copying or
 foundation redistribution. `pnpm migrate rights` records an approved-downstream or excluded outcome for

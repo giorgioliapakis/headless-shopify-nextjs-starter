@@ -94,6 +94,11 @@ must run `pnpm migrate resume --json` instead of overwriting newer work. The red
 and hash-chained to expose edits, but because it lives in the agent-writable run it is evidence—not
 cryptographic human authorization.
 
+Foundation-owned runtime, migration and skill contracts are content-addressed when a run starts. A later
+foundation update does not discard the theme/public captures, but it blocks ordinary commands until
+`pnpm migrate resume --json` records the changed paths and resets reconstruction, verification and
+review. Merchant-owned recipe/component/asset paths are outside this identity.
+
 ## 3. Generate the credential-free migration model
 
 ```bash
