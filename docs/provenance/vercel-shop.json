@@ -31,8 +31,8 @@
     {
       "path": ".env.example",
       "sourceSha256": "1152af1b90677027c7ea1de3d771e7b43d47aef4006d8fcc36d0f0af25802a11",
-      "currentSha256": "cbe7fa4ab6a2aa05d4bb8a691d80ef3c4c11460f70e85a54a8a6a41f9c915766",
-      "modification": "Remove excluded assistant/account setup and pin dated Storefront API configuration."
+      "currentSha256": "388a187b23a6c5f605fa00207493ce6b3308d8b20ad616dd320034d6bed5a065",
+      "modification": "Document canonical Hydrogen Storefront environment names and the bounded legacy aliases."
     },
     {
       "path": ".graphqlrc.ts",
@@ -582,7 +582,9 @@
     },
     {
       "path": "lib/cart/action.ts",
-      "sourceSha256": "3d373ddbf5469c7a29b2ec2551e0ab863042c05d5885a0e2b0f9ebe20f60402c"
+      "sourceSha256": "3d373ddbf5469c7a29b2ec2551e0ab863042c05d5885a0e2b0f9ebe20f60402c",
+      "currentSha256": "b72aae533155eb41bee5f164d44d2a34c54ad578dad0aa19ea432624c35ad091",
+      "modification": "Resolve buy-now Storefront domains through the canonical validated environment boundary."
     },
     {
       "path": "lib/cart/index.ts",
@@ -658,7 +660,9 @@
     },
     {
       "path": "lib/shopify/discovery.ts",
-      "sourceSha256": "d7ce2acaa9057a647dd34207cfb1090ce1afa86372117211a4f69acdf3459bac"
+      "sourceSha256": "d7ce2acaa9057a647dd34207cfb1090ce1afa86372117211a4f69acdf3459bac",
+      "currentSha256": "602d488cc9793e00276ed2f48ccca0e2280d0f6f680511cdb6d68ef3012fdf4a",
+      "modification": "Resolve the canonical Storefront domain lazily through the validated server-only environment boundary."
     },
     {
       "path": "lib/shopify/encoded-variants.ts",
@@ -688,7 +692,9 @@
     },
     {
       "path": "lib/shopify/operations/menu.ts",
-      "sourceSha256": "348145b13f237af05b4bd465e5cc3e5c9fa95809bc825dd4ac7fa3668b43252c"
+      "sourceSha256": "348145b13f237af05b4bd465e5cc3e5c9fa95809bc825dd4ac7fa3668b43252c",
+      "currentSha256": "e2702561c42c38e2e223197c254e754d087473cf2b6feed4d865a81dadd8a348",
+      "modification": "Migrate the menu document to Hydrogen gql.tada validation as the first typed query slice."
     },
     {
       "path": "lib/shopify/operations/pages.ts",
@@ -713,8 +719,8 @@
     {
       "path": "lib/shopify/storefront.ts",
       "sourceSha256": "0329a52ff2066d1200c235165519dc3a7d4ad56129e1cb4e3a28fe6e652447d1",
-      "currentSha256": "8d9fe5093e2c06bac1adb3e9cc60b72395b33326d196e4b583957375bb7e774a",
-      "modification": "Redact malformed Shopify JSON responses before the characterized Hydrogen migration."
+      "currentSha256": "9f2ba24e10b6fcd4110d8e991993d63d362ba7647144785b5b5bfe80e452f036",
+      "modification": "Route the stable application transport contract through the lazy Hydrogen adapter and remove unused MCP helpers."
     },
     {
       "path": "lib/shopify/transforms/cart.ts",
@@ -750,7 +756,9 @@
     },
     {
       "path": "lib/shopify/utils.ts",
-      "sourceSha256": "a65b156261cd92260ccefcc273781faec5f66da8f1425632dad09bed3254ef7e"
+      "sourceSha256": "a65b156261cd92260ccefcc273781faec5f66da8f1425632dad09bed3254ef7e",
+      "currentSha256": "25b43d7fa9493b577bd438d76fbe69e884437c3dbbcb60e9a050814558264612",
+      "modification": "Recognize canonical Storefront domain configuration when normalizing Shopify menu URLs."
     },
     {
       "path": "lib/types.ts",
@@ -765,14 +773,14 @@
     {
       "path": "next.config.ts",
       "sourceSha256": "46e1f4b08ae4f3d951af147c2f5eb7d10d2642d4b7e47e5c2c08f9a2413d4f5f",
-      "currentSha256": "b143040e3ac85f2ef29d304e751d5bb39bd0946c906d8cbe40002c461c5324da",
-      "modification": "Remove excluded auth checks and scope Turbopack to this workspace."
+      "currentSha256": "9e3730f8a978f69d9b7f3abce62f8e9221af2c90c37982fba5a737a85f4fa632",
+      "modification": "Accept canonical Hydrogen Storefront environment names while preserving bounded migration aliases."
     },
     {
       "path": "package.json",
       "sourceSha256": "ae662f2818fe83f3a91d3eabe6bedee2709d5703b11d7e2bdc26e4bd151fd85e",
-      "currentSha256": "3a94ed273e9498e80521700a2532b551a7a66ae464e6dc930e5defb561449756",
-      "modification": "Pin the ADR-authorized Hydrogen SDK and add deterministic skill synchronization and contract-test commands."
+      "currentSha256": "270d5cb867b5713fcf03ee3f8a20db5e27012fe047fd1950253bad7380a05e35",
+      "modification": "Add credential-free gql.tada validation for the staged Hydrogen transport migration."
     },
     {
       "path": "postcss.config.mjs",
@@ -780,7 +788,9 @@
     },
     {
       "path": "tsconfig.json",
-      "sourceSha256": "c5805d483585cee002979ca95018b75f6f9e9fe57ef540c765b931fc58dd03fc"
+      "sourceSha256": "c5805d483585cee002979ca95018b75f6f9e9fe57ef540c765b931fc58dd03fc",
+      "currentSha256": "2bc15d2641c015844d90c2289ab8270bf786eb621a9d8bd04d72c8a9190a9a34",
+      "modification": "Use Hydrogen's packaged Storefront schema for gql.tada editor and CI validation."
     }
   ]
 }

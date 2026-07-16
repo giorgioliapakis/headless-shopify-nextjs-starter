@@ -7,9 +7,13 @@ import {
 } from "next/constants";
 
 function assertRequiredEnv() {
-  const missingShopify = ["SHOPIFY_STORE_DOMAIN", "SHOPIFY_STOREFRONT_ACCESS_TOKEN"].filter(
-    (key) => !process.env[key],
-  );
+  const missingShopify: string[] = [];
+  if (!process.env.PUBLIC_STORE_DOMAIN && !process.env.SHOPIFY_STORE_DOMAIN) {
+    missingShopify.push("PUBLIC_STORE_DOMAIN");
+  }
+  if (!process.env.PUBLIC_STOREFRONT_API_TOKEN && !process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN) {
+    missingShopify.push("PUBLIC_STOREFRONT_API_TOKEN");
+  }
 
   if (missingShopify.length > 0) {
     throw new Error(

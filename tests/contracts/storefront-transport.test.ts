@@ -8,7 +8,7 @@ describe("Storefront transport contract", () => {
     vi.stubEnv("SHOPIFY_API_VERSION", "2026-07");
   });
 
-  it("preserves explicit market context and operation observability", async () => {
+  it("preserves explicit market context and adds Hydrogen request annotations", async () => {
     const fetchMock = vi.fn().mockResolvedValue(
       new Response(JSON.stringify({ data: { shop: { name: "Neutral Store" } } }), {
         headers: { "x-request-id": "request-market", "x-shopify-api-version": "2026-07" },
@@ -22,9 +22,10 @@ describe("Storefront transport contract", () => {
     });
 
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(url).toBe(
-      "https://neutral-fixture.myshopify.com/api/2026-07/graphql.json?operation=MarketShop",
-    );
+    expect(url).toBe("https://neutral-fixture.myshopify.com/api/2026-07/graphql.json");
+    const headers = new Headers(init.headers);
+    expect(headers.get("x-hydrogen-version")).toBe("0.0.0-preview-8a708a8-20260708155454");
+    expect(headers.get("custom-storefront-request-group-id")).toBeTruthy();
     expect(JSON.parse(String(init.body))).toEqual({
       query: "query MarketShop($country: CountryCode) { shop { name } }",
       variables: { country: "AU", language: "EN" },

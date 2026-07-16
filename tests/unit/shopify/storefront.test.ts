@@ -22,7 +22,10 @@ describe("Storefront transport", () => {
     });
 
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(url).toBe("https://fixture.myshopify.com/api/2026-07/graphql.json?operation=ShopName");
+    expect(url).toBe("https://fixture.myshopify.com/api/2026-07/graphql.json");
+    expect(new Headers(init.headers).get("x-hydrogen-version")).toBe(
+      "0.0.0-preview-8a708a8-20260708155454",
+    );
     expect(new Headers(init.headers).get("X-Shopify-Storefront-Access-Token")).toBe(
       "fixture-token",
     );

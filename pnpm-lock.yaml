@@ -97,6 +97,9 @@ importers:
         specifier: 4.4.3
         version: 4.4.3
     devDependencies:
+      gql.tada:
+        specifier: 1.11.2
+        version: 1.11.2(graphql@16.14.2)(typescript@6.0.3)
       vitest:
         specifier: 4.1.10
         version: 4.1.10(@types/node@24.13.3)(vite@7.3.6(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0))

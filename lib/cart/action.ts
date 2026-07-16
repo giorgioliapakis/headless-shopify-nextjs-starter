@@ -2,6 +2,7 @@
 
 import { isEnabledLocale } from "@/lib/i18n";
 import { withFallback } from "@/lib/shopify/errors";
+import { resolveStorefrontEnvironment } from "@/lib/shopify/hydrogen/env";
 import {
   addToCart,
   getCart,
@@ -259,8 +260,10 @@ export async function buyNowAction(
     return { checkoutUrl: null, error: "Invalid product ID" };
   }
 
-  const domain = process.env.SHOPIFY_STORE_DOMAIN;
-  if (!domain) {
+  let domain: string;
+  try {
+    domain = resolveStorefrontEnvironment().storeDomain;
+  } catch {
     return { checkoutUrl: null, error: "Store domain not configured" };
   }
 

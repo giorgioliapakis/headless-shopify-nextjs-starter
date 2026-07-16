@@ -15,8 +15,9 @@ for (const line of (await readFile(envPath, "utf8")).split(/\r?\n/)) {
   values.set(match[1], value);
 }
 
-const domain = values.get("SHOPIFY_STORE_DOMAIN");
-const token = values.get("SHOPIFY_STOREFRONT_ACCESS_TOKEN");
+const domain = values.get("PUBLIC_STORE_DOMAIN") ?? values.get("SHOPIFY_STORE_DOMAIN");
+const token =
+  values.get("PUBLIC_STOREFRONT_API_TOKEN") ?? values.get("SHOPIFY_STOREFRONT_ACCESS_TOKEN");
 if (!domain || !token) {
   console.error("The supplied env file must contain Shopify Storefront domain and token values.");
   process.exit(1);
@@ -28,8 +29,8 @@ const environment = Object.fromEntries(
   ),
 );
 Object.assign(environment, {
-  SHOPIFY_STORE_DOMAIN: domain,
-  SHOPIFY_STOREFRONT_ACCESS_TOKEN: token,
+  PUBLIC_STORE_DOMAIN: domain,
+  PUBLIC_STOREFRONT_API_TOKEN: token,
   SHOPIFY_API_VERSION: "2026-07",
   NEXT_PUBLIC_SITE_NAME: "Verification Store",
   NEXT_PUBLIC_BASE_URL: "http://localhost:3000",

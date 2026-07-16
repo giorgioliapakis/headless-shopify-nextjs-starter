@@ -1,3 +1,4 @@
+import { gql } from "@shopify/hydrogen";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { assertStorefrontOk } from "../errors";
@@ -5,7 +6,7 @@ import { storefront } from "../storefront";
 import { type ShopifyMenuResponse, transformShopifyMenu } from "../transforms/menu";
 import type { Menu } from "../types/menu";
 
-const MENU_ITEM_FIELDS_FRAGMENT = `#graphql
+const MENU_ITEM_FIELDS_FRAGMENT = gql(`
   fragment MenuItemFields on MenuItem {
     id
     title
@@ -18,10 +19,10 @@ const MENU_ITEM_FIELDS_FRAGMENT = `#graphql
       ... on Page { handle }
     }
   }
-` as const;
+`);
 
-const GET_MENU_QUERY = `#graphql
-  ${MENU_ITEM_FIELDS_FRAGMENT}
+const GET_MENU_QUERY = gql(
+  `
   query getMenu($handle: String!) {
     menu(handle: $handle) {
       id
@@ -38,7 +39,9 @@ const GET_MENU_QUERY = `#graphql
       }
     }
   }
-` as const;
+`,
+  [MENU_ITEM_FIELDS_FRAGMENT],
+);
 
 export async function getMenu({ handle }: { handle: string }): Promise<Menu | null> {
   "use cache: remote";
