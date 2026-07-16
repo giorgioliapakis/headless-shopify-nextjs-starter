@@ -22,6 +22,9 @@ const DEFAULT_MAX_BYTES = 50 * 1024 * 1024;
 const MAX_GIT_INDEX_BYTES = 20 * 1024 * 1024;
 const MAX_GIT_OBJECT_BYTES = 250 * 1024 * 1024;
 const MAX_GIT_OBJECT_FILES = 20_000;
+const MAX_STYLE_INSPECTION_BYTES = 2 * 1024 * 1024;
+const MAX_MEDIA_QUERIES_PER_FILE = 500;
+const MAX_BREAKPOINTS_PER_FILE = 100;
 const SKIPPED_DIRECTORIES = new Set([".git", ".migration", "node_modules"]);
 const execFileAsync = promisify(execFile);
 
@@ -85,6 +88,8 @@ export async function inspectThemeSource(input, options = {}) {
       };
       if (file.path.endsWith(".json") && info.size <= 1_048_576) {
         file.structure = await inspectJsonStructure(absolute, file.path);
+      } else if (shouldInspectStyle(file.path, info.size)) {
+        file.style = inspectStyleStructure(await readFile(absolute, "utf8"));
       }
       files.push(file);
       if (files.length > maxFiles)
@@ -189,6 +194,7 @@ async function inspectThemeArchive(source, archiveBytes, options) {
       const readStream = await zipfile.openReadStreamPromise(entry);
       const hash = createHash("sha256");
       const collectJson = entry.fileName.endsWith(".json") && entry.uncompressedSize <= 1_048_576;
+      const collectStyle = shouldInspectStyle(entry.fileName, entry.uncompressedSize);
       const chunks = [];
       let observedBytes = 0;
       for await (const chunk of readStream) {
@@ -197,7 +203,7 @@ async function inspectThemeArchive(source, archiveBytes, options) {
           throw new Error(`Theme archive entry exceeded its declared size: ${entry.fileName}`);
         }
         hash.update(chunk);
-        if (collectJson) chunks.push(chunk);
+        if (collectJson || collectStyle) chunks.push(chunk);
       }
       if (observedBytes !== entry.uncompressedSize) {
         throw new Error(`Theme archive entry size mismatch: ${entry.fileName}`);
@@ -210,6 +216,9 @@ async function inspectThemeArchive(source, archiveBytes, options) {
           ? {
               structure: inspectJsonValue(Buffer.concat(chunks).toString("utf8"), entry.fileName),
             }
+          : {}),
+        ...(collectStyle
+          ? { style: inspectStyleStructure(Buffer.concat(chunks).toString("utf8")) }
           : {}),
       });
       if (files.length > maxFiles)
@@ -240,6 +249,98 @@ async function inspectThemeArchive(source, archiveBytes, options) {
     inspection: "read-only-lazy-entry-inventory",
     requiresArchiveInspection: false,
   };
+}
+
+export function inspectStyleStructure(input) {
+  const breakpoints = new Map();
+  let mediaQueryCount = 0;
+  const mediaPattern = /@media\b([^{]{1,500}){/gi;
+  for (const match of input.matchAll(mediaPattern)) {
+    mediaQueryCount += 1;
+    if (mediaQueryCount > MAX_MEDIA_QUERIES_PER_FILE) break;
+    const query = match[1];
+    for (const observation of extractWidthObservations(query)) {
+      const key = `${observation.value}:${observation.unit}`;
+      const current = breakpoints.get(key) ?? {
+        value: observation.value,
+        unit: observation.unit,
+        normalizedPx: normalizeCssWidth(observation.value, observation.unit),
+        features: new Set(),
+        occurrences: 0,
+      };
+      current.features.add(observation.feature);
+      current.occurrences += 1;
+      breakpoints.set(key, current);
+      if (breakpoints.size >= MAX_BREAKPOINTS_PER_FILE) break;
+    }
+    if (breakpoints.size >= MAX_BREAKPOINTS_PER_FILE) break;
+  }
+  return {
+    parseStatus:
+      mediaQueryCount > MAX_MEDIA_QUERIES_PER_FILE || breakpoints.size >= MAX_BREAKPOINTS_PER_FILE
+        ? "bounded"
+        : "parsed-data-only",
+    mediaQueryCount: Math.min(mediaQueryCount, MAX_MEDIA_QUERIES_PER_FILE),
+    breakpoints: [...breakpoints.values()]
+      .map((entry) => ({
+        value: entry.value,
+        unit: entry.unit,
+        normalizedPx: entry.normalizedPx,
+        features: [...entry.features].sort(),
+        occurrences: entry.occurrences,
+      }))
+      .sort((left, right) => left.normalizedPx - right.normalizedPx),
+    normalization: "rem/em use CSS initial 16px only; every candidate requires rendered review",
+  };
+}
+
+function shouldInspectStyle(path, bytes) {
+  return (
+    bytes <= MAX_STYLE_INSPECTION_BYTES &&
+    /(?:^|\/)assets\/[^/]+\.(?:css|scss|sass)(?:\.liquid)?$/i.test(path)
+  );
+}
+
+function extractWidthObservations(query) {
+  const observations = [];
+  for (const match of query.matchAll(
+    /\b(min|max)-(device-)?width\s*:\s*(\d+(?:\.\d+)?)\s*(px|rem|em)\b/gi,
+  )) {
+    observations.push({
+      feature: `${match[1].toLowerCase()}-${match[2] ? "device-" : ""}width`,
+      value: Number(match[3]),
+      unit: match[4].toLowerCase(),
+    });
+  }
+  for (const match of query.matchAll(/\bwidth\s*(<=|>=|<|>)\s*(\d+(?:\.\d+)?)\s*(px|rem|em)\b/gi)) {
+    observations.push({
+      feature: `width-${comparisonName(match[1])}`,
+      value: Number(match[2]),
+      unit: match[3].toLowerCase(),
+    });
+  }
+  for (const match of query.matchAll(/\b(\d+(?:\.\d+)?)\s*(px|rem|em)\s*(<=|>=|<|>)\s*width\b/gi)) {
+    observations.push({
+      feature: `${comparisonName(match[3], true)}-width`,
+      value: Number(match[1]),
+      unit: match[2].toLowerCase(),
+    });
+  }
+  return observations.filter(
+    ({ value, unit }) =>
+      Number.isFinite(value) && value > 0 && normalizeCssWidth(value, unit) <= 10_000,
+  );
+}
+
+function normalizeCssWidth(value, unit) {
+  return Math.round((unit === "px" ? value : value * 16) * 1000) / 1000;
+}
+
+function comparisonName(operator, reversed = false) {
+  const names = reversed
+    ? { "<": "greater-than", "<=": "at-least", ">": "less-than", ">=": "at-most" }
+    : { "<": "less-than", "<=": "at-most", ">": "greater-than", ">=": "at-least" };
+  return names[operator];
 }
 
 async function inspectGitProvenance(root, files, manifestSha256) {

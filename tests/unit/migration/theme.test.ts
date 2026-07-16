@@ -6,7 +6,7 @@ import { promisify } from "node:util";
 
 import { describe, expect, it } from "vitest";
 
-import { inspectThemeSource } from "../../../migration/lib/theme.mjs";
+import { inspectStyleStructure, inspectThemeSource } from "../../../migration/lib/theme.mjs";
 import { writeStoredZip } from "../../helpers/zip";
 
 const execFileAsync = promisify(execFile);
@@ -51,22 +51,28 @@ describe("theme source inventory", () => {
       "sections/novel-orbit.liquid",
       "templates/index.json",
     ];
-    await writeStoredZip(
-      archive,
-      await Promise.all(
-        paths.map(async (name) => ({ name, data: await readFile(join(fixtureRoot, name)) })),
-      ),
+    const entries = await Promise.all(
+      paths.map(async (name) => ({ name, data: await readFile(join(fixtureRoot, name)) })),
     );
+    entries.push({
+      name: "assets/theme.css",
+      data: Buffer.from("@media (min-width: 48rem) { .grid { display: grid } }"),
+    });
+    await writeStoredZip(archive, entries);
     const theme = await inspectThemeSource(archive);
     expect(theme).toMatchObject({
       kind: "zip",
-      fileCount: 4,
+      fileCount: 5,
       requiresArchiveInspection: false,
       inspection: "read-only-lazy-entry-inventory",
       provenance: { immutableSourceMatch: "archive-sha256-and-entry-manifest" },
     });
     const template = theme.files?.find((file) => file.path === "templates/index.json");
     expect(template?.structure?.appBlockTypes).toHaveLength(1);
+    expect(theme.files?.find((file) => file.path === "assets/theme.css")?.style).toMatchObject({
+      mediaQueryCount: 1,
+      breakpoints: [{ value: 48, unit: "rem", normalizedPx: 768 }],
+    });
   });
 
   it("binds a clean local Git theme to its exact commit without trusting repository config", async () => {
@@ -163,6 +169,31 @@ describe("theme source inventory", () => {
       ],
     });
     expect(JSON.stringify(settings?.structure)).not.toContain("editorial copy");
+  });
+
+  it("extracts only bounded responsive facts from source styles", async () => {
+    const source = `
+      @media (max-width: 749px) { .one { color: red } }
+      @media (48rem <= width) and (width < 90em) { .two { color: blue } }
+      .copy { content: "merchant editorial text" }
+    `;
+    const style = inspectStyleStructure(source);
+    expect(style).toMatchObject({
+      parseStatus: "parsed-data-only",
+      mediaQueryCount: 2,
+      breakpoints: [
+        { value: 749, unit: "px", normalizedPx: 749, features: ["max-width"] },
+        { value: 48, unit: "rem", normalizedPx: 768, features: ["at-least-width"] },
+        { value: 90, unit: "em", normalizedPx: 1440, features: ["width-less-than"] },
+      ],
+    });
+    expect(JSON.stringify(style)).not.toContain("merchant editorial text");
+
+    const root = await mkdtemp(join(tmpdir(), "theme-style-"));
+    await mkdir(join(root, "assets"));
+    await writeFile(join(root, "assets", "theme.scss.liquid"), source);
+    const inventory = await inspectThemeSource(root);
+    expect(inventory.files[0].style).toEqual(style);
   });
 });
 

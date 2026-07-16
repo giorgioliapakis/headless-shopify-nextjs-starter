@@ -49,8 +49,18 @@ const PREFERENCES = [
   { colorScheme: "light", reducedMotion: true },
 ];
 const CONSENT_STATES = ["default", "accepted", "rejected"];
+const MAX_SOURCE_BREAKPOINTS = 6;
+const MIN_CAPTURE_WIDTH = 240;
+const MAX_CAPTURE_WIDTH = 2560;
 
-export function buildCaptureManifest(model) {
+/**
+ * @param {any} model
+ * @param {any} [theme]
+ */
+export function buildCaptureManifest(model, theme = null) {
+  const sourceBreakpointCandidates = buildSourceBreakpointCandidates(theme);
+  const breakpointViewports = buildBreakpointViewports(sourceBreakpointCandidates);
+  const viewports = [...VIEWPORTS, ...breakpointViewports];
   const routes = (model.routes ?? []).map((route) => {
     const states = STATES[route.sourceType] ?? STATES.other;
     return {
@@ -61,14 +71,14 @@ export function buildCaptureManifest(model) {
       target: route.target,
       mappingStatus: route.status,
       states,
-      viewports: VIEWPORTS,
+      viewports,
       locales: ["source-default"],
       preferences: PREFERENCES,
       consentStates: CONSENT_STATES,
       inputs: INPUTS[route.sourceType] ?? [],
-      sourceBreakpointCandidates: [],
+      sourceBreakpointCandidates,
       sourceBreakpointsRequireReview: true,
-      scenarios: buildPairwiseScenarios(route.sourcePath, states),
+      scenarios: buildPairwiseScenarios(route.sourcePath, states, breakpointViewports),
       dynamicMasks: [],
       dynamicMasksRequireReview: true,
       captureStatus: "pending",
@@ -83,6 +93,8 @@ export function buildCaptureManifest(model) {
       sourceAndPreviewUseSeparateContexts: true,
       animationsDisabledOnlyThroughReducedMotion: true,
       automaticDynamicMasking: false,
+      sourceBreakpointNormalization:
+        "rem/em candidates use the CSS initial 16px value and require rendered source review",
       screenshotsRemainOutsideFoundation: true,
     },
     routes,
@@ -90,12 +102,14 @@ export function buildCaptureManifest(model) {
       routeCount: routes.length,
       mappedRoutes: routes.filter((route) => route.mappingStatus === "mapped").length,
       scenarioCount: routes.reduce((count, route) => count + route.scenarios.length, 0),
+      sourceBreakpointCandidateCount: sourceBreakpointCandidates.length,
+      sourceBreakpointViewportCount: breakpointViewports.length,
       pendingRoutes: routes.length,
     },
   };
 }
 
-function buildPairwiseScenarios(path, states) {
+function buildPairwiseScenarios(path, states, breakpointViewports = []) {
   const scenarios = [];
   function add(state, viewport, preference, consent) {
     const value = { state, viewport, preference, consent, locale: "source-default" };
@@ -109,7 +123,77 @@ function buildPairwiseScenarios(path, states) {
     add(state, "mobile", "default", "default");
     add(state, "desktop", "default", "default");
   }
+  for (const viewport of breakpointViewports) {
+    add(states[0], viewport.id, "default", "default");
+  }
   return scenarios;
+}
+
+/** @param {any} theme */
+export function buildSourceBreakpointCandidates(theme) {
+  const candidates = new Map();
+  for (const file of theme?.files ?? []) {
+    for (const breakpoint of file.style?.breakpoints ?? []) {
+      const widthPx = Math.round(breakpoint.normalizedPx);
+      if (widthPx < MIN_CAPTURE_WIDTH || widthPx > MAX_CAPTURE_WIDTH) continue;
+      const key = String(widthPx);
+      const current = candidates.get(key) ?? {
+        id: `source-${widthPx}px`,
+        widthPx,
+        observedValues: new Map(),
+        features: new Set(),
+        occurrences: 0,
+        sourceFiles: new Set(),
+        reviewStatus: "requires-rendered-review",
+      };
+      current.observedValues.set(`${breakpoint.value}${breakpoint.unit}`, {
+        value: breakpoint.value,
+        unit: breakpoint.unit,
+      });
+      for (const feature of breakpoint.features ?? []) current.features.add(feature);
+      current.occurrences += breakpoint.occurrences ?? 1;
+      current.sourceFiles.add(file.path);
+      candidates.set(key, current);
+    }
+  }
+  return [...candidates.values()]
+    .sort((left, right) => right.occurrences - left.occurrences || left.widthPx - right.widthPx)
+    .slice(0, MAX_SOURCE_BREAKPOINTS)
+    .sort((left, right) => left.widthPx - right.widthPx)
+    .map((candidate) => ({
+      id: candidate.id,
+      widthPx: candidate.widthPx,
+      observedValues: [...candidate.observedValues.values()].sort(
+        (left, right) => left.value - right.value || left.unit.localeCompare(right.unit),
+      ),
+      features: [...candidate.features].sort(),
+      occurrences: candidate.occurrences,
+      sourceFiles: [...candidate.sourceFiles].sort().slice(0, 20),
+      reviewStatus: candidate.reviewStatus,
+    }));
+}
+
+function buildBreakpointViewports(candidates) {
+  const viewports = new Map();
+  for (const candidate of candidates) {
+    for (const [position, width] of [
+      ["below", candidate.widthPx - 1],
+      ["at", candidate.widthPx],
+      ["above", candidate.widthPx + 1],
+    ]) {
+      if (width < MIN_CAPTURE_WIDTH || width > MAX_CAPTURE_WIDTH) continue;
+      const id = `${candidate.id}-${position}`;
+      viewports.set(id, {
+        id,
+        width,
+        height: width < 768 ? 900 : 1024,
+        deviceScaleFactor: 1,
+        sourceBreakpointId: candidate.id,
+        position,
+      });
+    }
+  }
+  return [...viewports.values()];
 }
 
 export function buildReconstructionReadiness(model, captureManifest) {

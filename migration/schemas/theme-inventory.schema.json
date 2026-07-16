@@ -34,7 +34,18 @@
           "path": { "type": "string", "minLength": 1 },
           "bytes": { "type": "integer", "minimum": 0 },
           "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-          "structure": { "type": "object" }
+          "structure": { "type": "object" },
+          "style": {
+            "type": "object",
+            "required": ["parseStatus", "mediaQueryCount", "breakpoints", "normalization"],
+            "properties": {
+              "parseStatus": { "enum": ["parsed-data-only", "bounded"] },
+              "mediaQueryCount": { "type": "integer", "minimum": 0, "maximum": 500 },
+              "breakpoints": { "type": "array", "maxItems": 100 },
+              "normalization": { "type": "string", "minLength": 1 }
+            },
+            "additionalProperties": false
+          }
         },
         "additionalProperties": false
       }

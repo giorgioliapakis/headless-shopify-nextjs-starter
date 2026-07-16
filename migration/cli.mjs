@@ -410,7 +410,7 @@ const handlers = {
           kind: "model",
         });
       }
-      const captureManifest = buildCaptureManifest(model);
+      const captureManifest = buildCaptureManifest(model, theme);
       const capturePath = join(run.runDirectory, "model", "capture-manifest-v1.json");
       await writeJsonAtomic(capturePath, captureManifest);
       state = await recordArtifact(run.runDirectory, state, {

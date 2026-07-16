@@ -131,8 +131,10 @@ The storefront-runtime track is defined in
       interactive states, consent, dynamic masks, and reduced motion.
   - [x] Generate a bounded deterministic pairwise matrix for mobile/tablet/desktop, route interactions,
         typed input rules, locale, consent and reduced motion.
+  - [x] Extract bounded CSS media-query breakpoint candidates from directory/archive theme evidence and
+        add below/at/above scenarios while keeping rendered confirmation mandatory.
   - [x] Require manual dynamic-mask review; never auto-hide visual differences.
-  - [ ] Extract/review source-specific breakpoints and execute source/preview captures in the isolated
+  - [ ] Review source-specific breakpoints and execute source/preview captures in the isolated
         hostile-browser runner.
 - [x] Build a separate local-only evidence review package with readiness summary, blockers, decisions,
       grouped evidence, stale/conflict states, filters, provenance, and next actions.

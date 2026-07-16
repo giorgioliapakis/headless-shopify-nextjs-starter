@@ -65,4 +65,47 @@ describe("migration capture and readiness model", () => {
       "CAPTURE_SOURCE_AND_PREVIEW",
     );
   });
+
+  it("turns source media-query evidence into reviewed boundary scenarios", () => {
+    const capture = buildCaptureManifest(model, {
+      files: [
+        {
+          path: "assets/theme.css",
+          style: {
+            breakpoints: [
+              {
+                value: 47.9375,
+                unit: "rem",
+                normalizedPx: 767,
+                features: ["max-width"],
+                occurrences: 3,
+              },
+              {
+                value: 990,
+                unit: "px",
+                normalizedPx: 990,
+                features: ["min-width"],
+                occurrences: 2,
+              },
+            ],
+          },
+        },
+      ],
+    });
+    expect(capture.summary).toMatchObject({
+      sourceBreakpointCandidateCount: 2,
+      sourceBreakpointViewportCount: 6,
+      scenarioCount: 18,
+    });
+    expect(capture.routes[0].sourceBreakpointCandidates).toEqual([
+      expect.objectContaining({ widthPx: 767, reviewStatus: "requires-rendered-review" }),
+      expect.objectContaining({ widthPx: 990, reviewStatus: "requires-rendered-review" }),
+    ]);
+    expect(capture.routes[0].viewports).toContainEqual(
+      expect.objectContaining({ id: "source-767px-below", width: 766 }),
+    );
+    expect(capture.routes[0].scenarios).toContainEqual(
+      expect.objectContaining({ viewport: "source-990px-above", state: "default" }),
+    );
+  });
 });

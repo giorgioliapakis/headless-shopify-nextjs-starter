@@ -126,8 +126,10 @@ Review these ignored artifacts before allowing an agent to rebuild pages:
 - `model/brand-pack-v1.json` — immutable observations, empty merchant semantic roles and registered
   component/section variant contracts as three separate layers;
 - `model/capture-manifest-v1.json` — bounded pairwise source/preview scenarios across standard viewports,
-  route interactions, typed input rules, consent and reduced motion. Source-specific breakpoints and
-  dynamic masks remain explicit review work;
+  route interactions, typed input rules, consent and reduced motion, plus data-only CSS media-query
+  candidates captured below/at/above their normalized widths; `rem` and `em` candidates use the CSS
+  initial 16px value and always require rendered merchant review. Dynamic masks remain explicit review
+  work;
 - `reports/reconstruction-readiness-v1.json` — blockers, review decisions and next actions.
 - `snapshots/public/<sha256>.json` — immutable content-addressed public captures;
 - `reports/source-drift-v1.json` — baseline/unchanged/changed comparison and affected routes;
