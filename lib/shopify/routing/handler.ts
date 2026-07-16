@@ -1,8 +1,13 @@
 import "server-only";
-import { handleShopifyRoutes } from "@shopify/hydrogen";
+import { handleShopifyRoutes, parseCartRequest, type StorefrontClient } from "@shopify/hydrogen";
 
 import { appendServerTiming } from "@/lib/observability/server-timing";
 import { hydrogenCartHandlers } from "@/lib/shopify/hydrogen/cart-handlers";
+import {
+  hasHydrogenCartCookie,
+  responseHasExpiredCart,
+  withoutHydrogenCartCookie,
+} from "@/lib/shopify/hydrogen/cart-recovery";
 import { createRequestStorefrontClient } from "@/lib/shopify/hydrogen/storefront";
 import { shopConfig } from "@/shop.config";
 
@@ -76,14 +81,10 @@ export async function handleSafeShopifyProxyRoute(
     }
   }
 
-  const storefrontClient = createRequestStorefrontClient(request, options);
-  const response = await handleShopifyRoutes({
-    request,
-    requestContext: storefrontClient.requestContext,
-    sessionManager: createStatelessShopifyRouteSession(request),
-    storefrontClient,
-    handlers: route === "cart" ? [hydrogenCartHandlers] : undefined,
-  });
+  const response =
+    route === "cart"
+      ? await handleCartRoute(request, options)
+      : await handleRoute(request, createRequestStorefrontClient(request, options));
 
   if (!response) return null;
   const mutableResponse = new Response(response.body, response);
@@ -96,4 +97,58 @@ export async function handleSafeShopifyProxyRoute(
     route,
   );
   return mutableResponse;
+}
+
+async function handleCartRoute(
+  request: Request,
+  options?: SafeShopifyRouteOptions,
+): Promise<Response | null> {
+  let effectiveRequest = request;
+  const isJson = request.headers.get("content-type")?.includes("application/json") ?? false;
+
+  // Progressive add forms redirect before their mutation payload can be inspected. Verify only this
+  // low-frequency path when a cart cookie exists, then let Hydrogen create a replacement cart.
+  if (!isJson && request.method === "POST" && hasHydrogenCartCookie(request)) {
+    const parsed = await parseCartRequest(request.clone()).catch(() => null);
+    if (parsed?.action.intent === "add") {
+      const client = createRequestStorefrontClient(request, options);
+      const current = await hydrogenCartHandlers.get({ request, storefrontClient: client });
+      if (!current.data.cart) effectiveRequest = withoutHydrogenCartCookie(request);
+    }
+  }
+
+  const retryRequest = isJson && request.method === "POST" ? request.clone() : null;
+  let response = await handleRoute(
+    effectiveRequest,
+    createRequestStorefrontClient(effectiveRequest, options),
+    true,
+  );
+  if (
+    retryRequest &&
+    hasHydrogenCartCookie(retryRequest) &&
+    response &&
+    (await responseHasExpiredCart(response))
+  ) {
+    const cleanRequest = withoutHydrogenCartCookie(retryRequest);
+    response = await handleRoute(
+      cleanRequest,
+      createRequestStorefrontClient(cleanRequest, options),
+      true,
+    );
+  }
+  return response;
+}
+
+function handleRoute(
+  request: Request,
+  storefrontClient: StorefrontClient,
+  cart = false,
+): Promise<Response | null> {
+  return handleShopifyRoutes({
+    request,
+    requestContext: storefrontClient.requestContext,
+    sessionManager: createStatelessShopifyRouteSession(request),
+    storefrontClient,
+    handlers: cart ? [hydrogenCartHandlers] : undefined,
+  });
 }

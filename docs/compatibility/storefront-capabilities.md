@@ -98,8 +98,10 @@ in the external credential broker and must not be placed in the storefront envir
 
 The Hydrogen adapter returns stable data/GraphQL errors, rejects HTTP, network, timeout, malformed JSON
 and observed API-version drift with a redacted `StorefrontApiError`, and never reflects an upstream
-response body. Cart mutations preserve Shopify user errors and warnings. Expired-cart recovery and richer
-structured observability remain migration targets.
+response body. Cart mutations preserve Shopify user errors and warnings. Expired add-to-cart identities
+recover by replaying only the idempotent add intent against a newly created Hydrogen cart;
+update/remove/discount/note intents are never replayed onto a different cart. Richer structured
+observability remains a migration target.
 
 ## Customization ownership
 

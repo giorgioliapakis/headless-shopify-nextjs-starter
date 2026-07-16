@@ -213,6 +213,64 @@ describe("Hydrogen request lifecycle", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
+  it("recreates an expired cart only for an idempotent add intent", async () => {
+    const money = { amount: "24.00", currencyCode: "USD" };
+    const replacementCart = {
+      checkoutUrl: "https://neutral-fixture.myshopify.com/checkouts/replacement",
+      cost: {
+        checkoutChargeAmount: money,
+        subtotalAmount: money,
+        totalAmount: money,
+      },
+      discountCodes: [],
+      id: "gid://shopify/Cart/replacement-cart",
+      lines: { nodes: [] },
+      note: null,
+      totalQuantity: 1,
+      updatedAt: "2026-01-01T00:00:00Z",
+    };
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        Response.json({
+          data: {
+            cartLinesAdd: {
+              cart: null,
+              userErrors: [{ code: "INVALID", message: "The specified cart does not exist." }],
+              warnings: [],
+            },
+          },
+        }),
+      )
+      .mockResolvedValueOnce(
+        Response.json({
+          data: { cartCreate: { cart: replacementCart, userErrors: [], warnings: [] } },
+        }),
+      );
+    const response = await handleSafeShopifyProxyRoute(
+      new Request("https://store.example/api/cart", {
+        method: "POST",
+        headers: {
+          cookie: "cart=expired-cart; market=en-AU",
+          "content-type": "application/json",
+          origin: "https://store.example",
+        },
+        body: JSON.stringify({
+          lines: [{ merchandiseId: "gid://shopify/ProductVariant/1001", quantity: 1 }],
+        }),
+      }),
+      { environment: privateEnvironment, fetch: fetchMock },
+    );
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(String(fetchMock.mock.calls[0]?.[1]?.body)).toContain("CartLinesAdd");
+    expect(String(fetchMock.mock.calls[1]?.[1]?.body)).toContain("CartCreate");
+    expect(response?.headers.get("set-cookie")).toMatch(/^cart=replacement-cart;/);
+    await expect(response?.json()).resolves.toMatchObject({
+      cart: { id: "gid://shopify/Cart/replacement-cart" },
+    });
+  });
+
   it("uses browser-controlled same-origin evidence and preserves unrelated cookies", () => {
     expect(
       isSameOriginMutation(
