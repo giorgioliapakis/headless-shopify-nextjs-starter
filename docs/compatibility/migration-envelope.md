@@ -27,7 +27,7 @@ coding agent must produce one of four outcomes: `compatible`, `compatible-with-d
 | Input                    |                                     Version-1 bound | Behavior outside the bound                             |
 | ------------------------ | --------------------------------------------------: | ------------------------------------------------------ |
 | Theme directory          |                5,000 regular files and 50 MiB total | Preflight fails closed                                 |
-| Theme archive            |              One `.zip`, 50 MiB; hash/metadata only | Isolated archive-safe inspection remains required      |
+| Theme archive            |          One `.zip`, 50 MiB compressed and expanded | Lazy validated inventory; never extracted or executed  |
 | Symlinks/special files   |                                                None | Preflight fails closed                                 |
 | Theme JSON               |               1 MiB/file and 10,000 traversed nodes | Marked bounded/unknown; never executed                 |
 | Public sitemap inventory |          10 same-origin XML sitemaps and 5,000 URLs | Reported as a bounded partial inventory                |

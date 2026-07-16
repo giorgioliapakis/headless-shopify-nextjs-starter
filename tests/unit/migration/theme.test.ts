@@ -1,10 +1,14 @@
+import { execFile } from "node:child_process";
 import { mkdtemp, mkdir, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { promisify } from "node:util";
 
 import { describe, expect, it } from "vitest";
 
 import { inspectThemeSource } from "../../../migration/lib/theme.mjs";
+
+const execFileAsync = promisify(execFile);
 
 describe("theme source inventory", () => {
   it("creates a deterministic read-only inventory", async () => {
@@ -32,14 +36,35 @@ describe("theme source inventory", () => {
     await expect(inspectThemeSource(clean, { maxBytes: 4 })).rejects.toThrow(/byte limit/);
   });
 
-  it("hashes zip files without extracting them", async () => {
+  it("lazily inventories zip files without extracting them", async () => {
     const root = await mkdtemp(join(tmpdir(), "theme-zip-"));
     const archive = join(root, "theme.zip");
-    await writeFile(archive, "not executed or extracted");
-    await expect(inspectThemeSource(archive)).resolves.toMatchObject({
-      kind: "zip",
-      requiresArchiveInspection: true,
+    await execFileAsync("zip", ["-q", "-r", archive, "sections", "templates"], {
+      cwd: "tests/fixtures/migration/theme",
     });
+    const theme = await inspectThemeSource(archive);
+    expect(theme).toMatchObject({
+      kind: "zip",
+      fileCount: 3,
+      requiresArchiveInspection: false,
+      inspection: "read-only-lazy-entry-inventory",
+    });
+    const template = theme.files?.find((file) => file.path === "templates/index.json");
+    expect(template?.structure?.appBlockTypes).toHaveLength(1);
+  });
+
+  it("rejects malformed and symlink-bearing archives", async () => {
+    const malformedRoot = await mkdtemp(join(tmpdir(), "theme-malformed-"));
+    const malformed = join(malformedRoot, "theme.zip");
+    await writeFile(malformed, "not a zip archive");
+    await expect(inspectThemeSource(malformed)).rejects.toThrow();
+
+    const root = await mkdtemp(join(tmpdir(), "theme-zip-link-"));
+    await writeFile(join(root, "target.liquid"), "synthetic");
+    await symlink("target.liquid", join(root, "linked.liquid"));
+    const archive = join(root, "linked.zip");
+    await execFileAsync("zip", ["-q", "-y", archive, "linked.liquid"], { cwd: root });
+    await expect(inspectThemeSource(archive)).rejects.toThrow(/symbolic link/);
   });
 
   it("extracts bounded JSON structure as data without executing theme code", async () => {

@@ -875,8 +875,8 @@
     {
       "path": "package.json",
       "sourceSha256": "ae662f2818fe83f3a91d3eabe6bedee2709d5703b11d7e2bdc26e4bd151fd85e",
-      "currentSha256": "65d5df0c04ee8c41b54b2df7d1840b8f4ac9d24a9f5364f6162dea9ac995b132",
-      "modification": "Adds pinned browser, accessibility and Lighthouse release gates plus migration/update/release commands."
+      "currentSha256": "f08cb2956e891b38791a00b807d21a7736978ba43f743f5e653927e8e7d9eaa9",
+      "modification": "Adds pinned safe theme-archive inventory plus browser, migration, update, and release commands."
     },
     {
       "path": "postcss.config.mjs",

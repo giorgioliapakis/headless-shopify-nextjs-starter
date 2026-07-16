@@ -2,6 +2,8 @@ import { createHash } from "node:crypto";
 import { lstat, open, readFile, readdir, realpath } from "node:fs/promises";
 import { basename, extname, relative, resolve, sep } from "node:path";
 
+import yauzl from "yauzl";
+
 const DEFAULT_MAX_FILES = 5_000;
 const DEFAULT_MAX_BYTES = 50 * 1024 * 1024;
 const SKIPPED_DIRECTORIES = new Set([".git", ".migration", "node_modules"]);
@@ -18,15 +20,7 @@ export async function inspectThemeSource(input, options = {}) {
     const extension = extname(source).toLowerCase();
     if (extension !== ".zip") throw new Error("Theme archive must be a .zip file");
     assertWithinLimit(sourceStat.size, options.maxBytes ?? DEFAULT_MAX_BYTES, "Theme archive");
-    return {
-      kind: "zip",
-      source,
-      name: basename(source),
-      bytes: sourceStat.size,
-      sha256: await hashFile(source),
-      inspection: "metadata-only",
-      requiresArchiveInspection: true,
-    };
+    return inspectThemeArchive(source, sourceStat.size, options);
   }
   if (!sourceStat.isDirectory()) throw new Error("Theme source must be a directory or .zip file");
 
@@ -86,7 +80,15 @@ export async function inspectThemeSource(input, options = {}) {
 
 async function inspectJsonStructure(path) {
   try {
-    const value = JSON.parse(await readFile(path, "utf8"));
+    return inspectJsonValue(await readFile(path, "utf8"));
+  } catch {
+    return { parseStatus: "invalid-json", sectionTypes: [], appBlockTypes: [] };
+  }
+}
+
+function inspectJsonValue(input) {
+  try {
+    const value = JSON.parse(input);
     const sectionTypes = new Set();
     const appBlockTypes = new Set();
     let nodes = 0;
@@ -119,6 +121,91 @@ async function inspectJsonStructure(path) {
   } catch {
     return { parseStatus: "invalid-json", sectionTypes: [], appBlockTypes: [] };
   }
+}
+
+async function inspectThemeArchive(source, archiveBytes, options) {
+  const maxFiles = options.maxFiles ?? DEFAULT_MAX_FILES;
+  const maxBytes = options.maxBytes ?? DEFAULT_MAX_BYTES;
+  const zipfile = await yauzl.openPromise(source, {
+    autoClose: true,
+    decodeStrings: true,
+    strictFileNames: true,
+    validateEntrySizes: true,
+  });
+  if (zipfile.entryCount > maxFiles) {
+    zipfile.close();
+    throw new Error(`Theme archive exceeds the ${maxFiles} file limit`);
+  }
+  const files = [];
+  let totalBytes = 0;
+  try {
+    for await (const entry of zipfile.eachEntry()) {
+      if (entry.fileName.endsWith("/")) continue;
+      if (entry.isEncrypted())
+        throw new Error(`Theme archive contains an encrypted entry: ${entry.fileName}`);
+      if (isSymbolicLinkEntry(entry))
+        throw new Error(`Theme archive contains a symbolic link: ${entry.fileName}`);
+      if (!isRegularFileEntry(entry))
+        throw new Error(`Theme archive contains an unsupported entry: ${entry.fileName}`);
+      totalBytes += entry.uncompressedSize;
+      assertWithinLimit(totalBytes, maxBytes, "Theme archive contents");
+      const readStream = await zipfile.openReadStreamPromise(entry);
+      const hash = createHash("sha256");
+      const collectJson = entry.fileName.endsWith(".json") && entry.uncompressedSize <= 1_048_576;
+      const chunks = [];
+      let observedBytes = 0;
+      for await (const chunk of readStream) {
+        observedBytes += chunk.length;
+        if (observedBytes > entry.uncompressedSize || observedBytes > maxBytes) {
+          throw new Error(`Theme archive entry exceeded its declared size: ${entry.fileName}`);
+        }
+        hash.update(chunk);
+        if (collectJson) chunks.push(chunk);
+      }
+      if (observedBytes !== entry.uncompressedSize) {
+        throw new Error(`Theme archive entry size mismatch: ${entry.fileName}`);
+      }
+      files.push({
+        path: entry.fileName,
+        bytes: observedBytes,
+        sha256: hash.digest("hex"),
+        ...(collectJson
+          ? { structure: inspectJsonValue(Buffer.concat(chunks).toString("utf8")) }
+          : {}),
+      });
+      if (files.length > maxFiles)
+        throw new Error(`Theme archive exceeds the ${maxFiles} file limit`);
+    }
+  } finally {
+    if (zipfile.isOpen) zipfile.close();
+  }
+  files.sort((left, right) => left.path.localeCompare(right.path));
+  return {
+    kind: "zip",
+    source,
+    name: basename(source),
+    archiveBytes,
+    bytes: totalBytes,
+    fileCount: files.length,
+    sha256: await hashFile(source),
+    manifestSha256: createHash("sha256").update(JSON.stringify(files)).digest("hex"),
+    files,
+    inspection: "read-only-lazy-entry-inventory",
+    requiresArchiveInspection: false,
+  };
+}
+
+function unixMode(entry) {
+  return entry.versionMadeBy >>> 8 === 3 ? (entry.externalFileAttributes >>> 16) & 0xffff : 0;
+}
+
+function isSymbolicLinkEntry(entry) {
+  return (unixMode(entry) & 0o170000) === 0o120000;
+}
+
+function isRegularFileEntry(entry) {
+  const mode = unixMode(entry);
+  return mode === 0 || (mode & 0o170000) === 0o100000;
 }
 
 async function hashFile(path) {

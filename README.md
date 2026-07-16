@@ -55,7 +55,8 @@ pnpm migrate resume --json
 ```
 
 The snapshot is bounded, same-origin, DNS-pinned, robots-aware and treated as untrusted evidence. Theme
-source is hashed read-only; archives are not extracted or executed. State, evidence and logs remain in
+source is inventoried read-only; archives are lazily path/size/type validated, never extracted or
+executed. State, evidence and logs remain in
 ignored `.migration/`. Secret-bearing CLI flags are rejected. Protected Shopify Admin discovery is a
 future allowlisted OS-keychain broker—not an access token passed to an agent.
 
