@@ -24,7 +24,9 @@ const commit = (await git(["rev-parse", "HEAD"])).trim();
 const files = (await git(["ls-files", "-z"])).split("\0").filter(Boolean).sort();
 const sourceFiles = [];
 for (const path of files) {
-  if (prohibited.some((pattern) => pattern.test(path))) fail(`prohibited tracked path: ${path}`);
+  if (path !== ".env.example" && prohibited.some((pattern) => pattern.test(path))) {
+    fail(`prohibited tracked path: ${path}`);
+  }
   const absolute = join(root, path);
   const metadata = await stat(absolute);
   if (!metadata.isFile()) fail(`non-regular tracked path: ${path}`);

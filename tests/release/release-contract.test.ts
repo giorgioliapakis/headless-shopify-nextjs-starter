@@ -15,6 +15,7 @@ describe("release contract", () => {
     expect(script).toContain('git(["archive", "--format=tar"');
     expect(script).toContain('"sbom.cdx.json"');
     expect(script).toContain('signature: "unsigned-local-evidence"');
+    expect(script).toContain('path !== ".env.example"');
   });
 
   it("documents every exact lifecycle-script exception", async () => {
