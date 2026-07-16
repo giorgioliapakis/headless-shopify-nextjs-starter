@@ -109,6 +109,13 @@ pnpm dev
 Add a Storefront API domain/token to `.env.local`. The token is runtime read access only; future
 migration discovery uses a separate short-lived, allowlisted Admin credential broker.
 
+Verify the configuration before the first build. The report is redacted and never prints the token or
+Shopify response content:
+
+```bash
+pnpm storefront:doctor
+```
+
 A private Headless-channel Storefront token is optional, but required for Shopify URL-redirect lookup.
 The public storefront token is never reused as private access. Additional markets should be enabled only
 after they are published in Shopify and their localized pricing, availability, URLs and checkout handoff

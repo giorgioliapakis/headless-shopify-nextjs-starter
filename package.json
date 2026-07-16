@@ -25,6 +25,7 @@
     "verify:upstream": "node scripts/upstream/verify.mjs",
     "verify:production": "node scripts/verify/production.mjs",
     "start": "next start",
+    "storefront:doctor": "node --env-file-if-exists=.env.local scripts/shopify/doctor.mjs",
     "supply-chain:audit": "node scripts/security/audit-lifecycle-scripts.mjs && node scripts/security/audit-licenses.mjs",
     "test": "vitest run",
     "test:contracts": "vitest run tests/contracts",
