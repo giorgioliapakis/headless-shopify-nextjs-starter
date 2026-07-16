@@ -7,6 +7,9 @@ import process from "node:process";
 
 const root = resolve(process.cwd());
 const manifest = JSON.parse(await readFile(resolve(root, "agent-workflows/skills.json"), "utf8"));
+const workflowManifest = JSON.parse(
+  await readFile(resolve(root, "agent-workflows/manifest.json"), "utf8"),
+);
 let count = 0;
 
 function fail(message) {
@@ -16,6 +19,24 @@ function fail(message) {
 
 if (manifest.schemaVersion !== 1) fail("unsupported manifest schema");
 if (manifest.nextReference?.version !== "16.2.10") fail("Next.js reference version drifted");
+if (workflowManifest.schemaVersion !== 1) fail("unsupported workflow manifest schema");
+
+const workflowIds = new Set();
+for (const workflow of workflowManifest.workflows ?? []) {
+  if (!/^[a-z0-9][a-z0-9-]*$/.test(workflow.id) || workflowIds.has(workflow.id)) {
+    fail(`invalid or duplicate workflow: ${workflow.id}`);
+  }
+  workflowIds.add(workflow.id);
+  const path = resolve(root, workflow.path ?? "");
+  if (!path.startsWith(`${resolve(root, workflowManifest.canonicalDirectory)}/`)) {
+    fail(`workflow path escaped canonical directory: ${workflow.id}`);
+  }
+  const metadata = await stat(path).catch(() => fail(`missing workflow: ${workflow.id}`));
+  if (!metadata.isFile()) fail(`non-file workflow: ${workflow.id}`);
+}
+if (!workflowIds.has("foundation-work") || !workflowIds.has("migrate-storefront")) {
+  fail("canonical foundation and migration workflows are required");
+}
 
 for (const source of manifest.sources ?? []) {
   if (!/^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\.git$/.test(source.repository)) {

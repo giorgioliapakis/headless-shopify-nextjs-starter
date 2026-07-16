@@ -6,17 +6,17 @@ active implementation detail lives in `docs/plans/2026-07-13-001-feat-autonomous
 The storefront-runtime track is defined in
 `docs/plans/2026-07-16-001-feat-hydrogen-storefront-platform-plan.md`. Its units execute in this order:
 
-- [ ] H0 — Governance, compatibility contracts and measurable baselines.
+- [x] H0 — Governance, compatibility contracts and measurable baselines.
   - [x] Accept the exact, expiring Hydrogen preview exception.
   - [x] Publish the honest current capability inventory and performance budget policy.
   - [x] Capture deterministic Storefront transport, cart and route contracts.
-  - [ ] Record the reproducible production-mode neutral performance baseline.
+  - [x] Record the reproducible production-mode neutral performance baseline.
 - [x] H1 — Exact Hydrogen package and matching agent-skill provenance.
 - [x] H2 — Request-scoped Storefront client and credential-free GraphQL typing migration.
 - [ ] H3 — Shopify routing, redirect, Markets and cache-isolation integration.
 - [ ] H4 — Hydrogen cart, money, Shop Pay and consent-aware analytics conformance.
 - [ ] H5 — Complete the invariant commerce core and conditional capability packs.
-- [ ] H6 — Versioned token, component-variant and section-recipe customization system.
+- [x] H6 — Versioned token, component-variant and section-recipe customization system.
 - [ ] H7 — Browser, accessibility, performance, security and operations release gates.
 - [ ] H8 — Bind the runtime to autonomous migration and prove the experimental alpha.
 
@@ -59,7 +59,7 @@ The storefront-runtime track is defined in
 
 ## Phase 3 — Thin vertical migration proof
 
-- [ ] Implement only `doctor`, `preflight`, `snapshot`, `status`, `decision`, `verify`, and `resume` with
+- [x] Implement only `doctor`, `preflight`, `snapshot`, `status`, `decision`, `verify`, and `resume` with
       versioned JSON/files and explicit completion.
 - [ ] Take a disposable downstream fixture through URL/theme preflight, home/PDP/collection
       reconstruction, deterministic comparison, and signed merchant review.

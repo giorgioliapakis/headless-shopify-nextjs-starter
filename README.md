@@ -11,8 +11,9 @@ The intended workflow is:
 5. Verify content, behavior, responsive design, SEO, accessibility, and performance.
 6. Cut over only after explicit merchant approval.
 
-This repository is private and pre-alpha. It contains the audited storefront runtime; the autonomous
-migration workflow is still under construction.
+This repository is a private experimental alpha candidate. It contains the audited storefront runtime
+and a credential-free, resumable migration thin slice. It does not yet claim that any arbitrary Shopify
+store can migrate or cut over autonomously.
 
 The current roadmap deliberately proves a thin URL-to-review migration before generalizing the agent
 framework. The first public milestone will be an evidence-limited experimental alpha with a declared
@@ -31,6 +32,43 @@ compatibility matrix, not an “any Shopify store” claim.
 - Exact-SHA Vercel Shop provenance with the shopper assistant and preview headless accounts excluded
 - Pinned React performance, composition, shadcn, and interface-review skills; Next.js guidance comes
   from the installed version's bundled docs
+- Versioned semantic theme tokens, 14 registered global/page sections and merchant-owned page recipes
+- Native selling-plan selection, Shopify blogs/articles and a machine-readable capability registry
+- CSP/security headers, rich-content sanitization, health/readiness endpoints, Storefront operation
+  budgets and compressed JS/CSS regression gates
+
+## Credential-free migration start
+
+Run migrations in a private downstream repository, never in the distributable foundation. You need the
+current public storefront URL and the merchant's published theme as a local directory or `.zip`. No API
+credential is required for this first pass.
+
+```bash
+pnpm migrate doctor \
+  --store-url https://shop.example \
+  --theme-source /absolute/path/to/published-theme \
+  --new-run
+pnpm migrate capability
+pnpm migrate snapshot --max-pages 100
+pnpm migrate status
+pnpm migrate resume --json
+```
+
+The snapshot is bounded, same-origin, DNS-pinned, robots-aware and treated as untrusted evidence. Theme
+source is hashed read-only; archives are not extracted or executed. State, evidence and logs remain in
+ignored `.migration/`. Secret-bearing CLI flags are rejected. Protected Shopify Admin discovery is a
+future allowlisted OS-keychain broker—not an access token passed to an agent.
+
+After reconstruction, record non-authoritative review decisions and run the complete local gate:
+
+```bash
+pnpm migrate decision --id homepage-parity --status accepted --summary "Approved against the source evidence"
+pnpm migrate verify --production
+```
+
+There is intentionally no deploy, launch, DNS or cutover command. Those actions require separate human
+approval outside the agent-writable repository. Read the canonical
+[migration workflow](agent-workflows/canonical/migrate-storefront.md) before starting.
 
 ## Hydrogen adoption
 
@@ -86,5 +124,9 @@ mode refuses any real merchant domain, token or private credential and fails on 
 - [Execution backlog](docs/TASKS.md)
 - [Clean-room policy](CLEAN_ROOM.md)
 - [Migration trust boundaries](docs/security/trust-boundaries.md)
+- [Migration workflow](agent-workflows/canonical/migrate-storefront.md)
+- [Hydrogen compatibility](docs/compatibility/hydrogen.md)
+- [Hydrogen upgrade runbook](docs/runbooks/hydrogen-upgrade.md)
+- [Cutover runbook](docs/runbooks/cutover.md) and [rollback runbook](docs/runbooks/rollback.md)
 - [Active implementation plan](docs/plans/2026-07-13-001-feat-autonomous-shopify-starter-plan.md)
 - [Hydrogen storefront platform plan](docs/plans/2026-07-16-001-feat-hydrogen-storefront-platform-plan.md)

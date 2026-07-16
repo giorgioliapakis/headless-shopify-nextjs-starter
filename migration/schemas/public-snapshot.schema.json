@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-shopify.dev/schemas/migration/public-snapshot-v1.json",
+  "title": "Credential-free public storefront snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "capturedAt",
+    "source",
+    "limits",
+    "robots",
+    "sitemap",
+    "pages",
+    "summary"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "capturedAt": { "type": "string", "format": "date-time" },
+    "source": {
+      "type": "object",
+      "required": ["origin", "mode", "evidenceTrust"],
+      "properties": {
+        "origin": { "type": "string", "format": "uri" },
+        "mode": { "const": "credential-free-public" },
+        "evidenceTrust": { "const": "untrusted" }
+      }
+    },
+    "limits": { "type": "object" },
+    "robots": { "type": "object" },
+    "sitemap": { "type": "object" },
+    "pages": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "required": ["url", "path", "type", "status"],
+        "properties": {
+          "url": { "type": "string", "format": "uri" },
+          "path": { "type": "string", "pattern": "^/" },
+          "type": {
+            "enum": [
+              "home",
+              "product",
+              "collection",
+              "blog",
+              "article",
+              "page",
+              "policy",
+              "search",
+              "other"
+            ]
+          },
+          "status": { "type": "integer", "minimum": 0, "maximum": 599 },
+          "evidencePath": { "type": ["string", "null"], "pattern": "^(evidence/public/pages/|$)" }
+        }
+      }
+    },
+    "summary": { "type": "object" }
+  }
+}
