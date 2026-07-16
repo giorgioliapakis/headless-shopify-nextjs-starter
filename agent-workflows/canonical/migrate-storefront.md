@@ -59,6 +59,11 @@ not production authority.
    Read `model/capture-manifest-v1.json` and `reports/reconstruction-readiness-v1.json` before editing.
    Never remove an unknown/app blocker merely because a suggested primitive looks similar.
 
+   Every capture receives a timestamp-independent content identity and an immutable content-addressed
+   copy. A recapture writes `reports/source-drift-v1.json`, invalidates reconstruction, verification and
+   older source-bound review decisions only when observed source content changed, and never silently
+   treats an overwritten “current” file as the original evidence.
+
 5. Inspect progress at any time. Never infer completion from files or agent silence:
 
    ```bash
@@ -107,7 +112,8 @@ not production authority.
     production build and asset budgets.
 
 11. After interruption or context compaction, regenerate bounded trusted context with
-    `pnpm migrate resume --json`. Raw evidence is never included.
+    `pnpm migrate resume --json`. Raw evidence is never included. Missing, modified or path-escaping
+    artifacts degrade the context and become explicit next actions.
 
 ## Completion protocol
 

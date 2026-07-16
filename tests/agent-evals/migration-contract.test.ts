@@ -41,6 +41,12 @@ describe("agent migration contract", () => {
     return expect(source).resolves.toContain('"THEME_RIGHTS_REQUIRED"');
   });
 
+  it("binds review decisions to immutable public snapshot identities", async () => {
+    const source = await readFile("migration/cli.mjs", "utf8");
+    expect(source).toContain("sourceSnapshotId: snapshot.snapshotId");
+    expect(source).toContain("stale-source-drift");
+  });
+
   it("publishes every implemented command without granting launch authority", async () => {
     const workflow = await readFile("agent-workflows/canonical/migrate-storefront.md", "utf8");
     for (const command of [
@@ -66,9 +72,11 @@ describe("agent migration contract", () => {
       "run-state.schema.json",
       "public-snapshot.schema.json",
       "decision.schema.json",
+      "decision-validity.schema.json",
       "reconstruction-plan.schema.json",
       "capture-manifest.schema.json",
       "review-package.schema.json",
+      "source-drift.schema.json",
     ]) {
       const schema = JSON.parse(await readFile(`migration/schemas/${file}`, "utf8"));
       expect(schema.$schema).toContain("2020-12");

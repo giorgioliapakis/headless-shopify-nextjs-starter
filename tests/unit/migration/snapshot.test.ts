@@ -84,6 +84,7 @@ describe("public snapshot", () => {
       get,
     });
     expect(snapshot.summary).toMatchObject({ capturedCount: 3, successfulCount: 3 });
+    expect(snapshot.snapshotId).toMatch(/^[a-f0-9]{64}$/);
     expect(snapshot.pages[1]).toMatchObject({ type: "page", title: "About" });
     expect(snapshot.pages[2]).toMatchObject({ type: "product", title: "Tee" });
     expect(snapshot.pages[0].links).toEqual(["https://example.com/pages/about?from=nav"]);

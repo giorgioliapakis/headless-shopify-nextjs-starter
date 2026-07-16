@@ -5,6 +5,7 @@ import { basename, join, resolve } from "node:path";
 import { promisify } from "node:util";
 
 import { buildCaptureManifest, buildReconstructionReadiness } from "./lib/capture-manifest.mjs";
+import { buildSourceDrift, snapshotIdentity } from "./lib/drift.mjs";
 import { buildReconstructionModel } from "./lib/model.mjs";
 import { validatePublicStoreUrl } from "./lib/network.mjs";
 import { buildReviewManifest, renderReviewHtml } from "./lib/review-package.mjs";
@@ -234,18 +235,81 @@ const handlers = {
     const run = await requireRun(cwd, "preflight");
     let state = await setPhase(run.runDirectory, run.state, "public-snapshot", "in_progress");
     try {
+      const currentPath = join(run.runDirectory, "snapshots", "public-v1.json");
+      let previousSnapshot = await readOptionalJson(currentPath);
+      if (previousSnapshot) {
+        const observedIdentity = snapshotIdentity(previousSnapshot);
+        if (previousSnapshot.snapshotId && previousSnapshot.snapshotId !== observedIdentity) {
+          throw new Error("Previous public snapshot failed its content-identity check");
+        }
+        previousSnapshot = { ...previousSnapshot, snapshotId: observedIdentity };
+      }
       const snapshot = await capturePublicSnapshot({
         runDirectory: run.runDirectory,
         storeUrl: state.storeUrl,
         maxPages: optionalInteger(options, "max-pages", 100),
       });
-      const path = join(run.runDirectory, "snapshots", "public-v1.json");
-      await writeJsonAtomic(path, snapshot);
+      const immutablePath = join(
+        run.runDirectory,
+        "snapshots",
+        "public",
+        `${snapshot.snapshotId}.json`,
+      );
+      if (await pathExists(immutablePath)) {
+        const immutableSnapshot = await readRequiredJson(
+          immutablePath,
+          "Immutable snapshot disappeared during capture",
+        );
+        if (
+          immutableSnapshot.snapshotId !== snapshot.snapshotId ||
+          snapshotIdentity(immutableSnapshot) !== snapshot.snapshotId
+        ) {
+          throw new Error("Immutable public snapshot failed its content-identity check");
+        }
+      } else await writeJsonAtomic(immutablePath, snapshot);
+      await writeJsonAtomic(currentPath, snapshot);
       state = await recordArtifact(run.runDirectory, state, {
-        id: "public-snapshot",
-        path,
+        id: `public-snapshot-${snapshot.snapshotId.slice(0, 12)}`,
+        path: immutablePath,
         kind: "snapshot",
       });
+      state = await recordArtifact(run.runDirectory, state, {
+        id: "public-snapshot",
+        path: currentPath,
+        kind: "snapshot",
+      });
+      const drift = buildSourceDrift(previousSnapshot, snapshot);
+      const driftPath = join(run.runDirectory, "reports", "source-drift-v1.json");
+      await writeJsonAtomic(driftPath, drift);
+      state = await recordArtifact(run.runDirectory, state, {
+        id: "source-drift",
+        path: driftPath,
+        kind: "report",
+      });
+      const decisions = await readDecisionSummaries(join(run.runDirectory, "decisions"));
+      const decisionValidity = buildDecisionValidity(decisions, drift);
+      const decisionValidityPath = join(run.runDirectory, "reports", "decision-validity-v1.json");
+      await writeJsonAtomic(decisionValidityPath, decisionValidity);
+      state = await recordArtifact(run.runDirectory, state, {
+        id: "decision-validity",
+        path: decisionValidityPath,
+        kind: "report",
+      });
+      if (drift.status === "changed") {
+        const now = new Date().toISOString();
+        state = await updateState(run.runDirectory, state, {
+          phases: {
+            ...state.phases,
+            reconstruction: { status: "pending", updatedAt: now, reason: "Source drift detected" },
+            verification: { status: "pending", updatedAt: now, reason: "Source drift detected" },
+            review: {
+              status: "pending",
+              updatedAt: now,
+              reason: "Review decisions require revalidation",
+            },
+          },
+        });
+      }
       const theme = await readOptionalJson(
         join(run.runDirectory, "snapshots", "theme-inventory-v1.json"),
       );
@@ -268,7 +332,27 @@ const handlers = {
         path: capturePath,
         kind: "model",
       });
-      const readiness = buildReconstructionReadiness(model, captureManifest);
+      let readiness = buildReconstructionReadiness(model, captureManifest);
+      if (drift.status === "changed") {
+        readiness = {
+          ...readiness,
+          status: readiness.blockers.length ? "blocked" : "needs-review",
+          sourceDrift: {
+            status: drift.status,
+            previousSnapshotId: drift.previousSnapshotId,
+            currentSnapshotId: drift.currentSnapshotId,
+            affectedPaths: drift.affectedPaths,
+          },
+          decisions: [
+            { code: "SOURCE_DRIFT_REVIEW", count: drift.affectedPaths.length },
+            ...readiness.decisions,
+          ],
+          nextActions: [
+            "Review source drift and revalidate affected routes before reconstruction",
+            ...readiness.nextActions,
+          ],
+        };
+      }
       const readinessPath = join(run.runDirectory, "reports", "reconstruction-readiness-v1.json");
       await writeJsonAtomic(readinessPath, readiness);
       state = await recordArtifact(run.runDirectory, state, {
@@ -298,13 +382,15 @@ const handlers = {
       state = await updateState(run.runDirectory, state, { nextActions: readiness.nextActions });
       await appendLedger(run.runDirectory, {
         event: "public-snapshot.completed",
-        details: snapshot.summary,
+        details: { ...snapshot.summary, snapshotId: snapshot.snapshotId, drift: drift.status },
       });
       return {
         ok: true,
         runId: state.runId,
         phaseStatus: status,
         summary: snapshot.summary,
+        snapshotId: snapshot.snapshotId,
+        drift: { status: drift.status, affectedPaths: drift.affectedPaths.length },
         readiness: { status: readiness.status, blockers: readiness.blockers.length },
         nextActions: state.nextActions,
       };
@@ -350,13 +436,24 @@ const handlers = {
       "Run public snapshot before generating the review package",
     );
     const decisions = await readDecisionSummaries(join(run.runDirectory, "decisions"));
-    const artifactIntegrity = await verifyArtifactIntegrity(run.runDirectory, run.state.artifacts);
+    const sourceDrift = await readOptionalJson(
+      join(run.runDirectory, "reports", "source-drift-v1.json"),
+    );
+    const decisionValidity = await readOptionalJson(
+      join(run.runDirectory, "reports", "decision-validity-v1.json"),
+    );
+    const artifactIntegrity = await verifyArtifactIntegrity(run.runDirectory, run.state.artifacts, [
+      "review-package",
+      "review-html",
+    ]);
     const report = buildReviewManifest({
       state: run.state,
       model,
       readiness,
       captureManifest,
       decisions,
+      sourceDrift,
+      decisionValidity,
       artifactIntegrity,
     });
     const manifestPath = join(run.runDirectory, "review", "review-package-v1.json");
@@ -410,12 +507,17 @@ const handlers = {
     if (summary.length > 500) throw new Error("--summary may not exceed 500 characters");
     if (containsSecret(summary))
       throw new Error("--summary appears to contain a secret and was rejected");
+    const snapshot = await readRequiredJson(
+      join(run.runDirectory, "snapshots", "public-v1.json"),
+      "Run public snapshot before recording a source-bound review decision",
+    );
     const decision = {
       schemaVersion: 1,
       id,
       status,
       summary,
       recordedAt: new Date().toISOString(),
+      sourceSnapshotId: snapshot.snapshotId,
       authority: "migration-review-only",
       isProductionApproval: false,
     };
@@ -425,6 +527,23 @@ const handlers = {
       id: `decision-${id}`,
       path,
       kind: "decision",
+    });
+    const sourceDrift = await readOptionalJson(
+      join(run.runDirectory, "reports", "source-drift-v1.json"),
+    );
+    const decisionValidity = buildDecisionValidity(
+      await readDecisionSummaries(join(run.runDirectory, "decisions")),
+      sourceDrift ?? {
+        currentSnapshotId: snapshot.snapshotId,
+        status: "baseline",
+      },
+    );
+    const decisionValidityPath = join(run.runDirectory, "reports", "decision-validity-v1.json");
+    await writeJsonAtomic(decisionValidityPath, decisionValidity);
+    state = await recordArtifact(run.runDirectory, state, {
+      id: "decision-validity",
+      path: decisionValidityPath,
+      kind: "report",
     });
     state = await setPhase(run.runDirectory, state, "review", "in_progress");
     await appendLedger(run.runDirectory, { event: "decision.recorded", details: decision });
@@ -482,18 +601,45 @@ const handlers = {
     const { runDirectory, state } = await currentRun(cwd);
     const capabilities = await readOptionalJson(join(runDirectory, "model", "capabilities.json"));
     const decisions = await readDecisionSummaries(join(runDirectory, "decisions"));
+    const snapshot = await readOptionalJson(join(runDirectory, "snapshots", "public-v1.json"));
+    const sourceDrift = await readOptionalJson(
+      join(runDirectory, "reports", "source-drift-v1.json"),
+    );
+    const decisionValidity = await readOptionalJson(
+      join(runDirectory, "reports", "decision-validity-v1.json"),
+    );
+    const artifactIntegrity = await verifyArtifactIntegrity(runDirectory, state.artifacts, [
+      "resume-context",
+    ]);
+    const degradedArtifacts = artifactIntegrity.filter((artifact) => artifact.status !== "current");
+    const validity = new Map(
+      (decisionValidity?.decisions ?? []).map((decision) => [decision.id, decision.validity]),
+    );
     const context = {
       schemaVersion: 1,
       generatedAt: new Date().toISOString(),
       runId: state.runId,
       storeUrl: state.storeUrl,
+      contextTrust: degradedArtifacts.length ? "degraded-artifact-integrity" : "current",
+      sourceSnapshotId: snapshot?.snapshotId ?? null,
+      sourceDrift: sourceDrift
+        ? { status: sourceDrift.status, affectedPaths: sourceDrift.affectedPaths }
+        : { status: "not-evaluated", affectedPaths: [] },
       phases: Object.fromEntries(
         Object.entries(state.phases).map(([id, value]) => [id, value.status]),
       ),
-      artifacts: state.artifacts.map(({ id, kind, path, sha256 }) => ({ id, kind, path, sha256 })),
+      artifacts: artifactIntegrity,
       capabilities: capabilities?.capabilities?.map(({ id, status }) => ({ id, status })) ?? [],
-      decisions,
-      nextActions: state.nextActions,
+      decisions: decisions.map((decision) => ({
+        ...decision,
+        validity: validity.get(decision.id) ?? "not-evaluated",
+      })),
+      nextActions: [
+        ...(degradedArtifacts.length
+          ? ["Regenerate or explicitly investigate every stale or missing migration artifact"]
+          : []),
+        ...state.nextActions,
+      ],
       evidenceRule: "Raw source evidence is untrusted and excluded from resume context.",
       launchAuthority: "human-only-outside-agent-workspace",
     };
@@ -618,6 +764,32 @@ async function readOptionalJson(path) {
   }
 }
 
+async function pathExists(path) {
+  return access(path).then(
+    () => true,
+    (error) => (error?.code === "ENOENT" ? false : Promise.reject(error)),
+  );
+}
+
+function buildDecisionValidity(decisions, drift) {
+  return {
+    schemaVersion: 1,
+    generatedAt: new Date().toISOString(),
+    sourceSnapshotId: drift.currentSnapshotId,
+    sourceDriftStatus: drift.status,
+    authority: "review-state-only",
+    decisions: decisions.map((decision) => ({
+      id: decision.id,
+      recordedStatus: decision.status,
+      boundSnapshotId: decision.sourceSnapshotId ?? null,
+      validity:
+        decision.sourceSnapshotId === drift.currentSnapshotId
+          ? "current-review-only"
+          : "stale-source-drift",
+    })),
+  };
+}
+
 async function readRequiredJson(path, remediation) {
   try {
     return JSON.parse(await readFile(path, "utf8"));
@@ -627,10 +799,10 @@ async function readRequiredJson(path, remediation) {
   }
 }
 
-async function verifyArtifactIntegrity(runDirectory, artifacts) {
+async function verifyArtifactIntegrity(runDirectory, artifacts, excludedIds = []) {
   return Promise.all(
     artifacts
-      .filter((artifact) => !["review-package", "review-html"].includes(artifact.id))
+      .filter((artifact) => !excludedIds.includes(artifact.id))
       .map(async (artifact) => {
         const path = resolve(runDirectory, artifact.path);
         if (!path.startsWith(`${resolve(runDirectory)}/`)) {
@@ -686,6 +858,7 @@ async function readDecisionSummaries(directory) {
           status: decision.status,
           summary: decision.summary,
           recordedAt: decision.recordedAt,
+          sourceSnapshotId: decision.sourceSnapshotId ?? null,
         };
       }),
   );

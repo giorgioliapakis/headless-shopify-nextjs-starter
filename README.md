@@ -70,7 +70,9 @@ patterns remain merchant-owned downstream work. Bounded theme-setting observatio
 logo-reference and layout candidates without copying Liquid or editorial content; the agent must map
 these observations into semantic tokens and confirm them visually. The same command emits a deterministic
 source/preview capture manifest and a readiness report that keeps unknown routes, sections and app blocks
-explicitly blocking instead of silently treating a successful crawl as parity.
+explicitly blocking instead of silently treating a successful crawl as parity. Recaptures are
+content-addressed, retain immutable originals, report route-level source drift and stale earlier review
+decisions instead of overwriting their evidence silently.
 
 Use `--json` for agent-readable success and failure reports. Failed prerequisite checks include a bounded
 remediation and never create a partially initialized run.

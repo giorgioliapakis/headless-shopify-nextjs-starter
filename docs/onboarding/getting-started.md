@@ -76,6 +76,9 @@ Review these ignored artifacts before allowing an agent to rebuild pages:
 - `model/reconstruction-plan-v1.json` — route/section candidates and explicit unknowns;
 - `model/capture-manifest-v1.json` — required source/preview viewports and interaction states;
 - `reports/reconstruction-readiness-v1.json` — blockers, review decisions and next actions.
+- `snapshots/public/<sha256>.json` — immutable content-addressed public captures;
+- `reports/source-drift-v1.json` — baseline/unchanged/changed comparison and affected routes;
+- `reports/decision-validity-v1.json` — source-bound review decisions that remain current or became stale;
 - `review/index.html` — script-free, CSP-locked local report with grouped mappings, filters, decisions,
   artifact integrity and provenance. It contains no raw scraped HTML and grants no launch authority.
 

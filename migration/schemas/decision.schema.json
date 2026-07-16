@@ -10,6 +10,7 @@
     "status",
     "summary",
     "recordedAt",
+    "sourceSnapshotId",
     "authority",
     "isProductionApproval"
   ],
@@ -19,6 +20,7 @@
     "status": { "enum": ["pending", "accepted", "rejected"] },
     "summary": { "type": "string", "minLength": 1, "maxLength": 500 },
     "recordedAt": { "type": "string", "format": "date-time" },
+    "sourceSnapshotId": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
     "authority": { "const": "migration-review-only" },
     "isProductionApproval": { "const": false }
   }

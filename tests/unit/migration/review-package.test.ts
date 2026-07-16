@@ -91,6 +91,8 @@ describe("local migration review package", () => {
       readiness,
       captureManifest,
       decisions: [],
+      sourceDrift: null,
+      decisionValidity: null,
       artifactIntegrity: [{ id: "model", kind: "model", path: "model.json", status: "mismatch" }],
     });
 
@@ -119,6 +121,15 @@ describe("local migration review package", () => {
           recordedAt: "2026-07-17T00:00:00.000Z",
         },
       ],
+      sourceDrift: {
+        status: "changed",
+        previousSnapshotId: "a".repeat(64),
+        currentSnapshotId: "b".repeat(64),
+        affectedPaths: ["/products/example"],
+      },
+      decisionValidity: {
+        decisions: [{ id: "brand-review", validity: "stale-source-drift" }],
+      },
       artifactIntegrity: [],
     });
     const html = renderReviewHtml(report);
@@ -130,10 +141,42 @@ describe("local migration review package", () => {
     expect(html).toContain("&lt;img onerror=alert(1)&gt;");
     expect(html).toContain("&lt;script&gt;alert(1)&lt;/script&gt;");
     expect(html).toContain("not a deploy, DNS, cutover or launch approval");
+    expect(html).toContain("stale-source-drift");
+    expect(html).toContain("1 affected paths");
   });
 
   it("escapes every HTML metacharacter", () => {
     expect(escapeHtml(`<a title="x">'&`)).toBe("&lt;a title=&quot;x&quot;&gt;&#39;&amp;");
+  });
+
+  it("clears source-drift review only for a current accepted source-bound decision", () => {
+    const report = buildReviewManifest({
+      state,
+      model,
+      readiness: {
+        ...readiness,
+        decisions: [{ code: "SOURCE_DRIFT_REVIEW", count: 1 }],
+      },
+      captureManifest,
+      decisions: [
+        {
+          id: "source-drift-review",
+          status: "accepted",
+          summary: "Reviewed affected routes",
+          recordedAt: state.updatedAt,
+        },
+      ],
+      decisionValidity: {
+        decisions: [{ id: "source-drift-review", validity: "current-review-only" }],
+      },
+      sourceDrift: null,
+      artifactIntegrity: [],
+    });
+
+    expect(report.summary).toMatchObject({
+      readinessStatus: "ready-for-reconstruction",
+      requiredReviewCount: 0,
+    });
   });
 
   it("generates ignored review artifacts through the public CLI command", async () => {

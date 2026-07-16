@@ -6,7 +6,9 @@ const ISSUE_LABELS = {
   REVIEW_HEURISTIC_SECTION_MAPPINGS: "Heuristic section mappings need review",
   MAP_AND_VERIFY_BRAND_OBSERVATIONS: "Brand observations need mapping and visual review",
   CAPTURE_SOURCE_AND_PREVIEW: "Source and preview captures are pending",
+  SOURCE_DRIFT_REVIEW: "Observed source drift needs review",
 };
+const RESOLVABLE_REVIEW_DECISIONS = { SOURCE_DRIFT_REVIEW: "source-drift-review" };
 
 export function buildReviewManifest({
   state,
@@ -14,13 +16,32 @@ export function buildReviewManifest({
   readiness,
   captureManifest,
   decisions,
+  sourceDrift,
+  decisionValidity,
   artifactIntegrity,
 }) {
+  const validity = new Map(
+    (decisionValidity?.decisions ?? []).map((decision) => [decision.id, decision.validity]),
+  );
+  const recordedDecisions = decisions.map((decision) => ({
+    ...decision,
+    validity: validity.get(decision.id) ?? "not-evaluated",
+  }));
+  const currentAcceptedDecisions = new Set(
+    recordedDecisions
+      .filter(
+        (decision) => decision.status === "accepted" && decision.validity === "current-review-only",
+      )
+      .map((decision) => decision.id),
+  );
   const blockers = enrichIssues(readiness.blockers, readiness.nextActions);
   const requiredReviews = enrichIssues(
     readiness.decisions,
     readiness.nextActions,
     readiness.blockers?.length ?? 0,
+  ).filter(
+    (issue) =>
+      !issue.resolutionDecisionId || !currentAcceptedDecisions.has(issue.resolutionDecisionId),
   );
   const routes = (model.routes ?? []).map((route) => ({
     sourcePath: route.sourcePath,
@@ -49,6 +70,9 @@ export function buildReviewManifest({
   }));
   const staleArtifacts = artifactIntegrity.filter((artifact) => artifact.status !== "current");
   const pendingDecisions = decisions.filter((decision) => decision.status === "pending").length;
+  const staleDecisions = recordedDecisions.filter(
+    (decision) => decision.validity === "stale-source-drift",
+  ).length;
 
   return {
     schemaVersion: 1,
@@ -66,7 +90,11 @@ export function buildReviewManifest({
       captureSchemaVersion: captureManifest.schemaVersion,
     },
     summary: {
-      readinessStatus: readiness.status,
+      readinessStatus: blockers.length
+        ? "blocked"
+        : requiredReviews.length
+          ? "needs-review"
+          : "ready-for-reconstruction",
       launchReady: false,
       routeCount: routes.length,
       mappedRoutes: routes.filter((route) => route.status === "mapped").length,
@@ -75,6 +103,7 @@ export function buildReviewManifest({
       requiredReviewCount: requiredReviews.length,
       recordedDecisionCount: decisions.length,
       pendingDecisionCount: pendingDecisions,
+      staleDecisionCount: staleDecisions,
       staleArtifactCount: staleArtifacts.length,
     },
     stateSignals: {
@@ -86,10 +115,18 @@ export function buildReviewManifest({
         status: "not-evaluated",
         reason: "No generated downstream workspace is attached to this review package.",
       },
+      sourceDrift: sourceDrift
+        ? {
+            status: sourceDrift.status,
+            previousSnapshotId: sourceDrift.previousSnapshotId,
+            currentSnapshotId: sourceDrift.currentSnapshotId,
+            affectedPaths: sourceDrift.affectedPaths,
+          }
+        : { status: "not-evaluated", affectedPaths: [] },
     },
     blockers,
     requiredReviews,
-    recordedDecisions: decisions,
+    recordedDecisions,
     routes,
     sections,
     integrations: model.integrations,
@@ -195,7 +232,9 @@ export function renderReviewHtml(report) {
                 (decision) =>
                   `<li><div>${badge(decision.status)} <strong>${escapeHtml(
                     decision.id,
-                  )}</strong></div><p>${escapeHtml(decision.summary)}</p><small>${escapeHtml(
+                  )}</strong> ${badge(decision.validity)}</div><p>${escapeHtml(
+                    decision.summary,
+                  )}</p><small>${escapeHtml(
                     decision.recordedAt,
                   )} · review only, not production approval</small></li>`,
               )
@@ -241,6 +280,10 @@ export function renderReviewHtml(report) {
     <section aria-labelledby="state-heading">
       <h2 id="state-heading">Staleness and conflicts</h2>
       <p><strong>Staleness:</strong> ${badge(report.stateSignals.stale.status)}</p>
+      <p><strong>Source drift:</strong> ${badge(
+        report.stateSignals.sourceDrift.status,
+      )} · ${report.stateSignals.sourceDrift.affectedPaths.length} affected paths</p>
+      <p><strong>Stale decisions:</strong> ${report.summary.staleDecisionCount}</p>
       <p><strong>Conflicts:</strong> ${badge(report.stateSignals.conflicts.status)} ${escapeHtml(
         report.stateSignals.conflicts.reason,
       )}</p>
@@ -265,6 +308,7 @@ function enrichIssues(issues = [], nextActions = [], actionOffset = 0) {
     label: ISSUE_LABELS[issue.code] ?? issue.code,
     count: issue.count,
     action: nextActions[index + actionOffset] ?? "Review and resolve this item downstream.",
+    resolutionDecisionId: RESOLVABLE_REVIEW_DECISIONS[issue.code] ?? null,
   }));
 }
 

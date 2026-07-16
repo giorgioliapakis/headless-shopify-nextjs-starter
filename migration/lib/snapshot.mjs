@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 
+import { attachSnapshotIdentity } from "./drift.mjs";
 import { safePublicGet } from "./network.mjs";
 import { writeTextAtomic } from "./workspace.mjs";
 
@@ -35,7 +36,7 @@ export async function capturePublicSnapshot({
     rootPage?.url === url ? rootPage : capturePage(url, { approvedOrigin, get, runDirectory }),
   );
   const capturedAt = new Date().toISOString();
-  return {
+  return attachSnapshotIdentity({
     schemaVersion: 1,
     capturedAt,
     source: { origin: approvedOrigin, mode: "credential-free-public", evidenceTrust: "untrusted" },
@@ -53,7 +54,7 @@ export async function capturePublicSnapshot({
     },
     pages,
     summary: summarizePages(pages, candidates.length, selected.length),
-  };
+  });
 }
 
 async function discoverSitemapUrls(initialUrl, { approvedOrigin, get }) {
