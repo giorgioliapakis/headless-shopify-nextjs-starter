@@ -39,4 +39,12 @@ describe("release contract", () => {
     expect(config.merchantOwned).toContain("config/presets/");
     expect(config.merchantOwned).toContain("public/merchant/");
   });
+
+  it("pins manual release evidence and keeps publishing outside its authority", async () => {
+    const workflow = await readFile(".github/workflows/release-evidence.yml", "utf8");
+    expect(workflow).toContain("workflow_dispatch:");
+    expect(workflow).toContain("actions/attest@a1948c3f048ba23858d222213b7c278aabede763");
+    expect(workflow).toContain("actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a");
+    expect(workflow).not.toMatch(/gh release|npm publish|vercel deploy/);
+  });
 });
