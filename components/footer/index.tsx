@@ -1,8 +1,11 @@
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import { Suspense } from "react";
 
+import { MarketSelector } from "@/components/commerce/market-selector";
 import { Container } from "@/components/ui/container";
 import { Sections } from "@/components/ui/sections";
+import { storefrontMarkets } from "@/lib/commerce/market";
 import { getShopPolicies } from "@/lib/shopify/operations/policies";
 import type { MenuItem } from "@/lib/shopify/types/menu";
 import { shopConfig } from "@/shop.config";
@@ -39,6 +42,11 @@ export async function Footer({ locale }: { locale: string }) {
             </div>
             {socialLinks.length > 0 && <SocialLinks links={socialLinks} />}
           </div>
+          {storefrontMarkets.length > 1 && (
+            <Suspense fallback={null}>
+              <MarketSelector currentLocale={locale} markets={storefrontMarkets} />
+            </Suspense>
+          )}
         </Sections>
       </Container>
     </footer>

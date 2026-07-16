@@ -57,4 +57,11 @@ describe("Shopper route contract", () => {
       code: "ENOENT",
     });
   });
+
+  it("keeps 404 rendering static and gates redirect lookup behind the app route manifest", async () => {
+    const [notFound, proxy] = await Promise.all([source("app/not-found.tsx"), source("proxy.ts")]);
+    expect(notFound).not.toMatch(/headers\(\)|cookies\(\)|resolveShopifyRedirect/);
+    expect(proxy).toContain('route === "redirect-candidate"');
+    expect(proxy).toContain("resolveShopifyRedirect");
+  });
 });

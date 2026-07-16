@@ -30,7 +30,7 @@ Status vocabulary:
 | Checkout          | Shopify `cart.checkoutUrl` | Hosted  | No custom checkout.                                                                                 |
 | Blog/article      | `/blogs/**`                | Planned | Conditional pack; not currently present.                                                            |
 | Landing pages     | downstream recipes         | Planned | Section registry and route recipe contract not yet complete.                                        |
-| Unknown path      | any unmatched URL          | Core    | Local 404; Shopify redirect lookup is planned with Hydrogen routing.                                |
+| Unknown path      | any unmatched URL          | Core    | Safe redirect lookup for paths outside the app manifest, otherwise a static hard 404.               |
 
 The app also exposes neutral SEO/agent representations: `robots.txt`, a sharded sitemap, `llms.txt`,
 dynamic default Open Graph imagery and markdown representations for product, collection and search
@@ -51,7 +51,7 @@ surfaces. Draft mode and the Shopify webhook handler are server endpoints, not s
 | Cart note, discount codes and buyer country                    | Core        | Shopify warnings and user errors remain explicit.                                             |
 | Gift cards and shipping estimate display                       | Core        | Derived from Storefront cart response.                                                        |
 | Buy now with Shop Pay handoff                                  | Core        | Uses Shopify cart permalink; no local checkout.                                               |
-| Markets selector and market-prefixed routing                   | Planned     | Locale helpers exist; full market state/routing is not complete.                              |
+| Markets selector and contextual pricing                        | Conditional | Single-market default; bounded cookie/cart identity selector activates with verified locales. |
 | Selling plans/subscriptions                                    | Planned     | Conditional adapter required.                                                                 |
 | Predictive search                                              | Planned     | Hydrogen capability; current search is full-page only.                                        |
 | First-party consent-aware analytics contract                   | Planned     | Vercel telemetry flags exist; commerce event contract is incomplete.                          |
@@ -66,8 +66,13 @@ Catalogue/content operations use Next Cache Components. Current tag families are
 Cart identity comes from an HTTP-only cookie and never belongs in shared catalogue caches.
 
 Hydrogen's optional response cache is not an additional cache layer for these paths. Webhook invalidation
-currently covers products, collections and optional CMS metaobjects; stronger topic/shop/version/body and
-deduplication controls remain planned.
+covers allowlisted product, collection and optional CMS metaobject topics only after raw-body HMAC, shop,
+API-version, webhook-ID and body-size validation. Durable cross-instance delivery deduplication remains a
+deployment capability rather than an in-memory runtime claim.
+
+Hydrogen checkout and validated cart-permalink routing is enabled. Its Storefront API, AJAX cart,
+GraphiQL, MCP and agent proxy surfaces are hard 404 by default. Ordinary catalogue routes create no
+Hydrogen request client or Storefront call. See [ADR 0003](../adr/0003-cache-and-request-lifecycle.md).
 
 ## Configuration and credentials
 

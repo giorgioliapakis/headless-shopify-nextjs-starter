@@ -25,6 +25,9 @@ compatibility matrix, not an “any Shopify store” claim.
 - Hydrogen-backed Shopify Storefront API `2026-07` operations with bundled-schema `gql.tada`
   validation for products, collections, search, pages, policies, cart, sitemap, and cache revalidation
 - Shopify-hosted checkout and optional hosted customer-account handoff
+- Safe Hydrogen checkout/permalink routing and post-404 Shopify redirects; proxy APIs and agent surfaces
+  remain closed by default
+- Single-market fast path with an opt-in bounded Markets selector and buyer-identity synchronization
 - Exact-SHA Vercel Shop provenance with the shopper assistant and preview headless accounts excluded
 - Pinned React performance, composition, shadcn, and interface-review skills; Next.js guidance comes
   from the installed version's bundled docs
@@ -55,6 +58,11 @@ pnpm dev
 Add a Storefront API domain/token to `.env.local`. The token is runtime read access only; future
 migration discovery uses a separate short-lived, allowlisted Admin credential broker.
 
+A private Headless-channel Storefront token is optional, but required for Shopify URL-redirect lookup.
+The public storefront token is never reused as private access. Additional markets should be enabled only
+after they are published in Shopify and their localized pricing, availability, URLs and checkout handoff
+have passed the market browser contract.
+
 Run the deterministic local gate with:
 
 ```bash
@@ -68,7 +76,9 @@ pnpm test:contracts
 ```
 
 The production build requires valid Storefront credentials because catalogue-backed static work is
-resolved during the build. Synthetic products are never substituted silently.
+resolved during the build. Synthetic products are never substituted silently. For a credential-free
+platform build, explicitly set the three neutral fixture values documented in `.env.example`; fixture
+mode refuses any real merchant domain, token or private credential and fails on unknown operations.
 
 ## Project documents
 

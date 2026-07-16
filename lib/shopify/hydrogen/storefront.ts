@@ -4,10 +4,12 @@ import {
   StorefrontApiError as HydrogenStorefrontApiError,
   StorefrontTimeoutError,
   type I18nConfig,
+  type PrivateStorefrontClient,
   type StorefrontClient,
 } from "@shopify/hydrogen";
 
 import { defaultLocale, getCountryCode, getLanguageCode } from "@/lib/i18n";
+import { resolveNeutralStorefrontFixtureFetch } from "@/lib/shopify/fixtures/fetch";
 import type { GraphQLFormattedError } from "@/lib/shopify/types/graphql";
 
 import {
@@ -154,10 +156,11 @@ export function createStaticStorefrontTransport(options?: {
     language: options?.i18n?.language ?? (getLanguageCode(locale) as I18nConfig["language"]),
   };
   const requestContext = createStaticShopifyRequestContext(locale, i18n);
+  const fetchImplementation = options?.fetch ?? resolveNeutralStorefrontFixtureFetch(environment);
   const common = {
     apiVersion: environment.apiVersion,
     defaultTimeoutInMs: DEFAULT_TIMEOUT_MS,
-    fetch: options?.fetch,
+    fetch: fetchImplementation,
     storeDomain: environment.storeDomain,
   };
   const client = environment.privateStorefrontToken
@@ -198,7 +201,7 @@ export function createRequestStorefrontClient(
   const common = {
     apiVersion: environment.apiVersion,
     defaultTimeoutInMs: DEFAULT_TIMEOUT_MS,
-    fetch: options?.fetch,
+    fetch: options?.fetch ?? resolveNeutralStorefrontFixtureFetch(environment),
     storeDomain: environment.storeDomain,
   };
   const buyerIp = resolveTrustedBuyerIp(request.headers, {
@@ -217,6 +220,44 @@ export function createRequestStorefrontClient(
     type: "public",
     requestContext,
     config: { ...common, publicStorefrontToken: environment.publicStorefrontToken },
+  });
+}
+
+/**
+ * Redirect resolution is a request-bound private Storefront operation. It is
+ * unavailable when either the private token or a trustworthy buyer IP is
+ * absent; callers must degrade to a normal 404 instead of inventing identity.
+ */
+export function createRequestPrivateStorefrontClient(
+  request: Request,
+  options?: {
+    environment?: StorefrontEnvironment;
+    fetch?: typeof globalThis.fetch;
+    isVercel?: boolean;
+    locale?: string;
+  },
+): PrivateStorefrontClient | null {
+  const environment = options?.environment ?? resolveStorefrontEnvironment();
+  const buyerIp = resolveTrustedBuyerIp(request.headers, {
+    isVercel: options?.isVercel ?? process.env.VERCEL === "1",
+  });
+  if (!environment.privateStorefrontToken || !buyerIp) return null;
+
+  const requestContext = createIncomingShopifyRequestContext(
+    request,
+    options?.locale ?? defaultLocale,
+  );
+  return createStorefrontClient({
+    type: "private",
+    requestContext,
+    config: {
+      apiVersion: environment.apiVersion,
+      buyerIp,
+      defaultTimeoutInMs: DEFAULT_TIMEOUT_MS,
+      fetch: options?.fetch ?? resolveNeutralStorefrontFixtureFetch(environment),
+      privateStorefrontToken: environment.privateStorefrontToken,
+      storeDomain: environment.storeDomain,
+    },
   });
 }
 

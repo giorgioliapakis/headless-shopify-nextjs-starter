@@ -4,129 +4,160 @@ import { revalidateTag } from "next/cache";
 
 import { getNumericShopifyId } from "@/lib/shopify/utils";
 
-const SHOPIFY_WEBHOOK_SECRET = process.env.SHOPIFY_WEBHOOK_SECRET;
+const MAX_WEBHOOK_BYTES = 1024 * 1024;
+const ALLOWED_TOPICS = new Set([
+  "collections/create",
+  "collections/delete",
+  "collections/update",
+  "metaobjects/create",
+  "metaobjects/delete",
+  "metaobjects/update",
+  "products/create",
+  "products/delete",
+  "products/update",
+]);
+const NO_STORE_HEADERS = { "cache-control": "private, no-store" };
 
-async function verifyWebhook(body: string, hmacHeader: string | null): Promise<boolean> {
-  if (!SHOPIFY_WEBHOOK_SECRET || !hmacHeader) {
+function response(data: unknown, init?: ResponseInit): Response {
+  const headers = new Headers(init?.headers);
+  headers.set("cache-control", NO_STORE_HEADERS["cache-control"]);
+  return Response.json(data, { ...init, headers });
+}
+
+export function verifyShopifyWebhook(
+  body: Uint8Array,
+  hmacHeader: string | null,
+  secret: string,
+): boolean {
+  if (!hmacHeader) return false;
+  const expected = crypto.createHmac("sha256", secret).update(body).digest();
+  let supplied: Buffer;
+  try {
+    supplied = Buffer.from(hmacHeader, "base64");
+  } catch {
     return false;
   }
+  return supplied.length === expected.length && crypto.timingSafeEqual(expected, supplied);
+}
 
-  const hash = crypto
-    .createHmac("sha256", SHOPIFY_WEBHOOK_SECRET)
-    .update(body, "utf8")
-    .digest("base64");
+function expectedShopDomain(): string | null {
+  const value = process.env.PUBLIC_STORE_DOMAIN ?? process.env.SHOPIFY_STORE_DOMAIN;
+  if (!value) return null;
+  try {
+    return new URL(value.includes("://") ? value : `https://${value}`).hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+}
 
-  return crypto.timingSafeEqual(Buffer.from(hash, "base64"), Buffer.from(hmacHeader, "base64"));
+function tagsForProduct(payload: Record<string, unknown>): string[] {
+  const tags = ["products"];
+  if (typeof payload.handle === "string" && payload.handle) {
+    tags.push(`product-${payload.handle}`, `recommendations-${payload.handle}`);
+  }
+  const rawId = payload.admin_graphql_api_id ?? payload.id;
+  if (typeof rawId === "string" || typeof rawId === "number") {
+    const numericId = getNumericShopifyId(String(rawId));
+    if (numericId) tags.push(`product-${numericId}`);
+  }
+  return tags;
+}
+
+function tagsForCollection(topic: string, payload: Record<string, unknown>): string[] {
+  const tags = ["collections"];
+  if (topic.endsWith("/create") || topic.endsWith("/delete")) tags.push("collections-index");
+  if (typeof payload.handle === "string" && payload.handle) {
+    tags.push(`collection-${payload.handle}`);
+  }
+  return tags;
+}
+
+function tagsForMetaobject(payload: Record<string, unknown>): string[] {
+  const tags = ["cms:all"];
+  const nested =
+    typeof payload.metaobject === "object" && payload.metaobject
+      ? (payload.metaobject as Record<string, unknown>)
+      : undefined;
+  const type = payload.type ?? nested?.type ?? payload.metaobject_type;
+  const handle = payload.handle ?? nested?.handle ?? payload.metaobject_handle;
+
+  if (type === "cms_page") {
+    tags.push("cms:pages");
+    if (typeof handle === "string") {
+      const slug = handle.split("--")[0];
+      if (slug) tags.push(`cms:page:${slug}`);
+    }
+  } else if (type === "cms_homepage") {
+    tags.push("cms:homepage");
+  } else if (type === "cms_section" || type === "cms_hero") {
+    tags.push("cms:pages", "cms:homepage");
+  }
+  return tags;
+}
+
+export function cacheTagsForShopifyWebhook(
+  topic: string,
+  payload: Record<string, unknown>,
+): string[] {
+  const tags = topic.startsWith("products/")
+    ? tagsForProduct(payload)
+    : topic.startsWith("collections/")
+      ? tagsForCollection(topic, payload)
+      : topic.startsWith("metaobjects/")
+        ? tagsForMetaobject(payload)
+        : [];
+  return [...new Set(tags)];
 }
 
 export async function POST(request: Request) {
-  const body = await request.text();
-  const hmacHeader = request.headers.get("x-shopify-hmac-sha256");
-  const topic = request.headers.get("x-shopify-topic");
-
-  if (SHOPIFY_WEBHOOK_SECRET) {
-    const isValid = await verifyWebhook(body, hmacHeader);
-    if (!isValid) {
-      console.error("Invalid Shopify webhook signature");
-      return Response.json({ error: "Invalid signature" }, { status: 401 });
-    }
+  const secret = process.env.SHOPIFY_WEBHOOK_SECRET;
+  const shopDomain = expectedShopDomain();
+  const apiVersion = process.env.SHOPIFY_API_VERSION ?? "2026-07";
+  if (!secret || !shopDomain) {
+    return response({ error: "Webhook endpoint is not configured" }, { status: 503 });
   }
 
-  if (!topic) {
-    return Response.json({ error: "Missing topic header" }, { status: 400 });
+  const contentLength = Number(request.headers.get("content-length") ?? "0");
+  if (Number.isFinite(contentLength) && contentLength > MAX_WEBHOOK_BYTES) {
+    return response({ error: "Payload too large" }, { status: 413 });
+  }
+  const bytes = new Uint8Array(await request.arrayBuffer());
+  if (bytes.byteLength > MAX_WEBHOOK_BYTES) {
+    return response({ error: "Payload too large" }, { status: 413 });
   }
 
-  console.log(`[Shopify Webhook] Received: ${topic}`);
-
-  const tagsInvalidated: string[] = [];
-
-  if (topic.startsWith("products/")) {
-    // Product tags cascade through every surface without purging the full catalog.
-    const productTags: string[] = [];
-
-    try {
-      const payload = JSON.parse(body);
-      if (payload.handle) {
-        productTags.push(`product-${payload.handle}`);
-        productTags.push(`recommendations-${payload.handle}`);
-      }
-      if (payload.admin_graphql_api_id) {
-        const numericId = getNumericShopifyId(payload.admin_graphql_api_id);
-        if (numericId) {
-          productTags.push(`product-${numericId}`);
-        }
-      } else if (payload.id) {
-        productTags.push(`product-${payload.id}`);
-      }
-    } catch {
-      console.error("[Shopify Webhook] Could not parse products payload; no tags invalidated");
-    }
-
-    for (const tag of productTags) {
-      revalidateTag(tag, "max");
-      tagsInvalidated.push(tag);
-    }
+  if (!verifyShopifyWebhook(bytes, request.headers.get("x-shopify-hmac-sha256"), secret)) {
+    return response({ error: "Invalid signature" }, { status: 401 });
   }
 
-  if (topic.startsWith("collections/")) {
-    // Create/delete also invalidate the collection index; the broad tag is break-glass only.
-    const collectionTags: string[] = [];
-
-    if (topic === "collections/create" || topic === "collections/delete") {
-      collectionTags.push("collections-index");
-    }
-
-    try {
-      const payload = JSON.parse(body);
-      if (payload.handle) {
-        collectionTags.push(`collection-${payload.handle}`);
-      }
-    } catch {
-      console.error("[Shopify Webhook] Could not parse collections payload");
-    }
-
-    for (const tag of collectionTags) {
-      revalidateTag(tag, "max");
-      tagsInvalidated.push(tag);
-    }
+  const topic = request.headers.get("x-shopify-topic")?.toLowerCase();
+  const receivedShop = request.headers.get("x-shopify-shop-domain")?.toLowerCase();
+  const receivedVersion = request.headers.get("x-shopify-api-version");
+  const webhookId = request.headers.get("x-shopify-webhook-id");
+  if (!topic || !ALLOWED_TOPICS.has(topic)) {
+    return response({ error: "Unsupported topic" }, { status: 400 });
+  }
+  if (receivedShop !== shopDomain) {
+    return response({ error: "Unexpected shop" }, { status: 403 });
+  }
+  if (receivedVersion !== apiVersion) {
+    return response({ error: "Unexpected API version" }, { status: 409 });
+  }
+  if (!webhookId) {
+    return response({ error: "Missing webhook ID" }, { status: 400 });
   }
 
-  if (topic.startsWith("metaobjects/")) {
-    const cmsTags = ["cms:all"];
-
-    try {
-      const payload = JSON.parse(body);
-      const type = payload.type || payload.metaobject?.type || payload.metaobject_type;
-      const handle = payload.handle || payload.metaobject?.handle || payload.metaobject_handle;
-
-      if (type === "cms_page") {
-        cmsTags.push("cms:pages");
-        if (typeof handle === "string") {
-          const slug = handle.split("--")[0];
-          if (slug) {
-            cmsTags.push(`cms:page:${slug}`);
-          }
-        }
-      } else if (type === "cms_homepage") {
-        cmsTags.push("cms:homepage");
-      } else if (type === "cms_section" || type === "cms_hero") {
-        cmsTags.push("cms:pages", "cms:homepage");
-      }
-    } catch {
-      // Parse failure: fall through and invalidate the base CMS tag only.
-    }
-
-    for (const tag of cmsTags) {
-      revalidateTag(tag, "max");
-      tagsInvalidated.push(tag);
-    }
+  let payload: Record<string, unknown>;
+  try {
+    const parsed: unknown = JSON.parse(new TextDecoder().decode(bytes));
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error();
+    payload = parsed as Record<string, unknown>;
+  } catch {
+    return response({ error: "Invalid JSON payload" }, { status: 400 });
   }
 
-  console.log(`[Shopify Webhook] Invalidated tags: ${tagsInvalidated.join(", ")}`);
+  const tagsInvalidated = cacheTagsForShopifyWebhook(topic, payload);
+  for (const tag of tagsInvalidated) revalidateTag(tag, "max");
 
-  return Response.json({
-    success: true,
-    topic,
-    tagsInvalidated,
-  });
+  return response({ success: true, topic, tagsInvalidated });
 }

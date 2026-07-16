@@ -1,10 +1,12 @@
-export const locales = ["en-US"] as const;
+export const locales = ["en-US", "en-AU", "en-CA", "en-GB"] as const;
 
 export type Locale = (typeof locales)[number];
 
 export const defaultLocale: Locale = "en-US";
+/** Enable only markets the merchant has published and verified in Shopify. */
 export const enabledLocales: readonly Locale[] = [defaultLocale];
 export const localeSwitchingEnabled = enabledLocales.length > 1;
+export const storefrontLocaleCookie = "storefront_locale";
 
 export function isLocale(value: string): value is Locale {
   return locales.includes(value as Locale);

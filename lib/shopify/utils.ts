@@ -5,6 +5,7 @@ export function flattenEdges<T>(connection: ShopifyEdges<T>): T[] {
 }
 
 export function getNumericShopifyId(gid: string): string | null {
+  if (/^\d+$/.test(gid)) return gid;
   let decoded = gid;
 
   if (!decoded.startsWith("gid://")) {

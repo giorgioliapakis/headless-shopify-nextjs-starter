@@ -31,8 +31,8 @@
     {
       "path": ".env.example",
       "sourceSha256": "1152af1b90677027c7ea1de3d771e7b43d47aef4006d8fcc36d0f0af25802a11",
-      "currentSha256": "388a187b23a6c5f605fa00207493ce6b3308d8b20ad616dd320034d6bed5a065",
-      "modification": "Document canonical Hydrogen Storefront environment names and the bounded legacy aliases."
+      "currentSha256": "2d84886ea165baa577f3256a3bd5b32333c532d6731b1aca140a139daddcdaf2",
+      "modification": "Document canonical Hydrogen environment names, bounded aliases, and explicit credential-free fixture mode."
     },
     {
       "path": ".graphqlrc.ts",
@@ -64,7 +64,9 @@
     },
     {
       "path": "app/api/webhooks/shopify/route.ts",
-      "sourceSha256": "1215c8bd54c72c8e588afa07cc31c93b1f2279d94d2e53d11c47792400374a6a"
+      "sourceSha256": "1215c8bd54c72c8e588afa07cc31c93b1f2279d94d2e53d11c47792400374a6a",
+      "currentSha256": "3b6eb56957ea5d2014701856dab8d850491f6a6f75ab15f3496fb386699a4e37",
+      "modification": "Harden the webhook trust boundary and align invalidation with app-owned cache tags."
     },
     {
       "path": "app/cart/error.tsx",
@@ -604,7 +606,9 @@
     },
     {
       "path": "lib/i18n/index.ts",
-      "sourceSha256": "5db53f951c092766bf97739d11511ea242207c0e43c402ad0d00ae8de466541c"
+      "sourceSha256": "5db53f951c092766bf97739d11511ea242207c0e43c402ad0d00ae8de466541c",
+      "currentSha256": "dcdebbb829950e082bc45784720613aaaa039014c4a5c197d5b7d922ee028044",
+      "modification": "Define an explicit opt-in market allowlist and bounded storefront locale cookie contract."
     },
     {
       "path": "lib/i18n/messages/en.json",
@@ -614,7 +618,9 @@
     },
     {
       "path": "lib/i18n/request.ts",
-      "sourceSha256": "5640465b3525ca4e82941e50102a6094bb1ffca6f3f3616f10de22579bbfd2a5"
+      "sourceSha256": "5640465b3525ca4e82941e50102a6094bb1ffca6f3f3616f10de22579bbfd2a5",
+      "currentSha256": "e7849be2432acbb5c49b971e9a10678e1efe1e22c753487172185d68997ffa1b",
+      "modification": "Load the request's verified market locale while reusing neutral English messages."
     },
     {
       "path": "lib/markdown/catalog.ts",
@@ -644,7 +650,9 @@
     },
     {
       "path": "lib/params.ts",
-      "sourceSha256": "ad84e18cd38d09b903ab269e7e40ac85a988035d8e8e1327dbfb5ee24fbaca81"
+      "sourceSha256": "ad84e18cd38d09b903ab269e7e40ac85a988035d8e8e1327dbfb5ee24fbaca81",
+      "currentSha256": "c1dd0c4bc9395d0c82b3041f30a19e186f2e8505470df5dc5f100a39a41f95c7",
+      "modification": "Keep single-market locale resolution static and read the allowlisted cookie only when switching is enabled."
     },
     {
       "path": "lib/product.ts",
@@ -777,8 +785,8 @@
     {
       "path": "lib/shopify/utils.ts",
       "sourceSha256": "a65b156261cd92260ccefcc273781faec5f66da8f1425632dad09bed3254ef7e",
-      "currentSha256": "25b43d7fa9493b577bd438d76fbe69e884437c3dbbcb60e9a050814558264612",
-      "modification": "Recognize canonical Storefront domain configuration when normalizing Shopify menu URLs."
+      "currentSha256": "292f1a74db8ed2ff50e51e67b625d3f9744803cfac1cee1135e4e4621a846afb",
+      "modification": "Recognize canonical Storefront domains and raw numeric webhook IDs during URL and cache-tag normalization."
     },
     {
       "path": "lib/types.ts",
