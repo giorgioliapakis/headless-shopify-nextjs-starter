@@ -233,20 +233,11 @@ async function ProductInfoArea({
       {eagerSelection ? (
         <BuyButtons
           selectedVariant={toBuyButtonVariant(eagerSelection.selectedVariant)}
-          title={title}
-          handle={handle}
-          featuredImage={featuredImage}
           availableForSale={availableForSale}
         />
       ) : (
         <Suspense fallback={<BuyButtonsFallback t={buyFallbackT} allInStock={allInStock} />}>
-          <ResolvedBuyButtons
-            title={title}
-            handle={handle}
-            featuredImage={featuredImage}
-            availableForSale={availableForSale}
-            variantPromise={variantPromise}
-          />
+          <ResolvedBuyButtons availableForSale={availableForSale} variantPromise={variantPromise} />
         </Suspense>
       )}
 
@@ -340,15 +331,9 @@ function toBuyButtonVariant(variant: ProductVariant | undefined): BuyButtonVaria
 }
 
 async function ResolvedBuyButtons({
-  title,
-  handle,
-  featuredImage,
   availableForSale,
   variantPromise,
 }: {
-  title: string;
-  handle: string;
-  featuredImage: ProductDetails["featuredImage"];
   availableForSale: boolean;
   variantPromise: Promise<ProductVariant | undefined>;
 }) {
@@ -356,9 +341,6 @@ async function ResolvedBuyButtons({
   return (
     <BuyButtons
       selectedVariant={toBuyButtonVariant(selectedVariant)}
-      title={title}
-      handle={handle}
-      featuredImage={featuredImage}
       availableForSale={availableForSale}
     />
   );

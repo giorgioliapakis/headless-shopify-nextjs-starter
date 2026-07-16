@@ -77,6 +77,64 @@ const NEUTRAL_COLLECTION = {
   updatedAt: "2026-01-01T00:00:00Z",
 };
 
+type FixtureCartLineInput = { id?: string; merchandiseId?: string; quantity?: number };
+
+function neutralCartLine(input: FixtureCartLineInput = {}) {
+  const quantity = Math.max(1, input.quantity ?? 1);
+  return {
+    cost: {
+      amountPerQuantity: MONEY,
+      compareAtAmountPerQuantity: null,
+      subtotalAmount: { amount: (24 * quantity).toFixed(2), currencyCode: "USD" },
+      totalAmount: { amount: (24 * quantity).toFixed(2), currencyCode: "USD" },
+    },
+    id: input.id ?? "gid://shopify/CartLine/fixture-line",
+    merchandise: {
+      id: input.merchandiseId ?? NEUTRAL_VARIANT.id,
+      image: null,
+      product: {
+        handle: NEUTRAL_PRODUCT.handle,
+        id: NEUTRAL_PRODUCT.id,
+        productType: "Fixture",
+        title: NEUTRAL_PRODUCT.title,
+        vendor: NEUTRAL_PRODUCT.vendor,
+      },
+      quantityAvailable: 99,
+      selectedOptions: NEUTRAL_VARIANT.selectedOptions,
+      sku: "FIXTURE-001",
+      title: NEUTRAL_VARIANT.title,
+    },
+    parentRelationship: null,
+    quantity,
+  };
+}
+
+function neutralCart(
+  options: {
+    discountCodes?: string[];
+    lines?: FixtureCartLineInput[];
+    note?: string | null;
+  } = {},
+) {
+  const lines = (options.lines ?? [undefined]).map((line) => neutralCartLine(line));
+  const totalQuantity = lines.reduce((total, line) => total + line.quantity, 0);
+  const total = { amount: (totalQuantity * 24).toFixed(2), currencyCode: "USD" };
+  return {
+    checkoutUrl: "https://neutral-fixture.myshopify.com/checkouts/fixture",
+    cost: { checkoutChargeAmount: total, subtotalAmount: total, totalAmount: total },
+    discountCodes: (options.discountCodes ?? []).map((code) => ({ applicable: true, code })),
+    id: "gid://shopify/Cart/fixture-cart",
+    lines: { nodes: lines },
+    note: options.note ?? null,
+    totalQuantity,
+    updatedAt: "2026-01-01T00:00:00Z",
+  };
+}
+
+function cartMutationPayload(cart: ReturnType<typeof neutralCart>) {
+  return { cart, userErrors: [], warnings: [] };
+}
+
 function operationName(query: string): string {
   return query.match(/\b(?:query|mutation)\s+(\w+)/)?.[1] ?? "anonymous";
 }
@@ -185,6 +243,40 @@ export function neutralStorefrontFixtureData(
     case "getCartDeliveryOptions":
     case "getCartSelectableAddresses":
       return { cart: null };
+    case "Cart":
+      return {
+        cart: String(variables.id ?? "").includes("fixture-cart") ? neutralCart() : null,
+      };
+    case "CartCreate": {
+      const input = (variables.input ?? {}) as { lines?: FixtureCartLineInput[]; note?: string };
+      return {
+        cartCreate: cartMutationPayload(
+          neutralCart({ lines: input.lines?.length ? input.lines : [], note: input.note }),
+        ),
+      };
+    }
+    case "CartLinesAdd": {
+      const lines = (variables.lines ?? []) as FixtureCartLineInput[];
+      return { cartLinesAdd: cartMutationPayload(neutralCart({ lines })) };
+    }
+    case "CartLinesUpdate": {
+      const lines = (variables.lines ?? []) as FixtureCartLineInput[];
+      return { cartLinesUpdate: cartMutationPayload(neutralCart({ lines })) };
+    }
+    case "CartLinesRemove":
+      return { cartLinesRemove: cartMutationPayload(neutralCart({ lines: [] })) };
+    case "CartDiscountCodesUpdate": {
+      const discountCodes = (variables.discountCodes ?? []) as string[];
+      return {
+        cartDiscountCodesUpdate: cartMutationPayload(neutralCart({ discountCodes })),
+      };
+    }
+    case "CartNoteUpdate":
+      return {
+        cartNoteUpdate: cartMutationPayload(
+          neutralCart({ note: typeof variables.note === "string" ? variables.note : null }),
+        ),
+      };
     default:
       return null;
   }

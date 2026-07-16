@@ -6,11 +6,13 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 
 import { AnalyticsComponents } from "@/components/analytics";
-import { CartProvider } from "@/components/cart/context";
+import { CartDrawerProvider } from "@/components/cart/drawer-context";
+import { CartProvider } from "@/components/cart/hydrogen";
 import { CartOverlay } from "@/components/cart/overlay";
 import { Footer } from "@/components/footer";
 import { Nav } from "@/components/nav";
 import { SiteSchema } from "@/components/schema/site-schema";
+import { ShopifyRuntime } from "@/components/shopify/runtime";
 import { getLocale } from "@/lib/params";
 import { buildAlternates } from "@/lib/seo";
 import { shopConfig } from "@/shop.config";
@@ -41,17 +43,20 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <SiteSchema locale={locale} />
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <CartProvider initialCart={null}>
-            <Nav locale={locale} />
-            <main id="main-content" className="flex min-w-0 flex-1 flex-col">
-              {children}
-            </main>
-            <Footer locale={locale} />
-            <Suspense>
-              <CartOverlay locale={locale} />
-            </Suspense>
+          <CartProvider>
+            <CartDrawerProvider>
+              <Nav locale={locale} />
+              <main id="main-content" className="flex min-w-0 flex-1 flex-col">
+                {children}
+              </main>
+              <Footer locale={locale} />
+              <Suspense>
+                <CartOverlay locale={locale} />
+              </Suspense>
+            </CartDrawerProvider>
           </CartProvider>
         </NextIntlClientProvider>
+        <ShopifyRuntime locale={locale} />
         <AnalyticsComponents />
       </body>
     </html>

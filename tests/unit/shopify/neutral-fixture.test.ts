@@ -47,4 +47,29 @@ describe("neutral Storefront fixture", () => {
     });
     expect(unknown.status).toBe(501);
   });
+
+  it("implements Hydrogen's credential-free cart mutation contract", async () => {
+    const create = await neutralStorefrontFixtureFetch("https://fixture.invalid", {
+      method: "POST",
+      body: JSON.stringify({
+        query:
+          "mutation CartCreate($input: CartInput!) { cartCreate(input: $input) { cart { id totalQuantity updatedAt } } }",
+        variables: {
+          input: {
+            lines: [{ merchandiseId: "gid://shopify/ProductVariant/1001", quantity: 2 }],
+          },
+        },
+      }),
+    });
+    const body = (await create.json()) as {
+      data: { cartCreate: { cart: { id: string; totalQuantity: number; updatedAt: string } } };
+    };
+
+    expect(create.status).toBe(200);
+    expect(body.data.cartCreate.cart).toMatchObject({
+      id: "gid://shopify/Cart/fixture-cart",
+      totalQuantity: 2,
+      updatedAt: "2026-01-01T00:00:00Z",
+    });
+  });
 });

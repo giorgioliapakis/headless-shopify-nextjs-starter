@@ -8,7 +8,7 @@ import { Empty } from "@/components/cart-page/empty-cart";
 import { Header } from "@/components/cart-page/header";
 import { PageSkeleton } from "@/components/cart-page/skeletons";
 import { Summary } from "@/components/cart-page/summary";
-import { CartContextSync } from "@/components/cart/context-sync";
+import { CartProvider } from "@/components/cart/hydrogen";
 import { CartWarnings } from "@/components/cart/warnings";
 import { RelatedProductsSection } from "@/components/product/related-products-section";
 import { Container } from "@/components/ui/container";
@@ -17,7 +17,7 @@ import { Sections } from "@/components/ui/sections";
 import type { Locale } from "@/lib/i18n";
 import { getLocale } from "@/lib/params";
 import { withFallback } from "@/lib/shopify/errors";
-import { getCart } from "@/lib/shopify/operations/cart";
+import { getHydrogenCartEnvelope } from "@/lib/shopify/hydrogen/cart-server";
 import { shopConfig } from "@/shop.config";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -44,11 +44,15 @@ export default async function CartPage() {
 }
 
 async function CartContent({ locale }: { locale: Locale }) {
-  const [cart, messages] = await Promise.all([withFallback(getCart(), undefined), getMessages()]);
+  const [cartData, messages] = await Promise.all([
+    withFallback(getHydrogenCartEnvelope(), { cart: null }),
+    getMessages(),
+  ]);
+  const cart = cartData.cart;
 
   return (
     <NextIntlClientProvider messages={{ cart: messages.cart }}>
-      <CartContextSync cart={cart ?? null}>
+      <CartProvider initialData={cartData}>
         {!cart || cart.totalQuantity === 0 ? (
           <Empty />
         ) : (
@@ -68,9 +72,9 @@ async function CartContent({ locale }: { locale: Locale }) {
                   </aside>
                 </div>
                 {shopConfig.pdp.relatedProducts.enabled &&
-                cart.lines[0]?.merchandise.product.handle ? (
+                cart.lines.nodes[0]?.merchandise?.product.handle ? (
                   <RelatedProductsSection
-                    handle={cart.lines[0].merchandise.product.handle}
+                    handle={cart.lines.nodes[0].merchandise.product.handle}
                     limit={4}
                     locale={locale}
                   />
@@ -79,7 +83,7 @@ async function CartContent({ locale }: { locale: Locale }) {
             </Container>
           </Page>
         )}
-      </CartContextSync>
+      </CartProvider>
     </NextIntlClientProvider>
   );
 }

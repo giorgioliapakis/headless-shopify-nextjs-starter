@@ -74,7 +74,9 @@
     },
     {
       "path": "app/cart/page.tsx",
-      "sourceSha256": "1322c90599bdb846e43f352062f1ce6213d2e03e5fc44d03ac9d7a696d92407c"
+      "sourceSha256": "1322c90599bdb846e43f352062f1ce6213d2e03e5fc44d03ac9d7a696d92407c",
+      "currentSha256": "97d0f610c3800f3c000f47fbde73026cb2670d5521e1de8d67d0b85c15a78596",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "app/collections/[handle]/error.tsx",
@@ -178,7 +180,9 @@
     },
     {
       "path": "components/cart-page/cart-items-list.tsx",
-      "sourceSha256": "4e925db8b98c8b093942e0474791b5731b992c63cbbfc31ba79392bfdb0bd946"
+      "sourceSha256": "4e925db8b98c8b093942e0474791b5731b992c63cbbfc31ba79392bfdb0bd946",
+      "currentSha256": "b39ac9f48b3526e0b524f3222043c4eea5c10cf6f08e8b8ee1a904fd89313594",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/cart-page/empty-cart.tsx",
@@ -186,7 +190,9 @@
     },
     {
       "path": "components/cart-page/header.tsx",
-      "sourceSha256": "1553e15099c4d5f5ee5bfbc27bc43e57b7c40d62bfb80997ad5367551723d307"
+      "sourceSha256": "1553e15099c4d5f5ee5bfbc27bc43e57b7c40d62bfb80997ad5367551723d307",
+      "currentSha256": "fd6fac52adb5fc68726144eaa9111c4625641f8e2e1166dc4faf3a5525fc285e",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/cart-page/skeletons.tsx",
@@ -194,39 +200,57 @@
     },
     {
       "path": "components/cart-page/summary.tsx",
-      "sourceSha256": "849d4674dec8e431b6e43675bdac705ec7f1ed76f4bae7cb3bf8e42ca726cebb"
+      "sourceSha256": "849d4674dec8e431b6e43675bdac705ec7f1ed76f4bae7cb3bf8e42ca726cebb",
+      "currentSha256": "9dc549d5dd63c9c3784254910344ed516c54e6e09f44ecfe7c0a577eda79c626",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/cart/context-sync.tsx",
-      "sourceSha256": "7482f4e6b562d110b8813c1e5ebe2da5add3c5ba13fa461c447b6c06f08a8e92"
+      "sourceSha256": "7482f4e6b562d110b8813c1e5ebe2da5add3c5ba13fa461c447b6c06f08a8e92",
+      "removed": true,
+      "modification": "Replace manual cart seeding with Hydrogen providers and browser cart events."
     },
     {
       "path": "components/cart/context.tsx",
-      "sourceSha256": "55c6b3827ee4fb3d9844861a346e1f8296cdd8a9d2cb0bcaad32c9360b046549"
+      "sourceSha256": "55c6b3827ee4fb3d9844861a346e1f8296cdd8a9d2cb0bcaad32c9360b046549",
+      "removed": true,
+      "modification": "Replace the bespoke optimistic cart store with Hydrogen's typed cart store."
     },
     {
       "path": "components/cart/discount-form.tsx",
-      "sourceSha256": "798a0bbce9d54ee302ef9dc0c44f2da465af35cb000396c1ed45ba2e6d05d2d7"
+      "sourceSha256": "798a0bbce9d54ee302ef9dc0c44f2da465af35cb000396c1ed45ba2e6d05d2d7",
+      "currentSha256": "c1c96d98913bf445cfe5e115bcef66bacf695e4af2b8e1fecd0676345085a722",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/cart/overlay-content.tsx",
-      "sourceSha256": "a6a4f195e22e4b6666e7d6329dab9258b9809862ba63d4fe2afad306bce58632"
+      "sourceSha256": "a6a4f195e22e4b6666e7d6329dab9258b9809862ba63d4fe2afad306bce58632",
+      "currentSha256": "441f995041ec1396eb1a0e01d4ea217e2c6259ddf2f595d5ab3c53274061904d",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/cart/overlay-item.tsx",
-      "sourceSha256": "d25b1d08f435733da2313e6ff5086188db6d70e374fb09c8ff99b1354fb33237"
+      "sourceSha256": "d25b1d08f435733da2313e6ff5086188db6d70e374fb09c8ff99b1354fb33237",
+      "currentSha256": "1441db41a687798a417b3aa646284dbc26df4fb53ab8f4cccae7d4912a65297a",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/cart/overlay-summary.tsx",
-      "sourceSha256": "958a7624a94831592413012159751fc76801d4b990f37b357b8040b7497ec9a4"
+      "sourceSha256": "958a7624a94831592413012159751fc76801d4b990f37b357b8040b7497ec9a4",
+      "currentSha256": "eace21415234bbc0a32e6ae802f58d712dacd8bfcf6e68baa9a90076696e36d4",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/cart/overlay.tsx",
-      "sourceSha256": "b006d165ed9d4a771c93b2ef77d7e1d5a71862d577fb509688c817125ba9bccf"
+      "sourceSha256": "b006d165ed9d4a771c93b2ef77d7e1d5a71862d577fb509688c817125ba9bccf",
+      "currentSha256": "8b3a4f20723b8fbf8c6fe2c17953d2252c4e37b0f67e78fc2c30dcd9de422b79",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/cart/warnings.tsx",
-      "sourceSha256": "f91ee27fb66f6a539a79d6361d2282e0a468db5db914ffd2f414d555ae9f97ef"
+      "sourceSha256": "f91ee27fb66f6a539a79d6361d2282e0a468db5db914ffd2f414d555ae9f97ef",
+      "currentSha256": "e8ab71fbe8f24f6aa861bee56499ac4be7638f8ac6b5053bf1b60f78ab010213",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/collections/collection-card.tsx",
@@ -290,11 +314,15 @@
     },
     {
       "path": "components/nav/cart-client.tsx",
-      "sourceSha256": "dd8eefbf0551d6bb9980040b0cc80545b06675949899174235f42da48cab5d45"
+      "sourceSha256": "dd8eefbf0551d6bb9980040b0cc80545b06675949899174235f42da48cab5d45",
+      "currentSha256": "58e97d564e66b67b5d52b4523320973268c5b8e712af6fc2c7f260b6e8cd2082",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/nav/cart.tsx",
-      "sourceSha256": "47e6cc47476cc915ec9ba6256f539a281a044728198158f27f7453eb561f7785"
+      "sourceSha256": "47e6cc47476cc915ec9ba6256f539a281a044728198158f27f7453eb561f7785",
+      "currentSha256": "df8cc23222c53aa79ef7f6c93dbfd9ca41c5e3264f5b46599a6c946bedcb9a09",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/nav/mobile-menu.tsx",
@@ -330,7 +358,9 @@
     },
     {
       "path": "components/product-detail/buy-buttons.tsx",
-      "sourceSha256": "d26c43fcc8c0fa2a2ea62e22fdd0752554a4036db0e7159490f477047647a29f"
+      "sourceSha256": "d26c43fcc8c0fa2a2ea62e22fdd0752554a4036db0e7159490f477047647a29f",
+      "currentSha256": "34b5160b71cdb0f1a7defeb737c8c0c553c54d3b72f54b14cff0e7cc28120941",
+      "modification": "Use Hydrogen cart forms and the real Shop Pay custom element for product purchase actions."
     },
     {
       "path": "components/product-detail/color-picker.tsx",
@@ -338,7 +368,9 @@
     },
     {
       "path": "components/product-detail/complementary-products.tsx",
-      "sourceSha256": "fc5150994bfe0be4bebf527ea7b62dc712b304368d0ad98616666ac2351638f8"
+      "sourceSha256": "fc5150994bfe0be4bebf527ea7b62dc712b304368d0ad98616666ac2351638f8",
+      "currentSha256": "21fd0be0d08dc238c28b1a6ebe3ccbe894b1f61e6ffa69a9541c270353833df0",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/product-detail/lightbox.tsx",
@@ -354,7 +386,9 @@
     },
     {
       "path": "components/product-detail/product-detail-section.tsx",
-      "sourceSha256": "35bdb0c886a18e9c97c330005cf1a99e81d4e4e432ca465c5f4a050759ba8464"
+      "sourceSha256": "35bdb0c886a18e9c97c330005cf1a99e81d4e4e432ca465c5f4a050759ba8464",
+      "currentSha256": "9bfdc148a2072d877305558bceb85eacce7daa4a7053cd8ad96348192237eeb5",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/product-detail/product-info.tsx",
@@ -383,8 +417,8 @@
     {
       "path": "components/product/price.tsx",
       "sourceSha256": "7ce3017f11130863c8d66b398872b4077f19f1a0ed4b9926a4c2d6cba73dd60e",
-      "currentSha256": "7dc9302a445f5c1838a09b09b83c3931ea1e4e4872468ba7a8d3bf81191196c7",
-      "modification": "Replace Hydrogen money formatting with the platform Intl implementation."
+      "currentSha256": "60ec16eb1e600ce0dee24898138250a4094f96eaa61e6400d9da3dd085919903",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/product/products-grid.tsx",
@@ -656,7 +690,9 @@
     },
     {
       "path": "lib/product.ts",
-      "sourceSha256": "fcf14616dd4dd31460f747650fd9b72c3955f539568bede438eb3e58068efec4"
+      "sourceSha256": "fcf14616dd4dd31460f747650fd9b72c3955f539568bede438eb3e58068efec4",
+      "currentSha256": "ffe9b05912e0ed325c5be74cf3da11fe12ed387aeb4d397b748ce641709c687c",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "lib/search/action.ts",
@@ -795,8 +831,8 @@
     {
       "path": "lib/utils.ts",
       "sourceSha256": "40cda8ec0a6bbb8cff6bbc8a41e9a45b5eca443d65e463e5eaae85f399cb9168",
-      "currentSha256": "90034a812f81d59980164584a32b5ad3d44142edcc8eedf251532d33969e6d22",
-      "modification": "Replace Hydrogen money formatting with the platform Intl implementation."
+      "currentSha256": "03a7f470770e2adaed099be7880bb0eb8610ef5d4c56e9b1c8fd35c43ecbc377",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "next.config.ts",

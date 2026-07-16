@@ -1,3 +1,4 @@
+import { formatMoney, type MoneyV2 } from "@shopify/hydrogen";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -5,12 +6,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatPrice(amount: number, currencyCode: string, locale: string): string {
-  return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: currencyCode,
-    currencyDisplay: "narrowSymbol",
-  }).format(amount);
+export function formatPrice(money: MoneyV2, locale: string): string {
+  return formatMoney(money, { currencyDisplay: "narrowSymbol", locale }).toString();
 }
 
 // Price filters are scalar; comma-splitting would make parsePrice reject them.
