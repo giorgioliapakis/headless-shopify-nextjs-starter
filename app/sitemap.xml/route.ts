@@ -14,6 +14,7 @@ export async function GET(): Promise<Response> {
 
   const childIds = [
     "static",
+    "blogs",
     ...Array.from({ length: productPages }, (_, i) => `products-${i + 1}`),
     ...Array.from({ length: collectionPages }, (_, i) => `collections-${i + 1}`),
     ...Array.from({ length: pagePages }, (_, i) => `pages-${i + 1}`),

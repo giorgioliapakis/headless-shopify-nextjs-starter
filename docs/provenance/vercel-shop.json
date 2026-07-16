@@ -65,8 +65,8 @@
     {
       "path": "app/api/webhooks/shopify/route.ts",
       "sourceSha256": "1215c8bd54c72c8e588afa07cc31c93b1f2279d94d2e53d11c47792400374a6a",
-      "currentSha256": "3b6eb56957ea5d2014701856dab8d850491f6a6f75ab15f3496fb386699a4e37",
-      "modification": "Harden the webhook trust boundary and align invalidation with app-owned cache tags."
+      "currentSha256": "3b6a49bcf26f5fd12763394aa8ff018a9874e4c6f42279d77876b1d7b2cf6380",
+      "modification": "Invalidate Shopify blog/article cache tags from authenticated article webhooks."
     },
     {
       "path": "app/cart/error.tsx",
@@ -160,11 +160,15 @@
     },
     {
       "path": "app/sitemap.xml/route.ts",
-      "sourceSha256": "55fc940a5c1ae1770e4687fa044cf8e016be8cf71577f388036382df414a0773"
+      "sourceSha256": "55fc940a5c1ae1770e4687fa044cf8e016be8cf71577f388036382df414a0773",
+      "currentSha256": "02744a1ccc76a4f53c35b6db0e3d2d23b36cf15cf8dfe94f61e1fcf4ab76ec9e",
+      "modification": "Include the Shopify blog/article sitemap shard."
     },
     {
       "path": "app/sitemap/[shard]/route.ts",
-      "sourceSha256": "6d91305268942847e89556ff687fd43f6f89eab2cf3f11ab8b95d58afa20fc4c"
+      "sourceSha256": "6d91305268942847e89556ff687fd43f6f89eab2cf3f11ab8b95d58afa20fc4c",
+      "currentSha256": "34f47586336dac38cdc6ff68aa01e22cc82f320da6bdd5f84a8b2f0048743964",
+      "modification": "Render bounded Shopify blog/article sitemap resources."
     },
     {
       "path": "components.json",
@@ -826,7 +830,9 @@
     },
     {
       "path": "lib/types.ts",
-      "sourceSha256": "ce8c5d1200434827b94bf447824cc2e7f276e62280abdae60d13c9fd2034c6fe"
+      "sourceSha256": "ce8c5d1200434827b94bf447824cc2e7f276e62280abdae60d13c9fd2034c6fe",
+      "currentSha256": "7d34cc57d97dfa06833852e77bd05131b5326d652005eb2e329f265ee49adac2",
+      "modification": "Add neutral Shopify blog and article domain contracts."
     },
     {
       "path": "lib/utils.ts",

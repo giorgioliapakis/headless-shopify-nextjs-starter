@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { getBlogSitemapResources } from "@/lib/shopify/operations/blogs";
 import { getShopPolicies } from "@/lib/shopify/operations/policies";
 import { getShopifySitemapPage, type ShopifySitemapType } from "@/lib/shopify/operations/sitemap";
 import { shopConfig } from "@/shop.config";
@@ -34,6 +35,18 @@ async function renderStatic(): Promise<Response> {
   return xmlResponse(urlsetWrap(entries));
 }
 
+async function renderBlogs(): Promise<Response> {
+  const resources = await getBlogSitemapResources();
+  const entries = resources
+    .map(({ pathname, updatedAt }) => {
+      const loc = escapeXml(toAbsoluteUrl(pathname));
+      const lastmod = updatedAt ? `\n    <lastmod>${escapeXml(updatedAt)}</lastmod>` : "";
+      return `  <url>\n    <loc>${loc}</loc>${lastmod}\n  </url>`;
+    })
+    .join("\n");
+  return xmlResponse(urlsetWrap(entries));
+}
+
 async function renderShard(
   type: ShopifySitemapType,
   page: number,
@@ -60,6 +73,7 @@ export async function GET(
   const id = shard.endsWith(".xml") ? shard.slice(0, -".xml".length) : shard;
 
   if (id === "static") return renderStatic();
+  if (id === "blogs") return renderBlogs();
 
   const match = id.match(/^(collections|pages|products)-(\d+)$/);
   if (!match) notFound();

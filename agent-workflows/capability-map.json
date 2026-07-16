@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "source": "lib/commerce/capabilities.ts",
+  "capabilities": [
+    { "id": "catalog.products", "status": "core" },
+    { "id": "catalog.variants", "status": "core" },
+    { "id": "catalog.collections", "status": "core" },
+    { "id": "shopify.search", "status": "core" },
+    { "id": "shopify.menus", "status": "core" },
+    { "id": "content.pages-policies", "status": "core" },
+    { "id": "content.blogs", "status": "core" },
+    { "id": "shopify.cart", "status": "core" },
+    { "id": "checkout.hosted", "status": "core" },
+    { "id": "shopify.redirects", "status": "core" },
+    { "id": "shopify.webhooks", "status": "conditional" },
+    { "id": "accounts.hosted", "status": "hosted" },
+    { "id": "markets", "status": "conditional" },
+    { "id": "merchandising.bundles", "status": "conditional" },
+    { "id": "merchandising.complementary-products", "status": "conditional" },
+    { "id": "merchandising.recommendations", "status": "conditional" },
+    { "id": "analytics.shopify", "status": "conditional" },
+    { "id": "selling-plans", "status": "planned" },
+    { "id": "content.renderable-metaobjects", "status": "planned" },
+    { "id": "integrations.commerce-apps", "status": "unsupported" }
+  ]
+}

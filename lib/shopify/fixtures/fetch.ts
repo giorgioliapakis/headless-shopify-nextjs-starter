@@ -76,6 +76,25 @@ const NEUTRAL_COLLECTION = {
   title: "Neutral Collection",
   updatedAt: "2026-01-01T00:00:00Z",
 };
+const NEUTRAL_BLOG = {
+  handle: "journal",
+  id: "gid://shopify/Blog/2000",
+  seo: { description: "Neutral fixture articles.", title: "Journal" },
+  title: "Journal",
+};
+const NEUTRAL_ARTICLE = {
+  authorV2: { name: "Fixture Editor" },
+  blog: { handle: NEUTRAL_BLOG.handle, title: NEUTRAL_BLOG.title },
+  contentHtml: "<p>Neutral fixture article content.</p>",
+  excerpt: "A neutral synthetic article used for deterministic verification.",
+  handle: "neutral-article",
+  id: "gid://shopify/Article/2001",
+  image: null,
+  publishedAt: "2026-01-01T00:00:00Z",
+  seo: { description: null, title: null },
+  tags: [],
+  title: "Neutral Article",
+};
 
 type FixtureCartLineInput = { id?: string; merchandiseId?: string; quantity?: number };
 
@@ -229,6 +248,48 @@ export function neutralStorefrontFixtureData(
       return { menu: null };
     case "getPage":
       return { page: null };
+    case "getBlogs":
+      return { blogs: { nodes: [NEUTRAL_BLOG] } };
+    case "getBlog":
+      return {
+        blog:
+          variables.handle === NEUTRAL_BLOG.handle
+            ? {
+                ...NEUTRAL_BLOG,
+                articles: {
+                  nodes: [NEUTRAL_ARTICLE],
+                  pageInfo: PAGE_INFO,
+                },
+              }
+            : null,
+      };
+    case "getArticle":
+      return {
+        blog:
+          variables.blogHandle === NEUTRAL_BLOG.handle
+            ? {
+                articleByHandle:
+                  variables.articleHandle === NEUTRAL_ARTICLE.handle ? NEUTRAL_ARTICLE : null,
+              }
+            : null,
+      };
+    case "getBlogSitemap":
+      return {
+        blogs: { nodes: [{ handle: NEUTRAL_BLOG.handle }], pageInfo: PAGE_INFO },
+      };
+    case "getArticleSitemap":
+      return {
+        articles: {
+          nodes: [
+            {
+              blog: { handle: NEUTRAL_BLOG.handle },
+              handle: NEUTRAL_ARTICLE.handle,
+              publishedAt: NEUTRAL_ARTICLE.publishedAt,
+            },
+          ],
+          pageInfo: PAGE_INFO,
+        },
+      };
     case "getShopPolicies":
       return { shop: emptyShopPolicies() };
     case "shopAnalytics":

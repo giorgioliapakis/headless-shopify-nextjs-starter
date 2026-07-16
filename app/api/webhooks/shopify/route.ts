@@ -6,6 +6,9 @@ import { getNumericShopifyId } from "@/lib/shopify/utils";
 
 const MAX_WEBHOOK_BYTES = 1024 * 1024;
 const ALLOWED_TOPICS = new Set([
+  "articles/create",
+  "articles/delete",
+  "articles/update",
   "collections/create",
   "collections/delete",
   "collections/update",
@@ -72,6 +75,19 @@ function tagsForCollection(topic: string, payload: Record<string, unknown>): str
   return tags;
 }
 
+function tagsForArticle(payload: Record<string, unknown>): string[] {
+  const tags = ["blogs"];
+  const blogHandle = payload.blog_handle ?? payload.blogHandle;
+  const articleHandle = payload.handle;
+  if (typeof blogHandle === "string" && blogHandle) {
+    tags.push(`blog-${blogHandle}`);
+    if (typeof articleHandle === "string" && articleHandle) {
+      tags.push(`article-${blogHandle}-${articleHandle}`);
+    }
+  }
+  return tags;
+}
+
 function tagsForMetaobject(payload: Record<string, unknown>): string[] {
   const tags = ["cms:all"];
   const nested =
@@ -101,11 +117,13 @@ export function cacheTagsForShopifyWebhook(
 ): string[] {
   const tags = topic.startsWith("products/")
     ? tagsForProduct(payload)
-    : topic.startsWith("collections/")
-      ? tagsForCollection(topic, payload)
-      : topic.startsWith("metaobjects/")
-        ? tagsForMetaobject(payload)
-        : [];
+    : topic.startsWith("articles/")
+      ? tagsForArticle(payload)
+      : topic.startsWith("collections/")
+        ? tagsForCollection(topic, payload)
+        : topic.startsWith("metaobjects/")
+          ? tagsForMetaobject(payload)
+          : [];
   return [...new Set(tags)];
 }
 

@@ -63,6 +63,7 @@ describe("Hydrogen request lifecycle", () => {
     expect(classifyShopifyProxyRoute("/legacy-campaign")).toBe("redirect-candidate");
     expect(classifyShopifyProxyRoute("/admin")).toBe("redirect-candidate");
     expect(classifyShopifyProxyRoute("/api/cart")).toBe("cart");
+    expect(classifyShopifyProxyRoute("/blogs/journal/neutral-article")).toBe("next");
     expect(classifyShopifyProxyRoute("/api/unstable/graphql.json")).toBe("consent");
   });
 

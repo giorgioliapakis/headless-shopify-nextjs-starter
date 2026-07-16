@@ -233,6 +233,35 @@ export interface ContentPage {
   updatedAt: string;
 }
 
+export interface BlogSummary {
+  handle: string;
+  id: string;
+  seo: SEO;
+  title: string;
+}
+
+export interface ArticleSummary {
+  author: string | null;
+  blog: Pick<BlogSummary, "handle" | "title">;
+  excerpt: string;
+  handle: string;
+  id: string;
+  image: Image | null;
+  publishedAt: string;
+  seo: SEO;
+  tags: string[];
+  title: string;
+}
+
+export interface Article extends ArticleSummary {
+  contentHtml: string;
+}
+
+export interface Blog extends BlogSummary {
+  articles: ArticleSummary[];
+  pageInfo: PageInfo;
+}
+
 export type FilterPresentation = "image" | "swatch" | "text";
 
 export type FilterType = "boolean" | "list" | "price";

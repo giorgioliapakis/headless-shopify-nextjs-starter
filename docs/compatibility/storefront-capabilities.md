@@ -28,7 +28,7 @@ Status vocabulary:
 | Cart              | `/cart`                    | Core    | Hydrogen request-bound cart, warnings, discounts, progressive line forms and hosted checkout handoff. |
 | Customer account  | configured external URL    | Hosted  | No local account session by default.                                                                  |
 | Checkout          | Shopify `cart.checkoutUrl` | Hosted  | No custom checkout.                                                                                   |
-| Blog/article      | `/blogs/**`                | Planned | Conditional pack; not currently present.                                                              |
+| Blog/article      | `/blogs/[handle]/**`       | Core    | Shopify-backed listing/article routes, pagination, metadata, Article schema, sitemap and hard 404.    |
 | Landing pages     | downstream recipes         | Planned | Section registry and route recipe contract not yet complete.                                          |
 | Unknown path      | any unmatched URL          | Core    | Safe redirect lookup for paths outside the app manifest, otherwise a static hard 404.                 |
 
@@ -55,7 +55,7 @@ surfaces. Draft mode and the Shopify webhook handler are server endpoints, not s
 | Shop Pay handoff                                               | Core        | Uses Hydrogen's real Shop Pay custom element; no local checkout.                              |
 | Markets selector and contextual pricing                        | Conditional | Single-market default; bounded cookie/cart identity selector activates with verified locales. |
 | Selling plans/subscriptions                                    | Planned     | Conditional adapter required.                                                                 |
-| Predictive search                                              | Planned     | Hydrogen capability; current search is full-page only.                                        |
+| Predictive search                                              | Core        | Bounded Shopify predictive results power the navigation search surface.                       |
 | First-party consent-aware analytics contract                   | Conditional | Disabled by default; page/cart and confirmed cart-delta events use Hydrogen's consent bus.    |
 | Headless customer accounts                                     | Planned     | Optional pack only; hosted accounts remain default.                                           |
 | Reviews, loyalty, wishlists, subscriptions and external search | Unsupported | Require provider-specific downstream adapters and parity evidence.                            |
@@ -64,7 +64,8 @@ surfaces. Draft mode and the Shopify webhook handler are server endpoints, not s
 
 Catalogue/content operations use Next Cache Components. Current tag families are `products`,
 `product-{handle|id}`, `recommendations-{handle}`, `collections`, `collections-index`,
-`collection-{handle}`, `menus`, `pages`, `page-{handle}`, `policies`, sitemap resource tags and CMS tags.
+`collection-{handle}`, `menus`, `pages`, `page-{handle}`, `policies`, `blogs`, `blog-{handle}`,
+`article-{blog}-{article}`, sitemap resource tags and CMS tags.
 Cart identity comes from an HTTP-only cookie and never belongs in shared catalogue caches.
 
 Hydrogen's optional response cache is not an additional cache layer for these paths. Webhook invalidation

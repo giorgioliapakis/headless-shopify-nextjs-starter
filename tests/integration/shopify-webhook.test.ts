@@ -50,7 +50,7 @@ describe("Shopify webhook boundary", () => {
     expect(verifyShopifyWebhook(bytes, null, secret)).toBe(false);
   });
 
-  it("maps product and collection changes to bounded cache tags", () => {
+  it("maps product, collection and article changes to bounded cache tags", () => {
     expect(
       cacheTagsForShopifyWebhook("products/update", {
         handle: "neutral-shirt",
@@ -67,6 +67,12 @@ describe("Shopify webhook boundary", () => {
       "collections-index",
       "collection-new-arrivals",
     ]);
+    expect(
+      cacheTagsForShopifyWebhook("articles/update", {
+        blog_handle: "journal",
+        handle: "neutral-article",
+      }),
+    ).toEqual(["blogs", "blog-journal", "article-journal-neutral-article"]);
   });
 
   it("fails closed when the endpoint is not configured", async () => {

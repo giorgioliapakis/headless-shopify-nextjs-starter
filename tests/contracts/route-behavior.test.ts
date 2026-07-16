@@ -11,6 +11,8 @@ const requiredRoutes = [
   "app/collections/all/page.tsx",
   "app/search/page.tsx",
   "app/pages/[handle]/page.tsx",
+  "app/blogs/[handle]/page.tsx",
+  "app/blogs/[handle]/[article]/page.tsx",
   "app/policies/[handle]/page.tsx",
   "app/cart/page.tsx",
   "app/not-found.tsx",
@@ -33,6 +35,8 @@ describe("Shopper route contract", () => {
     "app/products/[handle]/page.tsx",
     "app/collections/[handle]/page.tsx",
     "app/pages/[handle]/page.tsx",
+    "app/blogs/[handle]/page.tsx",
+    "app/blogs/[handle]/[article]/page.tsx",
     "app/policies/[handle]/page.tsx",
   ])("keeps missing Shopify resources as hard 404s in %s", async (path) => {
     expect(await source(path)).toMatch(/notFound\(\)/);
@@ -43,6 +47,8 @@ describe("Shopper route contract", () => {
       "app/products/[handle]/page.tsx",
       "app/collections/[handle]/page.tsx",
       "app/pages/[handle]/page.tsx",
+      "app/blogs/[handle]/page.tsx",
+      "app/blogs/[handle]/[article]/page.tsx",
       "app/policies/[handle]/page.tsx",
     ]) {
       expect(await source(path)).toContain("buildAlternates");
