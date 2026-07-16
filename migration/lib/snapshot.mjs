@@ -8,6 +8,7 @@ import { writeTextAtomic } from "./workspace.mjs";
 const MAX_SITEMAPS = 10;
 const MAX_URLS = 5_000;
 const DEFAULT_MAX_PAGES = 100;
+const MAX_CRAWL_DEPTH = 2;
 
 export async function capturePublicSnapshot({
   runDirectory,
@@ -26,35 +27,114 @@ export async function capturePublicSnapshot({
   const rootPage = isDisallowed(root.pathname, robots)
     ? null
     : await capturePage(root.toString(), { approvedOrigin, get, runDirectory });
-  const candidates = uniqueUrls(
-    [root.toString(), ...(rootPage?.links ?? []), ...sitemap.urls],
-    root,
-  ).slice(0, MAX_URLS);
-  const allowed = candidates.filter((url) => !isDisallowed(new URL(url).pathname, robots));
-  const selected = allowed.slice(0, maxPages);
-  const pages = await mapConcurrent(selected, 4, async (url) =>
-    rootPage?.url === url ? rootPage : capturePage(url, { approvedOrigin, get, runDirectory }),
-  );
+  const discovered = new Map();
+  const queue = [];
+  addDiscovered(root.toString(), "entry", 0);
+  for (const link of rootPage?.links ?? []) addDiscovered(link, "link:/", 1);
+  for (const url of sitemap.urls) addDiscovered(url, "sitemap", 0);
+  const pages = [];
+  const processed = new Set();
+  while (queue.length && pages.length < maxPages) {
+    const batch = [];
+    while (queue.length && batch.length < 4 && pages.length + batch.length < maxPages) {
+      const candidate = queue.shift();
+      if (processed.has(candidate.url)) continue;
+      processed.add(candidate.url);
+      if (isDisallowed(new URL(candidate.url).pathname, robots)) continue;
+      batch.push(candidate);
+    }
+    const captured = await mapConcurrent(batch, 4, async (candidate) => {
+      const page =
+        rootPage?.url === candidate.url
+          ? rootPage
+          : await capturePage(candidate.url, { approvedOrigin, get, runDirectory });
+      return {
+        ...page,
+        discovery: {
+          depth: discovered.get(candidate.url).depth,
+          sources: [...discovered.get(candidate.url).sources].sort(),
+        },
+      };
+    });
+    pages.push(...captured);
+    for (const page of captured) {
+      if (page.discovery.depth >= MAX_CRAWL_DEPTH) continue;
+      for (const link of page.links ?? []) {
+        addDiscovered(link, `link:${page.path}`, page.discovery.depth + 1);
+      }
+    }
+  }
+  for (const page of pages) {
+    const route = discovered.get(page.url);
+    if (route) page.discovery = { depth: route.depth, sources: [...route.sources].sort() };
+  }
+  const discovery = summarizeDiscovery(pages);
   const capturedAt = new Date().toISOString();
   return attachSnapshotIdentity({
     schemaVersion: 1,
     capturedAt,
     source: { origin: approvedOrigin, mode: "credential-free-public", evidenceTrust: "untrusted" },
-    limits: { maxPages, maxSitemaps: MAX_SITEMAPS, maxUrls: MAX_URLS, maxResponseBytes: 1_048_576 },
+    limits: {
+      maxPages,
+      maxSitemaps: MAX_SITEMAPS,
+      maxUrls: MAX_URLS,
+      maxCrawlDepth: MAX_CRAWL_DEPTH,
+      maxResponseBytes: 1_048_576,
+    },
     robots: {
       fetched: Boolean(robotsResponse),
       sha256: robotsResponse ? sha256(robotsResponse.body) : null,
       disallow: robots,
-      skippedCount: candidates.length - allowed.length,
+      skippedCount: [...discovered.keys()].filter((url) =>
+        isDisallowed(new URL(url).pathname, robots),
+      ).length,
     },
     sitemap: {
       fetchedCount: sitemap.fetchedCount,
       discoveredCount: sitemap.urls.length,
       errors: sitemap.errors,
     },
+    discovery,
     pages,
-    summary: summarizePages(pages, candidates.length, selected.length),
+    summary: summarizePages(pages, discovered.size, pages.length),
   });
+
+  function addDiscovered(value, source, depth) {
+    if (discovered.size >= MAX_URLS) return;
+    const [url] = uniqueUrls([value], root);
+    if (!url) return;
+    const current = discovered.get(url);
+    if (current) {
+      current.sources.add(source);
+      current.depth = Math.min(current.depth, depth);
+      return;
+    }
+    discovered.set(url, { depth, sources: new Set([source]) });
+    queue.push({ url, depth });
+  }
+}
+
+function summarizeDiscovery(pages) {
+  const routes = pages.map((page) => ({
+    url: page.url,
+    path: page.path,
+    depth: page.discovery.depth,
+    sources: page.discovery.sources,
+  }));
+  return {
+    maxDepth: MAX_CRAWL_DEPTH,
+    routes,
+    sitemapOnlyCount: routes.filter(
+      (route) =>
+        route.sources.includes("sitemap") &&
+        !route.sources.some((source) => source.startsWith("link:")),
+    ).length,
+    linkedNotSitemapCount: routes.filter(
+      (route) =>
+        route.sources.some((source) => source.startsWith("link:")) &&
+        !route.sources.includes("sitemap"),
+    ).length,
+  };
 }
 
 async function discoverSitemapUrls(initialUrl, { approvedOrigin, get }) {

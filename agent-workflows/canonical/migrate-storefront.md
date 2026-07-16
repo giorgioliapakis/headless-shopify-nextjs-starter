@@ -81,6 +81,10 @@ not production authority.
    older source-bound review decisions only when observed source content changed, and never silently
    treats an overwritten “current” file as the original evidence.
 
+   Inspect the snapshot's route discovery sources and sitemap-only/linked-not-sitemap counts. A route
+   found by one public source is not proof that navigation, redirects, publication and Admin state agree;
+   keep those reconciliation gaps explicit until their approved discovery boundary supplies evidence.
+
    Theme directories with Git metadata must be clean and bound to one exact commit. Never bypass a
    rejected submodule, filter, alternate object database, nested repository or worktree indirection. The
    command re-hashes and revalidates the supplied theme immediately before public capture; source changes

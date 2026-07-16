@@ -12,6 +12,7 @@
     "limits",
     "robots",
     "sitemap",
+    "discovery",
     "pages",
     "summary"
   ],
@@ -31,6 +32,10 @@
     "limits": { "type": "object" },
     "robots": { "type": "object" },
     "sitemap": { "type": "object" },
+    "discovery": {
+      "type": "object",
+      "required": ["maxDepth", "routes", "sitemapOnlyCount", "linkedNotSitemapCount"]
+    },
     "pages": {
       "type": "array",
       "maxItems": 500,
@@ -64,6 +69,7 @@
           "robots": { "type": ["string", "null"], "maxLength": 300 },
           "hreflang": { "type": "array", "maxItems": 50 },
           "structuredDataTypes": { "type": "array", "maxItems": 100 },
+          "discovery": { "type": "object" },
           "evidencePath": { "type": ["string", "null"], "pattern": "^(evidence/public/pages/|$)" }
         }
       }

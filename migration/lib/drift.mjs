@@ -21,6 +21,7 @@ export function snapshotIdentity(snapshot) {
       robots: page.robots ?? null,
       hreflang: page.hreflang ?? [],
       structuredDataTypes: page.structuredDataTypes ?? [],
+      discovery: page.discovery ?? null,
       accessState: page.accessState ?? null,
       error: page.error ?? null,
     }))
@@ -32,6 +33,7 @@ export function snapshotIdentity(snapshot) {
         source: snapshot.source,
         robots: snapshot.robots,
         sitemap: snapshot.sitemap,
+        discovery: snapshot.discovery,
         pages,
       }),
     )
@@ -114,6 +116,7 @@ function changedFields(before, after) {
     "robots",
     "hreflang",
     "structuredDataTypes",
+    "discovery",
     "accessState",
     "error",
   ];

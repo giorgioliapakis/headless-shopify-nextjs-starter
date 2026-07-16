@@ -112,6 +112,11 @@ The storefront-runtime track is defined in
       reads with exact scopes and removal guidance.
 - [ ] Reconcile sitemaps, navigation, links, redirects, templates, assets, apps, metadata, analytics,
       consent, markets, metaobjects, and published state with provenance.
+  - [x] Reconcile bounded public sitemap and depth-two same-origin link discovery with per-route sources,
+        robots exclusions and sitemap-only/linked-not-sitemap counts.
+  - [x] Record bounded title, description, headings, canonical, robots, hreflang and JSON-LD type facts.
+  - [ ] Reconcile protected Admin redirects/publication/markets/metaobjects, rendered navigation regions,
+        app behavior and analytics/consent through the external discovery/browser boundaries.
 - [ ] Add cursor checkpoints, Shopify cost/throttle handling, bounded retry/backoff, drift detection, and
       immutable versioned snapshots.
 

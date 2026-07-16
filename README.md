@@ -83,6 +83,11 @@ hreflang and bounded JSON-LD types. Collection index, cart, hosted account and h
 classified explicitly. The visual manifest uses bounded pairwise scenarios rather than an unbounded
 cross-product of viewport, interaction, input, consent and motion states.
 
+Route discovery follows same-origin links to depth two in addition to Shopify sitemaps, obeys robots and
+hard page/URL/response/concurrency limits, and records each captured route's entry/sitemap/link sources.
+Sitemap-only and linked-not-sitemap counts remain visible for reconciliation instead of being silently
+merged.
+
 The agent also receives source-bound template clusters, integration and unknown inventories, plus a
 three-layer brand pack. Raw observations remain immutable, semantic roles start unresolved for merchant
 mapping, and component/section variants may use only the versioned foundation registries.

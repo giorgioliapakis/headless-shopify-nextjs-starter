@@ -61,7 +61,11 @@ describe("public snapshot", () => {
       ],
       [
         "https://example.com/pages/about?from=nav",
-        "<html><head><title>About</title></head><body><h1>About us</h1></body></html>",
+        '<html><head><title>About</title></head><body><h1>About us</h1><a href="/pages/team">Team</a><a href="/products/tee">Product</a></body></html>',
+      ],
+      [
+        "https://example.com/pages/team",
+        "<html><head><title>Team</title></head><body><h1>Team</h1></body></html>",
       ],
     ]);
     const get = async (input: string) => {
@@ -87,7 +91,7 @@ describe("public snapshot", () => {
       maxPages: 10,
       get,
     });
-    expect(snapshot.summary).toMatchObject({ capturedCount: 3, successfulCount: 3 });
+    expect(snapshot.summary).toMatchObject({ capturedCount: 4, successfulCount: 4 });
     expect(snapshot.snapshotId).toMatch(/^[a-f0-9]{64}$/);
     expect(snapshot.pages[1]).toMatchObject({ type: "page", title: "About" });
     expect(snapshot.pages[2]).toMatchObject({ type: "product", title: "Tee" });
@@ -97,6 +101,16 @@ describe("public snapshot", () => {
       robots: "index,follow",
       hreflang: [{ language: "en-AU", href: "https://example.com/" }],
       structuredDataTypes: ["WebSite"],
+    });
+    expect(snapshot.pages[2].discovery.sources).toEqual(["link:/pages/about", "sitemap"]);
+    expect(snapshot.pages[3]).toMatchObject({
+      path: "/pages/team",
+      discovery: { depth: 2, sources: ["link:/pages/about"] },
+    });
+    expect(snapshot.discovery).toMatchObject({
+      maxDepth: 2,
+      sitemapOnlyCount: 0,
+      linkedNotSitemapCount: 2,
     });
     const evidence = await readFile(join(runDirectory, snapshot.pages[2].evidencePath!), "utf8");
     expect(evidence).toContain("Neutral tee");
