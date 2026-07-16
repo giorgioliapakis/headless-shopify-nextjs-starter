@@ -7,6 +7,7 @@ describe("release contract", () => {
     const ignore = await readFile(".gitignore", "utf8");
     expect(ignore).toContain(".migration/");
     expect(ignore).toContain(".release/");
+    expect(ignore).toContain(".artifacts/");
   });
 
   it("uses a clean tracked Git archive and emits source/SBOM evidence", async () => {

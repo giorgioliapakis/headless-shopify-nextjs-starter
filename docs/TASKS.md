@@ -48,7 +48,7 @@ The storefront-runtime track is defined in
 
 ## Phase 2 — Minimum safe test platform
 
-- [ ] Add deterministic unit/integration/browser scaffolding and neutral synthetic fixtures.
+- [x] Add deterministic unit/integration/browser scaffolding and neutral synthetic fixtures.
 - [ ] Enforce secret, content, binary, provenance, license, Git-history, build-output, artifact, package,
       and release scans.
 - [ ] Freeze lockfile installs, audit lifecycle scripts, pin Actions by commit, minimize workflow

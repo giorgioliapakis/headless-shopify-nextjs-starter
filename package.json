@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "browser:install": "playwright install chromium",
+    "browser:test": "pnpm verify:production && playwright test",
+    "browser:test:built": "playwright test",
     "budget:bundle": "node scripts/performance/bundle-budget.mjs",
     "budget:query": "node scripts/performance/query-budget.mjs",
     "check": "pnpm typegen && oxlint . && oxfmt --check && tsc --noEmit && pnpm check:graphql && pnpm budget:query && vitest run && pnpm supply-chain:audit && node scripts/upstream/verify.mjs && node scripts/agents/verify-skills.mjs && node scripts/clean-room/scan.mjs",
@@ -14,6 +17,8 @@
     "format": "oxfmt",
     "foundation:update": "node scripts/foundation/update.mjs",
     "lint": "oxlint . && oxfmt --check",
+    "lighthouse": "pnpm verify:production && node scripts/verify/lighthouse.mjs",
+    "lighthouse:built": "node scripts/verify/lighthouse.mjs",
     "migrate": "node migration/cli.mjs",
     "release:verify": "pnpm check && pnpm verify:production && node scripts/release/verify.mjs",
     "skills:sync:hydrogen": "node scripts/agents/sync-hydrogen-skills.mjs && node scripts/agents/sync-claude-skills.mjs",
@@ -54,6 +59,9 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.12.1",
+    "@lhci/cli": "0.15.1",
+    "@playwright/test": "1.61.1",
     "gql.tada": "1.11.2",
     "vitest": "4.1.10"
   },

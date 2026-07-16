@@ -16,6 +16,7 @@ import { Page } from "@/components/ui/page";
 import { Sections } from "@/components/ui/sections";
 import type { Locale } from "@/lib/i18n";
 import { getLocale } from "@/lib/params";
+import { buildAlternates } from "@/lib/seo";
 import { withFallback } from "@/lib/shopify/errors";
 import { getHydrogenCartEnvelope } from "@/lib/shopify/hydrogen/cart-server";
 import { shopConfig } from "@/shop.config";
@@ -24,6 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("cart");
   return {
     title: t("title"),
+    alternates: buildAlternates({ pathname: "/cart" }),
     robots: {
       index: false,
       follow: false,

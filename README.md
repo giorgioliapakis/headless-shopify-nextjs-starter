@@ -117,6 +117,9 @@ Run only the stable pre/post commerce contracts with:
 pnpm test:contracts
 ```
 
+Install the pinned Chromium revision and run the production desktop/mobile/no-JavaScript, axe and
+Lighthouse gates with `pnpm browser:install`, `pnpm browser:test` and `pnpm lighthouse`.
+
 The production build requires valid Storefront credentials because catalogue-backed static work is
 resolved during the build. Synthetic products are never substituted silently. For a credential-free
 platform build, explicitly set the three neutral fixture values documented in `.env.example`; fixture

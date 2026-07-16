@@ -78,5 +78,6 @@ data, missing content/status behavior or a field Core Web Vital failure. Expired
 ## Current state
 
 The field targets, GraphQL ceilings, emitted JS/CSS limits, secretless production build and CI enforcement
-are active. Lighthouse, axe, visual and per-route network baselines remain pending the required interactive
-browser run; the repository does not claim those scores until its versioned artifacts exist.
+are active. A pinned Playwright 1.61.1, axe 4.12.1 and Lighthouse CI 0.15.1 harness is wired into protected
+CI. Lighthouse, axe, visual and per-route network results remain pending the required interactive browser
+run; the repository does not claim those scores until its versioned artifacts exist.

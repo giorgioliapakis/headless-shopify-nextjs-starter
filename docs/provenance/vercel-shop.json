@@ -75,8 +75,8 @@
     {
       "path": "app/cart/page.tsx",
       "sourceSha256": "1322c90599bdb846e43f352062f1ce6213d2e03e5fc44d03ac9d7a696d92407c",
-      "currentSha256": "97d0f610c3800f3c000f47fbde73026cb2670d5521e1de8d67d0b85c15a78596",
-      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
+      "currentSha256": "08957d46df8d98fc8ea66dee1d51a3e526fc66bb352f3e0d5cb76a969daabead",
+      "modification": "Adds the cart canonical metadata contract for browser and SEO verification."
     },
     {
       "path": "app/collections/[handle]/error.tsx",
@@ -196,7 +196,9 @@
     },
     {
       "path": "components/cart-page/empty-cart.tsx",
-      "sourceSha256": "4d0e0d3c1c65896fe246745ced099259543f4526ef2a3e8fce8cc76a66ff6b8b"
+      "sourceSha256": "4d0e0d3c1c65896fe246745ced099259543f4526ef2a3e8fce8cc76a66ff6b8b",
+      "currentSha256": "0cf58fe9507ee442e7dc12b15501ca6b7f28ba576792b459d7e1d948c0aebb26",
+      "modification": "Preserves a single semantic page heading in the empty-cart state."
     },
     {
       "path": "components/cart-page/header.tsx",
@@ -873,8 +875,8 @@
     {
       "path": "package.json",
       "sourceSha256": "ae662f2818fe83f3a91d3eabe6bedee2709d5703b11d7e2bdc26e4bd151fd85e",
-      "currentSha256": "a2cb3fca310b061bdf8b42a8d45629b3364f53bf0ee20d672a3552583eac23b8",
-      "modification": "Adds autonomous migration, conflict-aware downstream updates, release verification, and exact lifecycle-script audit commands."
+      "currentSha256": "65d5df0c04ee8c41b54b2df7d1840b8f4ac9d24a9f5364f6162dea9ac995b132",
+      "modification": "Adds pinned browser, accessibility and Lighthouse release gates plus migration/update/release commands."
     },
     {
       "path": "postcss.config.mjs",

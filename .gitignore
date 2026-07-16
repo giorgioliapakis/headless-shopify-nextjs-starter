@@ -2,6 +2,7 @@
 .env*
 !.env.example
 .context/
+.artifacts/
 .claude/skills/
 .migration/
 .release/
