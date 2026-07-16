@@ -13,9 +13,9 @@ The storefront-runtime track is defined in
   - [x] Record the reproducible production-mode neutral performance baseline.
 - [x] H1 — Exact Hydrogen package and matching agent-skill provenance.
 - [x] H2 — Request-scoped Storefront client and credential-free GraphQL typing migration.
-- [ ] H3 — Shopify routing, redirect, Markets and cache-isolation integration.
-- [ ] H4 — Hydrogen cart, money, Shop Pay and consent-aware analytics conformance.
-- [ ] H5 — Complete the invariant commerce core and conditional capability packs.
+- [x] H3 — Shopify routing, redirect, Markets and cache-isolation integration.
+- [x] H4 — Hydrogen cart, money, Shop Pay and consent-aware analytics conformance.
+- [x] H5 — Complete the invariant commerce core and conditional capability packs.
 - [x] H6 — Versioned token, component-variant and section-recipe customization system.
 - [ ] H7 — Browser, accessibility, performance, security and operations release gates.
 - [ ] H8 — Bind the runtime to autonomous migration and prove the experimental alpha.
@@ -49,9 +49,9 @@ The storefront-runtime track is defined in
 ## Phase 2 — Minimum safe test platform
 
 - [x] Add deterministic unit/integration/browser scaffolding and neutral synthetic fixtures.
-- [ ] Enforce secret, content, binary, provenance, license, Git-history, build-output, artifact, package,
+- [x] Enforce secret, content, binary, provenance, license, Git-history, build-output, artifact, package,
       and release scans.
-- [ ] Freeze lockfile installs, audit lifecycle scripts, pin Actions by commit, minimize workflow
+- [x] Freeze lockfile installs, audit lifecycle scripts, pin Actions by commit, minimize workflow
       permissions, and generate release SBOM/provenance.
 - [ ] Quarantine generated code in a credential-free, broker-free, network/filesystem-restricted sandbox
       before install/build/test/preview.
@@ -75,19 +75,19 @@ The storefront-runtime track is defined in
       and capability-map boundaries.
 - [ ] Define mocked PR and authenticated scheduled/release host runners plus an expiring
       host/model/skill qualification matrix.
-- [ ] Implement typed Shopify products, variants, collections, menus, pages, policies, search, cart,
+- [x] Implement typed Shopify products, variants, collections, menus, pages, policies, search, cart,
       hosted accounts, hosted checkout, cache tagging, and API-version enforcement.
 - [ ] Implement cart recovery/concurrency, cursor pagination, Shopify warnings/user errors, locale state,
       redirects, hard 404s, metadata, canonicals, sitemap, robots, and structured data.
 - [ ] Bind webhooks to signature, shop, topic, API version, body limits, and deduplication; add headers,
       rich-content safety, request limits, redaction, health, and degraded-Shopify behavior.
-- [ ] Define the provider-neutral analytics/consent contract through checkout handoff.
+- [x] Define the provider-neutral analytics/consent contract through checkout handoff.
 - [ ] Define three-layer brand tokens and primitive/section registry contracts; freeze Base UI behavior
       only after keyboard, touch, focus, dismissal, state, visual, axe, and performance checks pass.
 
 ## Phase 5 — Safe discovery and snapshots
 
-- [ ] Pre-register a conservative Online Store 2.0 compatibility/scale envelope before selecting a
+- [x] Pre-register a conservative Online Store 2.0 compatibility/scale envelope before selecting a
       proving merchant; distinguish technical compatibility from whether headless is advisable.
 - [ ] Implement SSRF-safe bounded crawl and disposable hostile-JavaScript browser capture with strict
       DNS/redirect/network isolation.
@@ -104,8 +104,8 @@ The storefront-runtime track is defined in
 
 - [ ] Generate the route manifest, template clusters, integration inventory, unknowns, and three-layer
       brand pack from evidence.
-- [ ] Map to generic primitives first and keep merchant recipes/config/assets downstream.
-- [ ] Add optional blogs/articles, landing pages, forms, Markets, reviews, subscriptions, search, or app
+- [x] Map to generic primitives first and keep merchant recipes/config/assets downstream.
+- [x] Add optional blogs/articles, landing pages, forms, Markets, reviews, subscriptions, search, or app
       recipes only when discovery provides a concrete consumer; promote only repeated patterns.
 - [ ] Create a deterministic capture manifest across source breakpoints, viewports, inputs, locale,
       interactive states, consent, dynamic masks, and reduced motion.
@@ -113,7 +113,7 @@ The storefront-runtime track is defined in
       grouped evidence, stale/conflict states, filters, provenance, and next actions.
 - [ ] Bind signed approvals to actor/action/environment/expiry and source/preview/evidence/check hashes;
       invalidate affected decisions on drift.
-- [ ] Choose downstream update topology, ownership, merge base, ordered migrations, conflicts,
+- [x] Choose downstream update topology, ownership, merge base, ordered migrations, conflicts,
       verification, and rollback before generation contracts freeze.
 
 ## Phase 7 — Verification and launch readiness
@@ -140,5 +140,5 @@ The storefront-runtime track is defined in
       license, security, supply-chain, and cross-host release gates pass.
 - [ ] Require several varied external migrations and one consented observed production cutover before a
       broader recommendation.
-- [ ] Publish versioned compatibility, provenance, conflict-aware updates, contributor/security/support
+- [x] Publish versioned compatibility, provenance, conflict-aware updates, contributor/security/support
       policies, cutover/rollback/tracking runbooks, and honest unsupported conditions.
