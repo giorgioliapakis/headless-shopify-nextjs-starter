@@ -143,6 +143,7 @@ mode refuses any real merchant domain, token or private credential and fails on 
 
 ## Project documents
 
+- [Merchant getting started](docs/onboarding/getting-started.md)
 - [Product requirements](docs/requirements/2026-07-11-agentic-shopify-starter.md)
 - [Execution backlog](docs/TASKS.md)
 - [Clean-room policy](CLEAN_ROOM.md)
