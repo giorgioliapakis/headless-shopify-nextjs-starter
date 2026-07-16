@@ -34,10 +34,14 @@ Hosted accounts require `NEXT_PUBLIC_SHOPIFY_ACCOUNT_URL`.
 
 ## Provider packs
 
-Reviews, loyalty, wishlists, subscriptions, forms/newsletters and third-party search must be implemented
-as named provider adapters. Discovery must identify the existing provider, approved behavior, browser
-scripts, data ownership, consent category, webhook/API requirements and failure behavior. The starter
-does not ship fake provider-neutral UI that silently drops those contracts.
+Native Shopify selling-plan allocations are part of the invariant core: the PDP displays approved plans,
+passes `sellingPlanId` through Hydrogen and preserves the plan label in cart. Provider-specific
+subscription portals, cancellation flows and app extensions remain named downstream adapters.
+
+Reviews, loyalty, wishlists, forms/newsletters and third-party search must be implemented as named
+provider adapters. Discovery must identify the existing provider, approved behavior, browser scripts,
+data ownership, consent category, webhook/API requirements and failure behavior. The starter does not
+ship fake provider-neutral UI that silently drops those contracts.
 
 Disabled packs must not read credentials, create browser globals, make requests or publish analytics.
 Agents should inspect the capability manifest before proposing code and update the TypeScript registry,

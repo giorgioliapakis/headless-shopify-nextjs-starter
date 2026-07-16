@@ -239,8 +239,8 @@
     {
       "path": "components/cart/overlay-item.tsx",
       "sourceSha256": "d25b1d08f435733da2313e6ff5086188db6d70e374fb09c8ff99b1354fb33237",
-      "currentSha256": "1441db41a687798a417b3aa646284dbc26df4fb53ab8f4cccae7d4912a65297a",
-      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
+      "currentSha256": "80bb3dbea646fc8259664bf9e13061c0a8a2a541a3f74e93db4fb95617a73bc4",
+      "modification": "Display the selected Shopify selling-plan label on Hydrogen cart lines."
     },
     {
       "path": "components/cart/overlay-summary.tsx",
@@ -367,8 +367,8 @@
     {
       "path": "components/product-detail/buy-buttons.tsx",
       "sourceSha256": "d26c43fcc8c0fa2a2ea62e22fdd0752554a4036db0e7159490f477047647a29f",
-      "currentSha256": "34b5160b71cdb0f1a7defeb737c8c0c553c54d3b72f54b14cff0e7cc28120941",
-      "modification": "Use Hydrogen cart forms and the real Shop Pay custom element for product purchase actions."
+      "currentSha256": "3ee6d955794c15b0c53cf3ff2712eb78c9a6a03fcbe5ad993c0f540468c490f6",
+      "modification": "Add accessible native selling-plan selection and pass sellingPlanId through Hydrogen progressive forms."
     },
     {
       "path": "components/product-detail/color-picker.tsx",
@@ -395,8 +395,8 @@
     {
       "path": "components/product-detail/product-detail-section.tsx",
       "sourceSha256": "35bdb0c886a18e9c97c330005cf1a99e81d4e4e432ca465c5f4a050759ba8464",
-      "currentSha256": "9bfdc148a2072d877305558bceb85eacce7daa4a7053cd8ad96348192237eeb5",
-      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
+      "currentSha256": "00cef159bd1bdb5e1c30d56d3faf03e99f7ca35bc6b11a9a437efadb3b49e680",
+      "modification": "Bind selected-variant selling plans and required-plan state to the Hydrogen buy form."
     },
     {
       "path": "components/product-detail/product-info.tsx",
@@ -747,8 +747,8 @@
     {
       "path": "lib/shopify/fragments.ts",
       "sourceSha256": "c83878f0dac9165482fd63a918f48b0faae59851a47feca24e2ae87ddc3e75a6",
-      "currentSha256": "6ce2ce74c0ad67e8f69ea75cefee21fb7b215c6310879aecb1cae55cb85d92c7",
-      "modification": "Retain typed catalogue fragments while removing the unused legacy cart fragment."
+      "currentSha256": "06ec8bcf3f3fbf3f702c4e9f79848ce64bdfc153f9b28878ac4a1213a4d3cf27",
+      "modification": "Add bounded selected-variant selling-plan allocations while keeping all-variant agent queries compact."
     },
     {
       "path": "lib/shopify/operations/cart.ts",
@@ -783,8 +783,8 @@
     {
       "path": "lib/shopify/operations/products.ts",
       "sourceSha256": "031f67444cb2c6282647dc0801885283cb96b5c8b44c638815954219fccd76d5",
-      "currentSha256": "8a16740556da18991303033ef449ae16fde7d9152258a11ef2cd52eff2d94727",
-      "modification": "Validate product documents with Hydrogen's bundled schema and use the current product(handle:) field."
+      "currentSha256": "170b0f69200fbc2945d2079b9d6222ae33a4ccc7d77ee569de354c37d57eb6a5",
+      "modification": "Resolve selected variants with native Shopify selling-plan allocation data."
     },
     {
       "path": "lib/shopify/operations/search.ts",
@@ -825,8 +825,8 @@
     {
       "path": "lib/shopify/transforms/product.ts",
       "sourceSha256": "4456fee3e45bb31c0fe5cc49c09ff4dc9de40324f828f2f903ea58fe8cda3def",
-      "currentSha256": "30c752210a4b4a86687e2dc1bacf23203d9a56d33d8e8839e26702237804d0ca",
-      "modification": "Build product option values from the current optionValues response instead of the deprecated values field."
+      "currentSha256": "b72bb5b02f2e2e4a5395bff39179503dd7f96f6ba6f24aa7a8e35db5da736cca",
+      "modification": "Normalize native Shopify selling-plan allocation prices and labels."
     },
     {
       "path": "lib/shopify/transforms/search.ts",
@@ -849,8 +849,8 @@
     {
       "path": "lib/types.ts",
       "sourceSha256": "ce8c5d1200434827b94bf447824cc2e7f276e62280abdae60d13c9fd2034c6fe",
-      "currentSha256": "5b6f9c94c88dd44991372d3e644d3cd46c54c278c6dcbda3958856e98e79fa2d",
-      "modification": "Add blog contracts and remove the obsolete application-owned cart model in favor of Hydrogen types."
+      "currentSha256": "b3e706201e289f3d90f6e5bdbee4d14d9e2a8d924b05dbb46eda6d27e9b5f9bb",
+      "modification": "Add native selling-plan contracts to selected product variants."
     },
     {
       "path": "lib/utils.ts",

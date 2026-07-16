@@ -38,27 +38,27 @@ surfaces. Draft mode and the Shopify webhook handler are server endpoints, not s
 
 ## Commerce and content operations
 
-| Capability                                                     | Status      | Notes                                                                                         |
-| -------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------- |
-| Products, variants and encoded availability                    | Core        | Hydrogen transport, bundled-schema-validated documents and app-owned normalized domain types. |
-| Collections and catalogue pagination                           | Core        | Collection tags and broad catalogue tags support revalidation.                                |
-| Menus, pages and policies                                      | Core        | Shopify remains the content system of record for these resources.                             |
-| Product/collection search and filters                          | Core        | Search uses Shopify's search field and preserves query state.                                 |
-| Product recommendations                                        | Conditional | Disabled by default through `shop.config.ts`.                                                 |
-| Bundles/componentized products                                 | Conditional | Domain/cart types support components; UI is disabled by default.                              |
-| Complementary products                                         | Conditional | Disabled by default.                                                                          |
-| Create/add/update/remove cart lines                            | Core        | Hydrogen server handlers, HTTP-only cart identity and progressively enhanced forms.           |
-| Discount codes                                                 | Core        | Hydrogen forms surface Shopify warnings and user errors.                                      |
-| Cart note                                                      | Core        | Hydrogen note form works with and without JavaScript and surfaces mutation errors.            |
-| Buyer country                                                  | Planned     | Market foundations exist; complete shopper controls and recovery proof remain.                |
-| Gift cards and shipping estimate display                       | Planned     | Must move to supported Hydrogen cart fragments and UI before being claimed.                   |
-| Shop Pay handoff                                               | Core        | Uses Hydrogen's real Shop Pay custom element; no local checkout.                              |
-| Markets selector and contextual pricing                        | Conditional | Single-market default; bounded cookie/cart identity selector activates with verified locales. |
-| Selling plans/subscriptions                                    | Planned     | Conditional adapter required.                                                                 |
-| Predictive search                                              | Core        | Bounded Shopify predictive results power the navigation search surface.                       |
-| First-party consent-aware analytics contract                   | Conditional | Disabled by default; page/cart and confirmed cart-delta events use Hydrogen's consent bus.    |
-| Headless customer accounts                                     | Planned     | Optional pack only; hosted accounts remain default.                                           |
-| Reviews, loyalty, wishlists, subscriptions and external search | Unsupported | Require provider-specific downstream adapters and parity evidence.                            |
+| Capability                                      | Status      | Notes                                                                                         |
+| ----------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------- |
+| Products, variants and encoded availability     | Core        | Hydrogen transport, bundled-schema-validated documents and app-owned normalized domain types. |
+| Collections and catalogue pagination            | Core        | Collection tags and broad catalogue tags support revalidation.                                |
+| Menus, pages and policies                       | Core        | Shopify remains the content system of record for these resources.                             |
+| Product/collection search and filters           | Core        | Search uses Shopify's search field and preserves query state.                                 |
+| Product recommendations                         | Conditional | Disabled by default through `shop.config.ts`.                                                 |
+| Bundles/componentized products                  | Conditional | Domain/cart types support components; UI is disabled by default.                              |
+| Complementary products                          | Conditional | Disabled by default.                                                                          |
+| Create/add/update/remove cart lines             | Core        | Hydrogen server handlers, HTTP-only cart identity and progressively enhanced forms.           |
+| Discount codes                                  | Core        | Hydrogen forms surface Shopify warnings and user errors.                                      |
+| Cart note                                       | Core        | Hydrogen note form works with and without JavaScript and surfaces mutation errors.            |
+| Buyer country                                   | Conditional | Verified market selection updates both locale and Hydrogen cart buyer identity.               |
+| Gift cards and shipping estimate display        | Planned     | Must move to supported Hydrogen cart fragments and UI before being claimed.                   |
+| Shop Pay handoff                                | Core        | Uses Hydrogen's real Shop Pay custom element; no local checkout.                              |
+| Markets selector and contextual pricing         | Conditional | Single-market default; bounded cookie/cart identity selector activates with verified locales. |
+| Selling plans/subscriptions                     | Core        | Native Shopify allocations, required-plan handling, pricing and cart lines; app portals vary. |
+| Predictive search                               | Core        | Bounded Shopify predictive results power the navigation search surface.                       |
+| First-party consent-aware analytics contract    | Conditional | Disabled by default; page/cart and confirmed cart-delta events use Hydrogen's consent bus.    |
+| Headless customer accounts                      | Planned     | Optional pack only; hosted accounts remain default.                                           |
+| Reviews, loyalty, wishlists and external search | Unsupported | Require provider-specific downstream adapters and parity evidence.                            |
 
 ## Cache ownership and invalidation
 
@@ -103,10 +103,10 @@ structured observability remain migration targets.
 
 ## Customization ownership
 
-The foundation currently owns semantic Tailwind tokens, Base UI behavior, commerce domain types and
-generic primitives. A downstream store owns brand values, licensed assets, copy and page composition.
-The versioned three-layer contract—tokens, component variants and section recipes—is planned; until it
-lands, the presence of configurable primitives must not be presented as a complete no-code section system.
+The foundation owns semantic Tailwind tokens, Base UI behavior, commerce domain types and generic
+primitives. A downstream store owns brand values, licensed assets, copy and page composition. Versioned
+theme and section schemas, contrast validation, the registry and neutral recipes are implemented; this
+is an agent-operated source contract, not a hidden no-code editor. See `docs/customization/`.
 
 ## Definition of full-featured
 

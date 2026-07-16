@@ -127,13 +127,14 @@ export function getCapabilityManifest(
       ["NEXT_PUBLIC_SHOPIFY_ANALYTICS_ENABLED"],
     ),
     {
-      cacheClass: "shared",
-      consumers: [],
-      enabled: false,
-      id: "selling-plans",
-      requiredEnvironment: [],
-      status: "planned",
-      unsupportedCases: ["Subscription app contracts require a verified provider adapter."],
+      ...core("selling-plans", [
+        "components/product-detail/buy-buttons.tsx",
+        "lib/shopify/fragments.ts",
+      ]),
+      unsupportedCases: [
+        "Provider-specific subscription portals, account management and app extensions remain downstream adapters.",
+        "The PDP displays the first 50 selling-plan allocations for the selected variant.",
+      ],
     },
     {
       cacheClass: "shared",

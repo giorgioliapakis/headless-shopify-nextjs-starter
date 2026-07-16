@@ -1,6 +1,5 @@
 "use client";
 
-import type { CartLine } from "@shopify/hydrogen";
 import { MinusIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -10,9 +9,10 @@ import { Button } from "@/components/ui/button";
 import { cn, formatPrice } from "@/lib/utils";
 
 import { useCart, useCartForm } from "./hydrogen";
+import type { StorefrontCartLine } from "./hydrogen";
 
 interface OverlayItemProps {
-  item: CartLine;
+  item: StorefrontCartLine;
   locale: string;
 }
 
@@ -67,6 +67,11 @@ export function OverlayItem({ item, locale }: OverlayItemProps) {
               {merchandise?.selectedOptions?.map((option) => option.value).join(" / ")}
             </p>
           )}
+          {item.sellingPlanAllocation ? (
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {item.sellingPlanAllocation.sellingPlan.name}
+            </p>
+          ) : null}
         </div>
 
         <form {...formProps()} className="flex items-center gap-1.5">

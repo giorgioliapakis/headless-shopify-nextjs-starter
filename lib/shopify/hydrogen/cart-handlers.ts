@@ -7,6 +7,9 @@ const CART_ANALYTICS_FRAGMENT = gql(`
     updatedAt
     lines(first: 250) {
       nodes {
+        sellingPlanAllocation {
+          sellingPlan { id name }
+        }
         merchandise {
           ... on ProductVariant {
             price { amount currencyCode }

@@ -25,7 +25,7 @@
     { "id": "merchandising.complementary-products", "status": "conditional" },
     { "id": "merchandising.recommendations", "status": "conditional" },
     { "id": "analytics.shopify", "status": "conditional" },
-    { "id": "selling-plans", "status": "planned" },
+    { "id": "selling-plans", "status": "core" },
     { "id": "content.renderable-metaobjects", "status": "planned" },
     { "id": "integrations.commerce-apps", "status": "unsupported" }
   ]

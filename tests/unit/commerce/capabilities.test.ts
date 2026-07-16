@@ -20,6 +20,7 @@ describe("commerce capability manifest", () => {
     expect(enabled).toContain("catalog.products");
     expect(enabled).toContain("content.blogs");
     expect(enabled).toContain("shopify.cart");
+    expect(enabled).toContain("selling-plans");
     expect(enabled).not.toContain("analytics.shopify");
     expect(enabled).not.toContain("markets");
   });

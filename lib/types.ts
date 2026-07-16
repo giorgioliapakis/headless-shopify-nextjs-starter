@@ -76,6 +76,7 @@ export interface ProductDetails extends ProductCard {
     maxVariantPrice: Money;
     minVariantPrice: Money;
   };
+  requiresSellingPlan: boolean;
   seo: SEO;
   tags: string[];
   updatedAt: string;
@@ -94,8 +95,20 @@ export interface ProductVariant {
   image: Image | null;
   price: Money;
   requiresComponents: boolean;
+  sellingPlanAllocations: SellingPlanAllocation[];
   selectedOptions: SelectedOption[];
   title: string;
+}
+
+export interface SellingPlanAllocation {
+  compareAtPrice?: Money;
+  description?: string;
+  id: string;
+  name: string;
+  options: Array<{ name?: string; value?: string }>;
+  perDeliveryPrice?: Money;
+  price: Money;
+  recurringDeliveries: boolean;
 }
 
 export interface ProductVariantComponent {

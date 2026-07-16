@@ -11,6 +11,7 @@ import type {
   ProductVariant,
   ProductVariantComponent,
   ProductVariantReference,
+  SellingPlanAllocation,
   Video,
 } from "@/lib/types";
 
@@ -50,6 +51,22 @@ export interface ShopifyVariant {
   groupedBy?: { nodes: ShopifyBundleComponentVariant[] };
   components?: {
     nodes: Array<{ quantity: number; productVariant: ShopifyBundleComponentVariant }>;
+  };
+  sellingPlanAllocations?: {
+    nodes: Array<{
+      priceAdjustments: Array<{
+        compareAtPrice: ShopifyMoney;
+        perDeliveryPrice: ShopifyMoney;
+        price: ShopifyMoney;
+      }>;
+      sellingPlan: {
+        description: string | null;
+        id: string;
+        name: string;
+        options: Array<{ name: string | null; value: string | null }>;
+        recurringDeliveries: boolean;
+      };
+    }>;
   };
 }
 
@@ -111,6 +128,7 @@ export interface ShopifyProduct {
   tags: string[];
   updatedAt: string;
   availableForSale: boolean;
+  requiresSellingPlan?: boolean;
   featuredImage: ShopifyImage | null;
   media?: ShopifyEdges<ShopifyMediaNode>;
   /** @deprecated Kept for stale cache compatibility — new queries use `media` */
@@ -263,6 +281,30 @@ export function transformVariant(variant: ShopifyVariant): ProductVariant {
     bundleParents: variant.groupedBy?.nodes.map(transformVariantReference) ?? [],
     components: variant.components?.nodes.map(transformBundleComponent) ?? [],
     requiresComponents: variant.requiresComponents ?? false,
+    sellingPlanAllocations:
+      variant.sellingPlanAllocations?.nodes.map((allocation) =>
+        transformSellingPlanAllocation(allocation, variant.price),
+      ) ?? [],
+  };
+}
+
+function transformSellingPlanAllocation(
+  allocation: NonNullable<ShopifyVariant["sellingPlanAllocations"]>["nodes"][number],
+  fallbackPrice: ShopifyMoney,
+): SellingPlanAllocation {
+  const adjustment = allocation.priceAdjustments[0];
+  return {
+    compareAtPrice: adjustment?.compareAtPrice,
+    description: allocation.sellingPlan.description ?? undefined,
+    id: allocation.sellingPlan.id,
+    name: allocation.sellingPlan.name,
+    options: allocation.sellingPlan.options.map((option) => ({
+      name: option.name ?? undefined,
+      value: option.value ?? undefined,
+    })),
+    perDeliveryPrice: adjustment?.perDeliveryPrice,
+    price: adjustment?.price ?? fallbackPrice,
+    recurringDeliveries: allocation.sellingPlan.recurringDeliveries,
   };
 }
 
@@ -363,6 +405,7 @@ export function transformShopifyProductDetails(product: ShopifyProduct): Product
     category: transformCategory(product.category),
     updatedAt: product.updatedAt,
     priceRange: product.priceRange,
+    requiresSellingPlan: product.requiresSellingPlan ?? false,
     compareAtPriceRange: product.compareAtPriceRange ?? undefined,
     currencyCode: product.priceRange.minVariantPrice.currencyCode,
     manufacturerName: product.vendor,

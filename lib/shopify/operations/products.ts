@@ -31,6 +31,7 @@ import {
   BUNDLE_RELATIONSHIPS_FRAGMENT,
   PRODUCT_CARD_FRAGMENT,
   PRODUCT_FRAGMENT,
+  SELECTED_PRODUCT_VARIANT_FRAGMENT,
   PRODUCT_VARIANT_FRAGMENT,
   PRODUCT_WITH_VARIANTS_FRAGMENT,
   PURCHASABLE_PRODUCT_VARIANT_FRAGMENT,
@@ -133,12 +134,12 @@ const GET_PRODUCT_VARIANT_QUERY = gql(
   query getProductVariant($handle: String!, $selectedOptions: [SelectedOptionInput!]!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     productByHandle: product(handle: $handle) {
       selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
-        ...ProductVariantFields
+        ...SelectedProductVariantFields
       }
     }
   }
 `,
-  [PRODUCT_VARIANT_FRAGMENT],
+  [SELECTED_PRODUCT_VARIANT_FRAGMENT],
 );
 
 const GET_PRODUCT_VARIANT_WITH_BUNDLES_QUERY = gql(

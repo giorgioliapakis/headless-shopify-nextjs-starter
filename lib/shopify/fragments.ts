@@ -40,6 +40,49 @@ export const PRODUCT_VARIANT_FRAGMENT = gql(
   [IMAGE_FRAGMENT, MONEY_FRAGMENT],
 );
 
+export const SELLING_PLAN_ALLOCATIONS_FRAGMENT = gql(`
+  fragment SellingPlanAllocationFields on ProductVariant {
+    sellingPlanAllocations(first: 50) {
+      nodes {
+        priceAdjustments {
+          compareAtPrice {
+            amount
+            currencyCode
+          }
+          perDeliveryPrice {
+            amount
+            currencyCode
+          }
+          price {
+            amount
+            currencyCode
+          }
+        }
+        sellingPlan {
+          id
+          name
+          description
+          recurringDeliveries
+          options {
+            name
+            value
+          }
+        }
+      }
+    }
+  }
+`);
+
+export const SELECTED_PRODUCT_VARIANT_FRAGMENT = gql(
+  `
+  fragment SelectedProductVariantFields on ProductVariant {
+    ...ProductVariantFields
+    ...SellingPlanAllocationFields
+  }
+`,
+  [PRODUCT_VARIANT_FRAGMENT, SELLING_PLAN_ALLOCATIONS_FRAGMENT],
+);
+
 export const BUNDLE_COMPONENT_VARIANT_FRAGMENT = gql(`
   fragment BundleComponentVariantFields on ProductVariant {
     id
@@ -91,10 +134,10 @@ export const PURCHASABLE_PRODUCT_VARIANT_FRAGMENT = gql(
   `
   fragment PurchasableProductVariantFields on ProductVariant {
     ...BundleRelationshipFields
-    ...ProductVariantFields
+    ...SelectedProductVariantFields
   }
 `,
-  [BUNDLE_RELATIONSHIPS_FRAGMENT, PRODUCT_VARIANT_FRAGMENT],
+  [BUNDLE_RELATIONSHIPS_FRAGMENT, SELECTED_PRODUCT_VARIANT_FRAGMENT],
 );
 
 export const TAXONOMY_CATEGORY_FRAGMENT = gql(`
@@ -139,6 +182,7 @@ export const PRODUCT_FRAGMENT = gql(
     tags
     updatedAt
     availableForSale
+    requiresSellingPlan
     featuredImage {
       ...ImageFields
     }
@@ -187,7 +231,7 @@ export const PRODUCT_FRAGMENT = gql(
       count
     }
     selectedOrFirstAvailableVariant {
-      ...ProductVariantFields
+      ...SelectedProductVariantFields
     }
     options {
       id
@@ -226,7 +270,7 @@ export const PRODUCT_FRAGMENT = gql(
     }
   }
 `,
-  [PRODUCT_VARIANT_FRAGMENT, TAXONOMY_CATEGORY_FRAGMENT],
+  [SELECTED_PRODUCT_VARIANT_FRAGMENT, TAXONOMY_CATEGORY_FRAGMENT],
 );
 
 export const PRODUCT_WITH_VARIANTS_FRAGMENT = gql(

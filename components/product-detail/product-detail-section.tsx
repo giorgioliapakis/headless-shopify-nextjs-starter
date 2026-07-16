@@ -232,12 +232,20 @@ async function ProductInfoArea({
 
       {eagerSelection ? (
         <BuyButtons
+          key={eagerSelection.selectedVariant?.id}
           selectedVariant={toBuyButtonVariant(eagerSelection.selectedVariant)}
           availableForSale={availableForSale}
+          locale={locale}
+          requiresSellingPlan={product.requiresSellingPlan}
         />
       ) : (
         <Suspense fallback={<BuyButtonsFallback t={buyFallbackT} allInStock={allInStock} />}>
-          <ResolvedBuyButtons availableForSale={availableForSale} variantPromise={variantPromise} />
+          <ResolvedBuyButtons
+            availableForSale={availableForSale}
+            variantPromise={variantPromise}
+            locale={locale}
+            requiresSellingPlan={product.requiresSellingPlan}
+          />
         </Suspense>
       )}
 
@@ -326,6 +334,7 @@ function toBuyButtonVariant(variant: ProductVariant | undefined): BuyButtonVaria
     price: variant.price,
     requiresBundleConfiguration: variant.requiresComponents && variant.components.length === 0,
     selectedOptions: variant.selectedOptions,
+    sellingPlanAllocations: variant.sellingPlanAllocations,
     title: variant.title,
   };
 }
@@ -333,15 +342,22 @@ function toBuyButtonVariant(variant: ProductVariant | undefined): BuyButtonVaria
 async function ResolvedBuyButtons({
   availableForSale,
   variantPromise,
+  locale,
+  requiresSellingPlan,
 }: {
   availableForSale: boolean;
+  locale: string;
+  requiresSellingPlan: boolean;
   variantPromise: Promise<ProductVariant | undefined>;
 }) {
   const selectedVariant = await variantPromise;
   return (
     <BuyButtons
+      key={selectedVariant?.id}
       selectedVariant={toBuyButtonVariant(selectedVariant)}
       availableForSale={availableForSale}
+      locale={locale}
+      requiresSellingPlan={requiresSellingPlan}
     />
   );
 }
