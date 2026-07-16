@@ -95,6 +95,9 @@ export function buildReconstructionModel({ snapshot, theme, capabilityMap }) {
       parseStatus: file.structure?.parseStatus ?? "not-inspected",
     }));
   const appBlocks = [...new Set(templates.flatMap((template) => template.appBlockTypes))].sort();
+  const brandObservations = (theme.files ?? [])
+    .filter((file) => file.structure?.observations)
+    .map((file) => ({ sourcePath: file.path, ...file.structure.observations }));
   const unknownRoutes = routes.filter((route) => route.status === "unknown").length;
   const unknownSections = themeSections.filter(
     (section) => section.status === "downstream-required",
@@ -125,6 +128,20 @@ export function buildReconstructionModel({ snapshot, theme, capabilityMap }) {
         ? "Inventory provider behavior and implement a conditional downstream pack"
         : null,
     },
+    brand: {
+      status: brandObservations.length ? "observed-unmapped" : "not-observed",
+      rules: {
+        valuesRequireVisualReview: true,
+        sourceSettingsAreNotSemanticTokens: true,
+        assetsRequireMerchantRights: true,
+      },
+      colors: unique(brandObservations.flatMap((observation) => observation.colors)),
+      fontCandidates: unique(brandObservations.flatMap((observation) => observation.fonts)),
+      logoReferences: unique(brandObservations.flatMap((observation) => observation.logos)),
+      layoutCandidates: brandObservations.flatMap((observation) =>
+        observation.layout.map((entry) => ({ sourcePath: observation.sourcePath, ...entry })),
+      ),
+    },
     summary: {
       routeCount: routes.length,
       mappedRoutes: routes.length - unknownRoutes,
@@ -133,8 +150,13 @@ export function buildReconstructionModel({ snapshot, theme, capabilityMap }) {
       candidateSections: themeSections.length - unknownSections,
       unknownSections,
       appBlockCount: appBlocks.length,
+      brandObservationSources: brandObservations.length,
     },
   };
+}
+
+function unique(values) {
+  return [...new Set(values)].sort();
 }
 
 export function mapSectionName(name) {

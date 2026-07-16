@@ -12,6 +12,7 @@
     "routes",
     "theme",
     "integrations",
+    "brand",
     "summary"
   ],
   "properties": {
@@ -22,6 +23,25 @@
     "routes": { "type": "array", "maxItems": 500 },
     "theme": { "type": "object" },
     "integrations": { "type": "object" },
+    "brand": {
+      "type": "object",
+      "required": [
+        "status",
+        "rules",
+        "colors",
+        "fontCandidates",
+        "logoReferences",
+        "layoutCandidates"
+      ],
+      "properties": {
+        "status": { "enum": ["observed-unmapped", "not-observed"] },
+        "rules": { "type": "object" },
+        "colors": { "type": "array", "maxItems": 100, "items": { "type": "string" } },
+        "fontCandidates": { "type": "array", "maxItems": 50, "items": { "type": "string" } },
+        "logoReferences": { "type": "array", "maxItems": 50, "items": { "type": "string" } },
+        "layoutCandidates": { "type": "array", "maxItems": 200 }
+      }
+    },
     "summary": { "type": "object" }
   }
 }

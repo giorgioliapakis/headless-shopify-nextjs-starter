@@ -54,7 +54,7 @@ export async function inspectThemeSource(input, options = {}) {
         sha256: await hashFile(absolute),
       };
       if (file.path.endsWith(".json") && info.size <= 1_048_576) {
-        file.structure = await inspectJsonStructure(absolute);
+        file.structure = await inspectJsonStructure(absolute, file.path);
       }
       files.push(file);
       if (files.length > maxFiles)
@@ -78,15 +78,15 @@ export async function inspectThemeSource(input, options = {}) {
   };
 }
 
-async function inspectJsonStructure(path) {
+async function inspectJsonStructure(path, sourcePath) {
   try {
-    return inspectJsonValue(await readFile(path, "utf8"));
+    return inspectJsonValue(await readFile(path, "utf8"), sourcePath);
   } catch {
     return { parseStatus: "invalid-json", sectionTypes: [], appBlockTypes: [] };
   }
 }
 
-function inspectJsonValue(input) {
+function inspectJsonValue(input, sourcePath = "") {
   try {
     const value = JSON.parse(input);
     const sectionTypes = new Set();
@@ -113,10 +113,14 @@ function inspectJsonValue(input) {
         if (nested && typeof nested === "object") queue.push(nested);
       }
     }
+    const observations = /^config\/(?:settings_data|settings_schema)\.json$/i.test(sourcePath)
+      ? inspectThemeObservations(value)
+      : null;
     return {
       parseStatus: "parsed-data-only",
       sectionTypes: [...sectionTypes].sort().slice(0, 200),
       appBlockTypes: [...appBlockTypes].sort().slice(0, 200),
+      ...(observations ? { observations } : {}),
     };
   } catch {
     return { parseStatus: "invalid-json", sectionTypes: [], appBlockTypes: [] };
@@ -170,7 +174,9 @@ async function inspectThemeArchive(source, archiveBytes, options) {
         bytes: observedBytes,
         sha256: hash.digest("hex"),
         ...(collectJson
-          ? { structure: inspectJsonValue(Buffer.concat(chunks).toString("utf8")) }
+          ? {
+              structure: inspectJsonValue(Buffer.concat(chunks).toString("utf8"), entry.fileName),
+            }
           : {}),
       });
       if (files.length > maxFiles)
@@ -192,6 +198,69 @@ async function inspectThemeArchive(source, archiveBytes, options) {
     files,
     inspection: "read-only-lazy-entry-inventory",
     requiresArchiveInspection: false,
+  };
+}
+
+function inspectThemeObservations(value) {
+  const colors = new Set();
+  const fonts = new Set();
+  const logos = new Set();
+  const layout = [];
+  const queue = [{ value, path: [] }];
+  let nodes = 0;
+  while (queue.length && nodes < 10_000) {
+    const current = queue.shift();
+    nodes += 1;
+    if (Array.isArray(current.value)) {
+      current.value.forEach((nested, index) =>
+        queue.push({ value: nested, path: [...current.path, String(index)] }),
+      );
+      continue;
+    }
+    if (!current.value || typeof current.value !== "object") continue;
+    for (const [key, nested] of Object.entries(current.value)) {
+      const path = [...current.path, key];
+      const normalizedKey = key.toLowerCase();
+      if (typeof nested === "string") {
+        const normalizedValue = nested.trim();
+        if (
+          /(?:color|background|foreground|accent|border)/.test(normalizedKey) &&
+          /^(?:#[0-9a-f]{3,8}|(?:rgb|hsl)a?\([^)]{1,80}\))$/i.test(normalizedValue)
+        ) {
+          colors.add(normalizedValue.toLowerCase());
+        }
+        if (
+          /(?:font|typeface|heading_family|body_family)/.test(normalizedKey) &&
+          /^[\w .,'+-]{1,100}$/.test(normalizedValue)
+        ) {
+          fonts.add(normalizedValue);
+        }
+        if (
+          /logo/.test(normalizedKey) &&
+          /^(?:shopify:\/\/shop_images\/)?[\w .@()+-]+\.(?:avif|gif|jpe?g|png|svg|webp)$/i.test(
+            normalizedValue,
+          )
+        ) {
+          logos.add(normalizedValue);
+        }
+      }
+      if (
+        /(?:radius|corner|page_width|spacing|gutter|grid)/.test(normalizedKey) &&
+        (typeof nested === "number" ||
+          (typeof nested === "string" && /^-?\d+(?:\.\d+)?(?:px|rem|em|%)?$/.test(nested))) &&
+        layout.length < 100
+      ) {
+        layout.push({ key: path.join(".").slice(0, 200), value: nested });
+      }
+      if (nested && typeof nested === "object") queue.push({ value: nested, path });
+    }
+  }
+  return {
+    colors: [...colors].sort().slice(0, 100),
+    fonts: [...fonts].sort().slice(0, 50),
+    logos: [...logos].sort().slice(0, 50),
+    layout,
+    extraction: "bounded-selected-theme-settings-only",
   };
 }
 

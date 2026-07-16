@@ -50,6 +50,18 @@ describe("reconstruction model", () => {
               appBlockTypes: ["shopify://apps/synthetic/blocks/widget/id"],
             },
           },
+          {
+            path: "config/settings_data.json",
+            sha256: "2".repeat(64),
+            structure: {
+              observations: {
+                colors: ["#336699"],
+                fonts: ["work_sans_n6"],
+                logos: ["synthetic-logo.svg"],
+                layout: [{ key: "current.page_width", value: 1280 }],
+              },
+            },
+          },
         ],
       },
       capabilityMap: {
@@ -62,12 +74,19 @@ describe("reconstruction model", () => {
       candidateSections: 1,
       unknownSections: 1,
       appBlockCount: 1,
+      brandObservationSources: 1,
     });
     expect(model.routes[0]).toMatchObject({
       target: "app/page.tsx",
       strategy: "section-recipe",
     });
     expect(model.integrations).toMatchObject({ status: "unsupported" });
+    expect(model.brand).toMatchObject({
+      status: "observed-unmapped",
+      colors: ["#336699"],
+      fontCandidates: ["work_sans_n6"],
+      logoReferences: ["synthetic-logo.svg"],
+    });
     expect(model.rules).toMatchObject({ copySourceCode: false, merchantReviewRequired: true });
   });
 });

@@ -39,13 +39,13 @@ describe("theme source inventory", () => {
   it("lazily inventories zip files without extracting them", async () => {
     const root = await mkdtemp(join(tmpdir(), "theme-zip-"));
     const archive = join(root, "theme.zip");
-    await execFileAsync("zip", ["-q", "-r", archive, "sections", "templates"], {
+    await execFileAsync("zip", ["-q", "-r", archive, "config", "sections", "templates"], {
       cwd: "tests/fixtures/migration/theme",
     });
     const theme = await inspectThemeSource(archive);
     expect(theme).toMatchObject({
       kind: "zip",
-      fileCount: 3,
+      fileCount: 4,
       requiresArchiveInspection: false,
       inspection: "read-only-lazy-entry-inventory",
     });
@@ -75,5 +75,16 @@ describe("theme source inventory", () => {
       sectionTypes: ["image-banner"],
     });
     expect(template?.structure?.appBlockTypes[0]).toContain("shopify://apps/synthetic-provider/");
+    const settings = theme.files?.find((file) => file.path === "config/settings_data.json");
+    expect(settings?.structure?.observations).toMatchObject({
+      colors: ["#336699", "rgb(250, 250, 248)"],
+      fonts: ["source_sans_pro_n4", "work_sans_n6"],
+      logos: ["shopify://shop_images/synthetic-logo.svg"],
+      layout: [
+        { key: "current.page_width", value: 1280 },
+        { key: "current.buttons_radius", value: "4px" },
+      ],
+    });
+    expect(JSON.stringify(settings?.structure)).not.toContain("editorial copy");
   });
 });
