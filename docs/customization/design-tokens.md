@@ -17,6 +17,13 @@ Theme validation rejects unknown keys, malformed colors and text/background pair
 `themeToCssVariables` applies only semantic CSS variables at the root. It never accepts raw CSS, scripts
 or remote font URLs.
 
+The neutral preset uses the platform system stack and downloads no font assets. For a faithful merchant
+reconstruction, self-host licensed files with `next/font/local`, expose the generated variables as
+`--font-brand-body` and `--font-brand-heading` on the root layout, then select `brand` for the matching
+typography roles in the merchant preset. The roles intentionally remain separate because display and
+body faces often differ. Missing brand variables fail safely back to the system stack; remote font URLs
+are not valid theme input.
+
 ## Agent workflow
 
 1. Copy `config/presets/neutral-theme.ts` to a clearly named merchant preset.

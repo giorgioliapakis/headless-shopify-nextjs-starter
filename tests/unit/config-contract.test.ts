@@ -19,4 +19,17 @@ describe("platform contract", () => {
         .some(([, version]) => /canary|preview|unstable/i.test(version)),
     ).toBe(false);
   });
+
+  it("resolves the Lighthouse browser from a declared dependency", async () => {
+    const packageJson = JSON.parse(await readFile(resolve("package.json"), "utf8"));
+    const lighthouseScript = await readFile(resolve("scripts/verify/lighthouse.mjs"), "utf8");
+
+    expect(packageJson.devDependencies["@playwright/test"]).toBeDefined();
+    expect(lighthouseScript).toContain('from "@playwright/test"');
+    expect(lighthouseScript).not.toContain('from "playwright"');
+    expect(lighthouseScript).toContain("chromium_headless_shell-");
+    expect(lighthouseScript).toContain("constants.X_OK");
+    expect(lighthouseScript).toContain("assertPortAvailable");
+    expect(lighthouseScript).toContain("EADDRINUSE");
+  });
 });

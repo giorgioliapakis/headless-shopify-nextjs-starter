@@ -45,7 +45,11 @@ export function AnnouncementSection({ section }: { section: SectionOf<"announcem
         {section.link ? (
           <>
             {" "}
-            <Link className="font-medium underline underline-offset-4" href={section.link.href}>
+            <Link
+              className="font-medium underline underline-offset-4"
+              href={section.link.href}
+              prefetch={false}
+            >
               {section.link.label}
             </Link>
           </>
@@ -78,13 +82,16 @@ export function HeroRecipeSection({ section }: { section: SectionOf<"hero"> }) {
         {section.primaryAction || section.secondaryAction ? (
           <div className="flex flex-wrap gap-3">
             {section.primaryAction ? (
-              <Button render={<Link href={section.primaryAction.href} />} size="lg">
+              <Button
+                render={<Link href={section.primaryAction.href} prefetch={false} />}
+                size="lg"
+              >
                 {section.primaryAction.label}
               </Button>
             ) : null}
             {section.secondaryAction ? (
               <Button
-                render={<Link href={section.secondaryAction.href} />}
+                render={<Link href={section.secondaryAction.href} prefetch={false} />}
                 size="lg"
                 variant="outline"
               >
@@ -138,7 +145,10 @@ export function MediaTextSection({ section }: { section: SectionOf<"media-text">
           <h2 className="text-3xl sm:text-4xl">{section.heading}</h2>
           <p className="leading-7 opacity-80">{section.body}</p>
           {section.action ? (
-            <Button render={<Link href={section.action.href} />} className="justify-self-start">
+            <Button
+              render={<Link href={section.action.href} prefetch={false} />}
+              className="justify-self-start"
+            >
               {section.action.label}
             </Button>
           ) : null}
@@ -182,6 +192,7 @@ export function CollectionGridSection({ section }: { section: SectionOf<"collect
             <Link
               key={collection.title}
               href={collection.href ?? "/collections"}
+              prefetch={false}
               className="group grid min-h-56 content-end rounded-xl border bg-card p-6 text-card-foreground transition-transform hover:-translate-y-0.5"
             >
               <h3 className="text-2xl">{collection.title}</h3>
@@ -225,7 +236,11 @@ export function EditorialGridSection({ section }: { section: SectionOf<"editoria
               <h3 className="text-xl">{item.title}</h3>
               {item.body ? <p className="opacity-70">{item.body}</p> : null}
               {item.href ? (
-                <Link href={item.href} className="mt-auto font-medium underline underline-offset-4">
+                <Link
+                  href={item.href}
+                  prefetch={false}
+                  className="mt-auto font-medium underline underline-offset-4"
+                >
                   Read more
                 </Link>
               ) : null}

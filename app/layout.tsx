@@ -1,6 +1,4 @@
 import "./globals.css";
-import { GeistMono } from "geist/font/mono";
-import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
@@ -30,7 +28,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang={locale}>
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} flex min-h-dvh flex-col font-sans antialiased`}
+        className="flex min-h-dvh flex-col font-sans antialiased"
         style={themeToCssVariables(shopConfig.theme) as CSSProperties}
       >
         <a
@@ -44,7 +42,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <CartProvider>
             <CartDrawerProvider>
               <Nav locale={locale} />
-              <main id="main-content" className="flex min-w-0 flex-1 flex-col">
+              <main
+                id="main-content"
+                className="flex min-h-[calc(100dvh-var(--header-height))] min-w-0 flex-1 flex-col"
+              >
                 {children}
               </main>
               <Footer locale={locale} />

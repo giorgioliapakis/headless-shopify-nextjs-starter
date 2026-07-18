@@ -19,7 +19,8 @@ for (const route of routes) {
     expect(response?.status()).toBe(200);
     await expect(page.locator("html")).toHaveAttribute("lang", /.+/);
     await expect(page).toHaveTitle(/.+/);
-    expect(await page.locator("h1").count()).toBe(1);
+    await expect(page.locator("h1")).toHaveCount(1);
+    await expect(page.locator("h1")).toBeVisible();
     const canonical = page.locator('link[rel="canonical"]');
     await expect(canonical).toHaveCount(1);
     await expect(canonical).toHaveAttribute("href", /^https?:\/\//);

@@ -23,18 +23,21 @@ The required route set is `/`, one product, one collection, `/search` and `/cart
 production build with deterministic neutral Shopify fixtures, fixed viewport/network/CPU profiles and no
 browser extensions.
 
-| Measure                             |                                     Initial budget |
-| ----------------------------------- | -------------------------------------------------: |
-| Lighthouse performance              |                                              >= 95 |
-| Lighthouse accessibility            |                                                100 |
-| Lighthouse best practices           |                                                100 |
-| Lighthouse SEO (indexable routes)   |                                                100 |
-| Total emitted client JavaScript     |                              <= 450,000 gzip bytes |
-| Largest emitted client chunk        |                               <= 90,000 gzip bytes |
-| Total emitted CSS                   |                               <= 30,000 gzip bytes |
-| Route-level JavaScript regression   | <= +5 KiB compressed without an approved exception |
-| Layout shift in scripted route flow |                                            <= 0.10 |
-| Accessibility violations            |                              0 serious or critical |
+| Measure                                                     |                                     Initial budget |
+| ----------------------------------------------------------- | -------------------------------------------------: |
+| Lighthouse performance (shell/PDP/cart)                     |                                              >= 95 |
+| Lighthouse performance (streamed catalogue/search)          |                                              >= 93 |
+| Lighthouse accessibility                                    |                                                100 |
+| Lighthouse best practices                                   |                                                100 |
+| Lighthouse SEO (indexable routes)                           |                                                100 |
+| Lighthouse simulated mobile LCP (shell/PDP/cart)            |                                           <= 3.0 s |
+| Lighthouse simulated mobile LCP (streamed catalogue/search) |                                          <= 3.25 s |
+| Total emitted client JavaScript                             |                              <= 450,000 gzip bytes |
+| Largest emitted client chunk                                |                               <= 90,000 gzip bytes |
+| Total emitted CSS                                           |                               <= 30,000 gzip bytes |
+| Route-level JavaScript regression                           | <= +5 KiB compressed without an approved exception |
+| Layout shift in scripted route flow                         |                                            <= 0.10 |
+| Accessibility violations                                    |                              0 serious or critical |
 
 Absolute emitted asset and GraphQL document ceilings are enforced by `pnpm budget:bundle` and
 `pnpm budget:query`; values live in `config/performance-budgets.json`. Per-route image bytes, request
@@ -61,7 +64,8 @@ fails rather than silently skipping it.
 ## Measurement protocol
 
 1. Build with exact Node/pnpm/dependency versions and deterministic neutral fixtures.
-2. Warm and cold runs are recorded separately; take enough repetitions to report the median and spread.
+2. Lighthouse runs each required route three times and gates the representative median run. Record warm
+   and cold diagnostics separately when investigating regressions.
 3. Capture route, commit, tool/browser versions, fixture hash, viewport, throttling, bundle assets,
    requests, server timing and Lighthouse/a11y outputs.
 4. Compare against the versioned baseline and explain every regression. Variance outside the declared
@@ -79,5 +83,6 @@ data, missing content/status behavior or a field Core Web Vital failure. Expired
 
 The field targets, GraphQL ceilings, emitted JS/CSS limits, secretless production build and CI enforcement
 are active. A pinned Playwright 1.61.1, axe 4.12.1 and Lighthouse CI 0.15.1 harness is wired into protected
-CI. Lighthouse, axe, visual and per-route network results remain pending the required interactive browser
-run; the repository does not claim those scores until its versioned artifacts exist.
+CI. The deterministic browser suite covers desktop, mobile and JavaScript-disabled behaviour; Lighthouse
+gates performance, accessibility, best practices and indexable-route SEO. Real merchant assets and field
+data must still be measured before cutover.

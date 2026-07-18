@@ -40,8 +40,8 @@ export const themeConfigSchema = z
       .strict(),
     typography: z
       .object({
-        body: z.enum(["geist", "system"]),
-        heading: z.enum(["geist", "system"]),
+        body: z.enum(["brand", "system"]),
+        heading: z.enum(["brand", "system"]),
         scale: z.enum(["compact", "standard", "display"]),
       })
       .strict(),
@@ -78,9 +78,13 @@ export function themeToCssVariables(theme: ThemeConfig): Record<`--${string}`, s
     "--foreground": theme.colors.foreground,
     "--merchant-container": CONTAINER_WIDTHS[theme.layout.container],
     "--merchant-font-body":
-      theme.typography.body === "geist" ? "var(--font-geist-sans)" : "system-ui, sans-serif",
+      theme.typography.body === "brand"
+        ? "var(--font-brand-body, system-ui, sans-serif)"
+        : "system-ui, sans-serif",
     "--merchant-font-heading":
-      theme.typography.heading === "geist" ? "var(--font-geist-sans)" : "system-ui, sans-serif",
+      theme.typography.heading === "brand"
+        ? "var(--font-brand-heading, system-ui, sans-serif)"
+        : "system-ui, sans-serif",
     "--merchant-motion-duration": MOTION_DURATIONS[theme.motion.duration],
     "--merchant-section-gap": SECTION_GAPS[theme.layout.density],
     "--merchant-type-scale": TYPE_SCALES[theme.typography.scale],

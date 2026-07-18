@@ -64,4 +64,19 @@ describe("release contract", () => {
     expect(workflow).toContain(".release/license-inventory.json");
     expect(workflow).not.toMatch(/gh release|npm publish|vercel deploy/);
   });
+
+  it("applies Lighthouse SEO assertions only to indexable storefront routes", async () => {
+    const config = JSON.parse(await readFile("lighthouserc.json", "utf8"));
+    expect(config.ci.collect.settings.chromeFlags).not.toContain("--headless");
+    expect(config.ci.collect.settings.chromeFlags).toContain("--disable-gpu");
+    const assertionMatrix = config.ci.assert.assertMatrix;
+    expect(assertionMatrix).toHaveLength(4);
+    expect(assertionMatrix[0].matchingUrlPattern).toBe(".*");
+    expect(assertionMatrix[0].assertions["categories:seo"]).toBeUndefined();
+    expect(assertionMatrix[3].matchingUrlPattern).toContain("collections");
+    expect(assertionMatrix[3].matchingUrlPattern).toContain("products");
+    expect(assertionMatrix[3].matchingUrlPattern).not.toContain("search");
+    expect(assertionMatrix[3].matchingUrlPattern).not.toContain("cart");
+    expect(assertionMatrix[3].assertions["categories:seo"]).toEqual(["error", { minScore: 1 }]);
+  });
 });

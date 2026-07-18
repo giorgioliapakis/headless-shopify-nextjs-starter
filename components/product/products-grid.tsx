@@ -46,6 +46,7 @@ export async function ProductsGrid({
         {collectionUrl && (
           <Link
             href={collectionUrl}
+            prefetch={false}
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             {t("viewAll")}

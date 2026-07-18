@@ -75,8 +75,8 @@
     {
       "path": "app/cart/page.tsx",
       "sourceSha256": "1322c90599bdb846e43f352062f1ce6213d2e03e5fc44d03ac9d7a696d92407c",
-      "currentSha256": "08957d46df8d98fc8ea66dee1d51a3e526fc66bb352f3e0d5cb76a969daabead",
-      "modification": "Adds the cart canonical metadata contract for browser and SEO verification."
+      "currentSha256": "3b26c8bd01daad41b341bd9e0d2fda0f1a582828d84e449e7a44bc942c5754b3",
+      "modification": "Adds the cart canonical metadata contract and relies on the root layout's single main landmark."
     },
     {
       "path": "app/collections/[handle]/error.tsx",
@@ -107,8 +107,8 @@
     {
       "path": "app/globals.css",
       "sourceSha256": "54324c3eec08af906a48df5e5596d63886eecd28c49b141230398086961993f4",
-      "currentSha256": "5111c6d912d94ccdda77511569ffdce9aefe5c197e75dd3dc18a49ed2e43b717",
-      "modification": "Apply validated merchant theme variables for typography and scale without accepting arbitrary CSS."
+      "currentSha256": "0653f85092f4bc45751355700505d397985506a9e49b6f114e048f3c7aecdb23",
+      "modification": "Apply validated merchant theme variables and zero-download system font defaults without accepting arbitrary CSS."
     },
     {
       "path": "app/llms.txt/route.ts",
@@ -304,7 +304,9 @@
     },
     {
       "path": "components/collections/infinite-product-grid.tsx",
-      "sourceSha256": "ccd03086e8be8607527e206173d6545e07d85a010a8b03572d8f4e59c75cce8f"
+      "sourceSha256": "ccd03086e8be8607527e206173d6545e07d85a010a8b03572d8f4e59c75cce8f",
+      "currentSha256": "e282bb51c286ca9b75e28615f41a2a5da6a1941ae807de00eb05230b1dca12f5",
+      "modification": "Disable automatic route prefetch across unbounded product lists to avoid speculative catalogue requests."
     },
     {
       "path": "components/collections/results-grid.tsx",
@@ -316,7 +318,9 @@
     },
     {
       "path": "components/collections/sort-select.tsx",
-      "sourceSha256": "9b239abca07bfbd2eccc4a95dc65fda532d0676b79e992f68fd682c8dff83cb3"
+      "sourceSha256": "9b239abca07bfbd2eccc4a95dc65fda532d0676b79e992f68fd682c8dff83cb3",
+      "currentSha256": "119ae073e7b50b86001e2854f1a441c8a777f79c31a08c7b3eb7263d74dade03",
+      "modification": "Give the Base UI sort trigger a localized accessible name."
     },
     {
       "path": "components/collections/toolbar.tsx",
@@ -362,11 +366,15 @@
     },
     {
       "path": "components/product-card/components.tsx",
-      "sourceSha256": "7dd05fccac82a67f101883a0a6451e3d24653a93b4ef49fe509a95ddd22b54c1"
+      "sourceSha256": "7dd05fccac82a67f101883a0a6451e3d24653a93b4ef49fe509a95ddd22b54c1",
+      "currentSha256": "31104eeb8d8beec8bc98469a4e28d4c3b03c9541ed42f47ab66029f5a4ce809e",
+      "modification": "Use level-two product-card headings under each route's single page heading."
     },
     {
       "path": "components/product-card/product-card.tsx",
-      "sourceSha256": "7d93fa59a82f40d6faf94edb2de9b26d38c2c425f0868103d6e621533940d78d"
+      "sourceSha256": "7d93fa59a82f40d6faf94edb2de9b26d38c2c425f0868103d6e621533940d78d",
+      "currentSha256": "157878db180d1dc330ea0728dbd0b62f3199e7a68e2cc8fbaf1dc16153291ac5",
+      "modification": "Disable automatic route prefetch on repeated product-card links."
     },
     {
       "path": "components/product-detail/about-item.tsx",
@@ -445,8 +453,8 @@
     {
       "path": "components/product/products-grid.tsx",
       "sourceSha256": "84ebc2bee25e3a87e498fd0f311bfe8df936a5431de6682b33542e76af59ed3c",
-      "currentSha256": "f1eec5a6a5b8eec109854d4341d625237b13aa9ffe0e233d7c9ebae9163d49b8",
-      "modification": "Allow registry-backed product sections to scope the existing search grid to a collection."
+      "currentSha256": "586058bee8efa1be1f83e1bcfb92ea4b3bffc6f3cf4ad15dde990a68d3b52178",
+      "modification": "Allow registry-backed product sections to scope the existing search grid and avoid speculative collection prefetch."
     },
     {
       "path": "components/product/products-slider.tsx",
@@ -883,8 +891,8 @@
     {
       "path": "package.json",
       "sourceSha256": "ae662f2818fe83f3a91d3eabe6bedee2709d5703b11d7e2bdc26e4bd151fd85e",
-      "currentSha256": "caced4da09a074a174820010eee09f15a1f8e82ee9b8789d7b1ea424a58b311c",
-      "modification": "Add deterministic agent-host qualification and fail-closed alpha qualification commands."
+      "currentSha256": "7907eb2ba8ee4d0598b89e3b91e6d244651e21cb125e006b832f6a1fd163c9c8",
+      "modification": "Add deterministic agent-host qualification commands and remove the neutral preset's bundled font dependency."
     },
     {
       "path": "postcss.config.mjs",

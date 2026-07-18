@@ -17,7 +17,7 @@ The storefront-runtime track is defined in
 - [x] H4 — Hydrogen cart, money, Shop Pay and consent-aware analytics conformance.
 - [x] H5 — Complete the invariant commerce core and conditional capability packs.
 - [x] H6 — Versioned token, component-variant and section-recipe customization system.
-- [ ] H7 — Browser, accessibility, performance, security and operations release gates.
+- [x] H7 — Browser, accessibility, performance, security and operations release gates.
 - [ ] H8 — Bind the runtime to autonomous migration and prove the experimental alpha.
 
 ## Phase 0 — Repository and trust boundary

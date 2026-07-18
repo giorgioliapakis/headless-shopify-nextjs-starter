@@ -10,8 +10,22 @@ describe("merchant theme contract", () => {
       "--background": "#ffffff",
       "--foreground": "#171717",
       "--merchant-container": "96rem",
+      "--merchant-font-body": "system-ui, sans-serif",
+      "--merchant-font-heading": "system-ui, sans-serif",
       "--merchant-section-gap": "2.5rem",
       "--radius": "0.625rem",
+    });
+  });
+
+  it("exposes semantic local-font hooks without accepting a font URL", () => {
+    const brandedTheme = themeConfigSchema.parse({
+      ...neutralThemePreset,
+      typography: { body: "brand", heading: "brand", scale: "standard" },
+    });
+
+    expect(themeToCssVariables(brandedTheme)).toMatchObject({
+      "--merchant-font-body": "var(--font-brand-body, system-ui, sans-serif)",
+      "--merchant-font-heading": "var(--font-brand-heading, system-ui, sans-serif)",
     });
   });
 

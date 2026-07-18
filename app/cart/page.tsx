@@ -37,11 +37,9 @@ export default async function CartPage() {
   const locale = await getLocale();
 
   return (
-    <main>
-      <Suspense fallback={<PageSkeleton />}>
-        <CartContent locale={locale} />
-      </Suspense>
-    </main>
+    <Suspense fallback={<PageSkeleton />}>
+      <CartContent locale={locale} />
+    </Suspense>
   );
 }
 

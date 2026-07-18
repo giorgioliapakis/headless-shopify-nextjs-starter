@@ -15,5 +15,5 @@ export const neutralThemePreset = themeConfigSchema.parse({
   layout: { container: "standard", density: "comfortable" },
   motion: { duration: "standard" },
   shape: { borderWidth: "1px", radius: "0.625rem" },
-  typography: { body: "geist", heading: "geist", scale: "standard" },
+  typography: { body: "system", heading: "system", scale: "standard" },
 });

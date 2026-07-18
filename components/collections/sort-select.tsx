@@ -47,7 +47,10 @@ export function CollectionsSortSelect({ exclude }: { exclude?: string[] } = {}) 
       onValueChange={(value) => handleSortChange(value ?? "best-matches")}
       disabled={isPending}
     >
-      <SelectTrigger className="border-0 shadow-none bg-transparent px-0">
+      <SelectTrigger
+        aria-label={tSearch("sortBy")}
+        className="border-0 shadow-none bg-transparent px-0"
+      >
         <span>{tSearch("sortBy")}</span>
       </SelectTrigger>
       <SelectContent>

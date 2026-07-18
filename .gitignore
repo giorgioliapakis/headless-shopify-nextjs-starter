@@ -3,6 +3,7 @@
 !.env.example
 .context/
 .artifacts/
+.lighthouseci/
 .claude/skills/
 .migration/
 .release/
