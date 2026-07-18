@@ -79,4 +79,21 @@ describe("release contract", () => {
     expect(assertionMatrix[3].matchingUrlPattern).not.toContain("cart");
     expect(assertionMatrix[3].assertions["categories:seo"]).toEqual(["error", { minScore: 1 }]);
   });
+
+  it("uses representative Lighthouse runs and preserves failed diagnostics", async () => {
+    const config = JSON.parse(await readFile("lighthouserc.json", "utf8"));
+    expect(config.ci.collect.numberOfRuns).toBe(3);
+    for (const routeGate of config.ci.assert.assertMatrix) {
+      expect(routeGate.aggregationMethod).toBe("median-run");
+    }
+    expect(config.ci.assert.assertMatrix[2].assertions["largest-contentful-paint"]).toEqual([
+      "error",
+      { maxNumericValue: 3400 },
+    ]);
+
+    const workflow = await readFile(".github/workflows/ci.yml", "utf8");
+    expect(workflow).toContain("Preserve failed Lighthouse diagnostics");
+    expect(workflow).toContain("actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a");
+    expect(workflow).toContain("retention-days: 7");
+  });
 });

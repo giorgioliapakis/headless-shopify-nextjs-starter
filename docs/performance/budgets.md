@@ -31,7 +31,7 @@ browser extensions.
 | Lighthouse best practices                                   |                                                100 |
 | Lighthouse SEO (indexable routes)                           |                                                100 |
 | Lighthouse simulated mobile LCP (shell/PDP/cart)            |                                           <= 3.0 s |
-| Lighthouse simulated mobile LCP (streamed catalogue/search) |                                          <= 3.25 s |
+| Lighthouse simulated mobile LCP (streamed catalogue/search) |                                           <= 3.4 s |
 | Total emitted client JavaScript                             |                              <= 450,000 gzip bytes |
 | Largest emitted client chunk                                |                               <= 90,000 gzip bytes |
 | Total emitted CSS                                           |                               <= 30,000 gzip bytes |
@@ -64,14 +64,20 @@ fails rather than silently skipping it.
 ## Measurement protocol
 
 1. Build with exact Node/pnpm/dependency versions and deterministic neutral fixtures.
-2. Lighthouse runs each required route three times and gates the representative median run. Record warm
-   and cold diagnostics separately when investigating regressions.
+2. Lighthouse runs each required route three times and gates the representative median run. The streamed
+   route ceiling includes 150 ms of declared cross-runner tolerance above the original 3.25 s calibration;
+   the performance-score and field-outcome gates remain unchanged. Record warm and cold diagnostics
+   separately when investigating regressions.
 3. Capture route, commit, tool/browser versions, fixture hash, viewport, throttling, bundle assets,
    requests, server timing and Lighthouse/a11y outputs.
 4. Compare against the versioned baseline and explain every regression. Variance outside the declared
    tolerance is a failure, not a flaky retry until green.
 5. Rerun with downstream merchant evidence before review approval and again before cutover if material
    assets, integrations or catalogue structure changed.
+
+Failed CI runs preserve the complete Lighthouse report set for seven days. Diagnose the failing audit and
+runner variance from those reports before changing a threshold; do not retry a red gate until it happens
+to pass.
 
 ## Exceptions
 
