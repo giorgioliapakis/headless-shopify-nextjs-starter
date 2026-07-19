@@ -1,4 +1,5 @@
 const ISSUE_LABELS = {
+  MISSING_FOUNDATION_TARGETS: "Mapped foundation route targets are unavailable",
   SOURCE_PASSWORD_GATED: "Source storefront is password-gated",
   UNKNOWN_ROUTES: "Routes need downstream implementation",
   UNKNOWN_SECTIONS: "Theme sections need downstream implementation",

@@ -66,6 +66,18 @@ describe("migration capture and readiness model", () => {
     );
   });
 
+  it("blocks reconstruction when a mapped runtime target is unavailable", () => {
+    const capture = buildCaptureManifest(model);
+    const readiness = buildReconstructionReadiness(model, capture, {
+      summary: { blockedCount: 1 },
+    });
+    expect(readiness.blockers[0]).toEqual({
+      code: "MISSING_FOUNDATION_TARGETS",
+      count: 1,
+    });
+    expect(readiness.nextActions[0]).toMatch(/Restore or safely implement/);
+  });
+
   it("turns source media-query evidence into reviewed boundary scenarios", () => {
     const capture = buildCaptureManifest(model, {
       files: [

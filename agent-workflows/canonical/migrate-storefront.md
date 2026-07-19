@@ -68,9 +68,11 @@ not production authority.
    Never remove an unknown/app blocker merely because a suggested primitive looks similar.
 
    Read `model/template-clusters-v1.json`, `model/integration-inventory-v1.json`,
-   `model/unknown-inventory-v1.json` and `model/brand-pack-v1.json`. Keep observed brand facts immutable,
-   map them into downstream semantic roles, then select only registered component/section variants. A
-   cluster is a work-sharing candidate, not proof that its pages are behaviorally identical.
+   `model/unknown-inventory-v1.json`, `model/brand-pack-v1.json` and
+   `model/target-coverage-v1.json`. Every mapped route must resolve to a regular, non-symlink foundation
+   file or a registered Shopify-hosted handoff before reconstruction begins. Keep observed brand facts
+   immutable, map them into downstream semantic roles, then select only registered component/section
+   variants. A cluster is a work-sharing candidate, not proof that its pages are behaviorally identical.
 
    The capture manifest is a bounded pairwise matrix, not completed visual evidence. Resolve its
    source-breakpoint review, supply only non-sensitive typed inputs, and approve every dynamic mask

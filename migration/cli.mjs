@@ -20,6 +20,7 @@ import {
 } from "./lib/reconstruction-artifacts.mjs";
 import { buildReviewManifest, renderReviewHtml } from "./lib/review-package.mjs";
 import { capturePublicSnapshot } from "./lib/snapshot.mjs";
+import { buildTargetCoverage } from "./lib/target-coverage.mjs";
 import { buildThemeRightsInventory, buildThemeRightsStatus } from "./lib/theme-rights.mjs";
 import { inspectThemeSource } from "./lib/theme.mjs";
 import {
@@ -392,6 +393,14 @@ const handlers = {
         path: modelPath,
         kind: "model",
       });
+      const targetCoverage = await buildTargetCoverage(model, cwd);
+      const targetCoveragePath = join(run.runDirectory, "model", "target-coverage-v1.json");
+      await writeJsonAtomic(targetCoveragePath, targetCoverage);
+      state = await recordArtifact(run.runDirectory, state, {
+        id: "target-coverage",
+        path: targetCoveragePath,
+        kind: "model",
+      });
       for (const [id, name, value] of [
         ["template-clusters", "template-clusters-v1.json", buildTemplateClusters(model)],
         [
@@ -418,7 +427,7 @@ const handlers = {
         path: capturePath,
         kind: "model",
       });
-      let readiness = buildReconstructionReadiness(model, captureManifest);
+      let readiness = buildReconstructionReadiness(model, captureManifest, targetCoverage);
       const themeRightsStatus = await readRequiredJson(
         join(run.runDirectory, "reports", "theme-rights-status-v1.json"),
         "Run preflight again to generate the per-asset rights status",

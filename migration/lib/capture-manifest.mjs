@@ -196,8 +196,19 @@ function buildBreakpointViewports(candidates) {
   return [...viewports.values()];
 }
 
-export function buildReconstructionReadiness(model, captureManifest) {
+/**
+ * @param {any} model
+ * @param {any} captureManifest
+ * @param {any} [targetCoverage]
+ */
+export function buildReconstructionReadiness(model, captureManifest, targetCoverage = null) {
   const blockers = [];
+  if (targetCoverage?.summary.blockedCount) {
+    blockers.push({
+      code: "MISSING_FOUNDATION_TARGETS",
+      count: targetCoverage.summary.blockedCount,
+    });
+  }
   if (model.summary.passwordGatedPages) {
     blockers.push({ code: "SOURCE_PASSWORD_GATED", count: model.summary.passwordGatedPages });
   }
@@ -257,6 +268,8 @@ function stableId(path) {
 
 function actionFor(code) {
   const actions = {
+    MISSING_FOUNDATION_TARGETS:
+      "Restore or safely implement every missing mapped foundation route target",
     UNKNOWN_ROUTES: "Classify and implement each unknown route in merchant-owned files",
     SOURCE_PASSWORD_GATED:
       "Obtain an approved credential-free source capture path before reconstruction",

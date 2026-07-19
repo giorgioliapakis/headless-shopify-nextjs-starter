@@ -19,6 +19,9 @@ The storefront-runtime track is defined in
 - [x] H6 — Versioned token, component-variant and section-recipe customization system.
 - [x] H7 — Browser, accessibility, performance, security and operations release gates.
 - [ ] H8 — Bind the runtime to autonomous migration and prove the experimental alpha.
+  - [x] Bind every mapped route to a regular foundation target or registered hosted handoff; missing,
+        escaping and symlink targets block reconstruction readiness.
+  - [ ] Complete the disposable downstream, cross-host and non-technical acceptance evidence below.
 
 ## Phase 0 — Repository and trust boundary
 
@@ -63,6 +66,10 @@ The storefront-runtime track is defined in
       versioned JSON/files and explicit completion.
 - [ ] Take a disposable downstream fixture through URL/theme preflight, home/PDP/collection
       reconstruction, deterministic comparison, and signed merchant review.
+  - [x] Compose synthetic theme rights, deterministic home/PDP/collection capture, runtime-target
+        binding, hostile-text containment and local no-authority review in one disposable proof.
+  - [ ] Execute generated preview reconstruction/comparison and attach independently signed merchant
+        review evidence outside the agent-writable repository.
 - [ ] Prove interruption/resume, hostile-evidence containment, approval non-forgeability, and merchant
       edit preservation.
 - [ ] Run a non-technical first-use test through a seeded setup failure to the credential-free report.
