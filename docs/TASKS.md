@@ -89,6 +89,9 @@ The storefront-runtime track is defined in
   - [x] Bind host/model qualification contract changes to selective review-checkpoint invalidation while
         preserving source, reconstruction and verification evidence.
   - [ ] Verify externally signed privileged approvals; repository decision/ledger files remain non-authoritative.
+    - [x] Define and test a detached Ed25519 envelope verifier with exact actor/action/environment/run/shop,
+          expiry, scope and source/preview/evidence/check/proposal bindings and no in-repository trust-key fallback.
+    - [ ] Integrate and attack-test the independently installed keychain-backed approval/apply service.
 - [ ] Define mocked PR and authenticated scheduled/release host runners plus an expiring
       host/model/skill qualification matrix.
   - [x] Bind a deterministic credential-free PR protocol runner to exact workflow, skill-manifest and

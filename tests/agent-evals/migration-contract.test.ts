@@ -91,6 +91,7 @@ describe("agent migration contract", () => {
       "theme-rights-status.schema.json",
       "agent-qualification.schema.json",
       "agent-qualification-drift.schema.json",
+      "approval-envelope.schema.json",
       "target-coverage.schema.json",
     ]) {
       const schema = JSON.parse(await readFile(`migration/schemas/${file}`, "utf8"));
