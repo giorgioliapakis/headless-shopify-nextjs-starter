@@ -86,9 +86,15 @@ describe("release contract", () => {
     for (const routeGate of config.ci.assert.assertMatrix) {
       expect(routeGate.aggregationMethod).toBe("median-run");
     }
+    expect(
+      config.ci.assert.assertMatrix[1].assertions["largest-contentful-paint"][1].aggregationMethod,
+    ).toBe("median");
+    expect(
+      config.ci.assert.assertMatrix[2].assertions["largest-contentful-paint"][1].aggregationMethod,
+    ).toBe("median");
     expect(config.ci.assert.assertMatrix[2].assertions["largest-contentful-paint"]).toEqual([
       "error",
-      { maxNumericValue: 3400 },
+      { maxNumericValue: 3400, aggregationMethod: "median" },
     ]);
 
     const workflow = await readFile(".github/workflows/ci.yml", "utf8");

@@ -64,10 +64,11 @@ fails rather than silently skipping it.
 ## Measurement protocol
 
 1. Build with exact Node/pnpm/dependency versions and deterministic neutral fixtures.
-2. Lighthouse runs each required route three times and gates the representative median run. The streamed
-   route ceiling includes 150 ms of declared cross-runner tolerance above the original 3.25 s calibration;
-   the performance-score and field-outcome gates remain unchanged. Record warm and cold diagnostics
-   separately when investigating regressions.
+2. Lighthouse runs each required route three times. Category scores gate LHCI's coherent representative
+   `median-run`; LCP overrides that with the per-audit `median`, because one representative run can carry
+   a non-median LCP value. The streamed route ceiling includes 150 ms of declared cross-runner tolerance
+   above the original 3.25 s calibration; the performance-score and field-outcome gates remain unchanged.
+   Record warm and cold diagnostics separately when investigating regressions.
 3. Capture route, commit, tool/browser versions, fixture hash, viewport, throttling, bundle assets,
    requests, server timing and Lighthouse/a11y outputs.
 4. Compare against the versioned baseline and explain every regression. Variance outside the declared
