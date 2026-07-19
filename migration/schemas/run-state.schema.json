@@ -14,6 +14,7 @@
     "themeSource",
     "status",
     "foundationIdentity",
+    "agentQualificationIdentity",
     "phases",
     "artifacts",
     "nextActions"
@@ -28,6 +29,7 @@
     "themeSource": { "type": "string", "minLength": 1 },
     "status": { "enum": ["active", "completed", "cancelled"] },
     "foundationIdentity": { "type": "object" },
+    "agentQualificationIdentity": { "type": "object" },
     "phases": {
       "type": "object",
       "additionalProperties": { "$ref": "#/$defs/phase" },

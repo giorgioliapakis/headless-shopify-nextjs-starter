@@ -86,7 +86,8 @@ The storefront-runtime track is defined in
         resume artifact checks.
   - [x] Bind foundation runtime, migration, schema and skill contract changes to selective downstream
         checkpoint invalidation.
-  - [ ] Bind host/model qualification changes to selective checkpoint invalidation.
+  - [x] Bind host/model qualification contract changes to selective review-checkpoint invalidation while
+        preserving source, reconstruction and verification evidence.
   - [ ] Verify externally signed privileged approvals; repository decision/ledger files remain non-authoritative.
 - [ ] Define mocked PR and authenticated scheduled/release host runners plus an expiring
       host/model/skill qualification matrix.

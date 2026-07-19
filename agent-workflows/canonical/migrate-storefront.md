@@ -159,6 +159,11 @@ not production authority.
     `resume` preserves preflight/source evidence while resetting reconstruction, verification and review.
     Review the generated foundation-drift report before continuing.
 
+    Agent host/model qualification has a separate identity over the qualification matrix, bound workflow,
+    skill manifest and host adapters. Qualification-only drift preserves source, reconstruction and
+    verification evidence but resets review; requalify the current host/model contract before accepting
+    agent-generated review evidence.
+
 ## Completion protocol
 
 Report each phase as pending, in progress, partial, completed, failed, blocked or cancelled. A migration

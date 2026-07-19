@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-shopify-starter.local/schemas/agent-qualification-drift-v1.json",
+  "title": "Agent qualification contract drift",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "detectedAt",
+    "status",
+    "changedPaths",
+    "invalidates",
+    "previousSha256",
+    "currentSha256"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "detectedAt": { "type": "string", "format": "date-time" },
+    "status": { "enum": ["changed", "not-recorded", "current", "incomplete"] },
+    "changedPaths": { "type": "array", "items": { "type": "string" } },
+    "missing": { "type": "array", "items": { "type": "string" } },
+    "invalidates": { "type": "array", "items": { "const": "review" } },
+    "previousSha256": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+    "currentSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

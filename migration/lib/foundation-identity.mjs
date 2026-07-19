@@ -23,6 +23,7 @@ const CONTRACT_PATHS = [
 ];
 const MAX_FILES = 2_000;
 const MAX_BYTES = 25 * 1024 * 1024;
+const EXCLUDED_PATHS = new Set(["agent-workflows/qualification-matrix.json"]);
 
 export async function captureFoundationIdentity(cwd) {
   const root = resolve(cwd);
@@ -31,6 +32,8 @@ export async function captureFoundationIdentity(cwd) {
   let totalBytes = 0;
 
   async function visit(path, requiredPath) {
+    const relativePath = relative(root, path).split(sep).join("/");
+    if (EXCLUDED_PATHS.has(relativePath)) return;
     const info = await lstat(path).catch((error) => {
       if (error?.code === "ENOENT") return null;
       throw error;

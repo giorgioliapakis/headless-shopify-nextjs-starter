@@ -14,7 +14,7 @@
     },
     "workflow": {
       "path": "agent-workflows/canonical/migrate-storefront.md",
-      "sha256": "1b06d427909c03c03da468e0451cf3f61347d6127b54166c70a818abc06dccc8"
+      "sha256": "4f510880cc859cc7e1ecc2c706657d05191c26e52ce09001b8762052662232a8"
     }
   },
   "requiredChecks": [

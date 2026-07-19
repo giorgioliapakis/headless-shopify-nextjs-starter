@@ -1,5 +1,5 @@
 import { execFile } from "node:child_process";
-import { mkdtemp, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { promisify } from "node:util";
@@ -18,14 +18,19 @@ describe("migration foundation identity", () => {
   it("detects foundation contract changes without including merchant-owned paths", async () => {
     const root = await mkdtemp(join(tmpdir(), "foundation-identity-"));
     await writeFile(join(root, "package.json"), '{"version":"1.0.0"}\n');
+    await mkdir(join(root, "agent-workflows"));
+    await writeFile(join(root, "agent-workflows", "qualification-matrix.json"), '{"host":"a"}\n');
     const first = await captureFoundationIdentity(root);
     await writeFile(join(root, "merchant-note.txt"), "merchant change");
     const merchantOnly = await captureFoundationIdentity(root);
+    await writeFile(join(root, "agent-workflows", "qualification-matrix.json"), '{"host":"b"}\n');
+    const qualificationOnly = await captureFoundationIdentity(root);
     await writeFile(join(root, "package.json"), '{"version":"1.0.1"}\n');
     const changed = await captureFoundationIdentity(root);
 
     expect(first.status).toBe("incomplete");
     expect(merchantOnly.sha256).toBe(first.sha256);
+    expect(qualificationOnly.sha256).toBe(first.sha256);
     expect(compareFoundationIdentity(first, merchantOnly).status).toBe("incomplete");
     expect(compareFoundationIdentity(first, changed)).toMatchObject({
       status: "changed",

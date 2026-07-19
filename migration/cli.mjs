@@ -13,6 +13,10 @@ import {
 import { buildReconstructionModel } from "./lib/model.mjs";
 import { validatePublicStoreUrl } from "./lib/network.mjs";
 import {
+  captureQualificationIdentity,
+  compareQualificationIdentity,
+} from "./lib/qualification-identity.mjs";
+import {
   buildBrandPack,
   buildIntegrationInventory,
   buildTemplateClusters,
@@ -518,6 +522,10 @@ const handlers = {
       state.foundationIdentity,
       await captureFoundationIdentity(cwd),
     );
+    const agentQualification = compareQualificationIdentity(
+      state.agentQualificationIdentity,
+      await captureQualificationIdentity(cwd),
+    );
     return {
       runId: state.runId,
       status: state.status,
@@ -526,6 +534,7 @@ const handlers = {
       artifactCount: state.artifacts.length,
       ledger,
       foundation,
+      agentQualification,
       nextActions: state.nextActions,
       launchAuthority: "human-only",
     };
@@ -860,6 +869,52 @@ const handlers = {
         },
       });
     }
+    const currentQualification = await captureQualificationIdentity(cwd);
+    const qualificationDrift = compareQualificationIdentity(
+      state.agentQualificationIdentity,
+      currentQualification,
+    );
+    if (["changed", "not-recorded"].includes(qualificationDrift.status)) {
+      const now = new Date().toISOString();
+      const phases = { ...state.phases };
+      for (const phase of qualificationDrift.invalidates) {
+        phases[phase] = {
+          status: "pending",
+          updatedAt: now,
+          reason: "Agent host/model qualification changed; review revalidation required",
+        };
+      }
+      state = await updateState(runDirectory, state, {
+        agentQualificationIdentity: currentQualification,
+        phases,
+        nextActions: [
+          "Requalify the current agent host/model contract before accepting migration review",
+          ...state.nextActions,
+        ],
+      });
+      const qualificationDriftPath = join(
+        runDirectory,
+        "reports",
+        "agent-qualification-drift-v1.json",
+      );
+      await writeJsonAtomic(qualificationDriftPath, {
+        schemaVersion: 1,
+        detectedAt: now,
+        ...qualificationDrift,
+      });
+      state = await recordArtifact(runDirectory, state, {
+        id: "agent-qualification-drift",
+        path: qualificationDriftPath,
+        kind: "report",
+      });
+      await appendLedger(runDirectory, {
+        event: "agent-qualification.invalidated",
+        details: {
+          changedPaths: qualificationDrift.changedPaths,
+          invalidates: qualificationDrift.invalidates,
+        },
+      });
+    }
     const capabilities = await readOptionalJson(join(runDirectory, "model", "capabilities.json"));
     const decisions = await readDecisionSummaries(join(runDirectory, "decisions"));
     const snapshot = await readOptionalJson(join(runDirectory, "snapshots", "public-v1.json"));
@@ -887,6 +942,7 @@ const handlers = {
         ? { status: sourceDrift.status, affectedPaths: sourceDrift.affectedPaths }
         : { status: "not-evaluated", affectedPaths: [] },
       foundation: foundationDrift,
+      agentQualification: qualificationDrift,
       ledger: await readLedgerSummary(runDirectory),
       phases: Object.fromEntries(
         Object.entries(state.phases).map(([id, value]) => [id, value.status]),
@@ -989,6 +1045,21 @@ async function requireRun(cwd, phase) {
         invalidates: foundation.invalidates,
         remediation:
           "Run pnpm migrate resume --json to invalidate affected phases before continuing",
+      },
+    );
+  }
+  const qualification = compareQualificationIdentity(
+    run.state.agentQualificationIdentity,
+    await captureQualificationIdentity(cwd),
+  );
+  if (["changed", "not-recorded"].includes(qualification.status)) {
+    throw new MigrationCommandError(
+      "AGENT_QUALIFICATION_DRIFT",
+      "Agent host/model qualification contracts changed after this migration checkpoint.",
+      {
+        changedPaths: qualification.changedPaths,
+        invalidates: qualification.invalidates,
+        remediation: "Run pnpm migrate resume --json before continuing agent-reviewed work",
       },
     );
   }

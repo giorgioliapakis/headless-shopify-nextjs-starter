@@ -61,7 +61,7 @@ describe("agent host qualification", () => {
           schemaVersion: 1,
           host,
           modelId: `${host}-qualified-2026-07`,
-          workflowSha256: "1b06d427909c03c03da468e0451cf3f61347d6127b54166c70a818abc06dccc8",
+          workflowSha256: "4f510880cc859cc7e1ecc2c706657d05191c26e52ce09001b8762052662232a8",
           skillManifestSha256: "4c668e92096740918cbe94d14626ac37fc59d3f9b657d430f332c5511f256c67",
           adapterSha256,
           testedAt: "2026-07-16T00:00:00.000Z",
