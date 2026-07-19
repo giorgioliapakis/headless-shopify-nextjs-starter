@@ -34,11 +34,13 @@ import { cn } from "@/lib/utils";
 import { shopConfig } from "@/shop.config";
 
 export function ProductDetailSection({
+  demo,
   product,
   selectedOptionsPromise,
   variantPromise,
   locale,
 }: {
+  demo: boolean;
   product: ProductDetails;
   selectedOptionsPromise: Promise<SelectedOptions>;
   variantPromise: Promise<ProductVariant | undefined>;
@@ -73,6 +75,7 @@ export function ProductDetailSection({
       <div className="grid gap-10 lg:grid-cols-10 lg:items-start lg:gap-5">
         <ProductMediaArea product={product} selectedOptionsPromise={selectedOptionsPromise} />
         <ProductInfoArea
+          demo={demo}
           product={product}
           selectedOptionsPromise={selectedOptionsPromise}
           variantPromise={variantPromise}
@@ -158,11 +161,13 @@ async function ResolvedColorImageCarousel({
 }
 
 async function ProductInfoArea({
+  demo,
   product,
   selectedOptionsPromise,
   variantPromise,
   locale,
 }: {
+  demo: boolean;
   product: ProductDetails;
   selectedOptionsPromise: Promise<SelectedOptions>;
   variantPromise: Promise<ProductVariant | undefined>;
@@ -232,6 +237,7 @@ async function ProductInfoArea({
 
       {eagerSelection ? (
         <BuyButtons
+          demo={demo}
           key={eagerSelection.selectedVariant?.id}
           selectedVariant={toBuyButtonVariant(eagerSelection.selectedVariant)}
           availableForSale={availableForSale}
@@ -241,6 +247,7 @@ async function ProductInfoArea({
       ) : (
         <Suspense fallback={<BuyButtonsFallback t={buyFallbackT} allInStock={allInStock} />}>
           <ResolvedBuyButtons
+            demo={demo}
             availableForSale={availableForSale}
             variantPromise={variantPromise}
             locale={locale}
@@ -340,11 +347,13 @@ function toBuyButtonVariant(variant: ProductVariant | undefined): BuyButtonVaria
 }
 
 async function ResolvedBuyButtons({
+  demo,
   availableForSale,
   variantPromise,
   locale,
   requiresSellingPlan,
 }: {
+  demo: boolean;
   availableForSale: boolean;
   locale: string;
   requiresSellingPlan: boolean;
@@ -353,6 +362,7 @@ async function ResolvedBuyButtons({
   const selectedVariant = await variantPromise;
   return (
     <BuyButtons
+      demo={demo}
       key={selectedVariant?.id}
       selectedVariant={toBuyButtonVariant(selectedVariant)}
       availableForSale={availableForSale}

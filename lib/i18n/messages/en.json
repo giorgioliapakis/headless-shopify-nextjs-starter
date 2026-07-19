@@ -24,6 +24,7 @@
     "discountCode": "Discount code",
     "discountInvalidCode": "Enter a valid discount code",
     "discountNotApplicable": "Not applicable",
+    "demoCheckoutDisabled": "Connect Shopify to enable checkout",
     "dismissWarnings": "Dismiss",
     "empty": "Your cart is empty",
     "emptyDescription": "Looks like you haven't added anything yet. Let's explore our products and find something great!",
@@ -228,6 +229,7 @@
       "washGentle": "Use gentle cycle",
       "washing": "Washing"
     },
+    "demoShopPayDisabled": "Demo checkout",
     "featuredBadge": "Assistant's pick",
     "freeShipping": "FREE",
     "goToImage": "Go to image {number}",

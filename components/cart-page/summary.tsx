@@ -9,15 +9,25 @@ import { cn, formatPrice } from "@/lib/utils";
 
 function CheckoutLink({
   checkoutUrl,
+  demo,
   pending,
   checkoutText,
 }: {
   checkoutUrl: string;
+  demo: boolean;
   pending: boolean;
   checkoutText: string;
 }) {
   const baseClassName =
     "flex items-center justify-center w-full h-12 rounded-lg text-sm font-medium bg-primary text-primary-foreground transition-colors";
+
+  if (demo) {
+    return (
+      <span aria-disabled="true" className={cn(baseClassName, "cursor-not-allowed opacity-60")}>
+        {checkoutText}
+      </span>
+    );
+  }
 
   return (
     <a
@@ -30,10 +40,11 @@ function CheckoutLink({
 }
 
 interface SummaryProps {
+  demo: boolean;
   locale: string;
 }
 
-export function Summary({ locale }: SummaryProps) {
+export function Summary({ demo, locale }: SummaryProps) {
   const t = useTranslations("cart");
   const cart = useCart((state) => state.data);
   const pending = useCart(
@@ -61,8 +72,9 @@ export function Summary({ locale }: SummaryProps) {
 
       <CheckoutLink
         checkoutUrl={cart.checkoutUrl}
+        demo={demo}
         pending={pending}
-        checkoutText={t("completeCheckout")}
+        checkoutText={demo ? t("demoCheckoutDisabled") : t("completeCheckout")}
       />
     </div>
   );

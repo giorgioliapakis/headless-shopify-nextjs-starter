@@ -7,7 +7,7 @@ const CONTENT_SECURITY_POLICY = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://cdn.shopify.com",
   "font-src 'self' data: https://cdn.shopify.com",
-  "connect-src 'self' https://*.myshopify.com https://shop.app https://vitals.vercel-insights.com",
+  "connect-src 'self' https://*.myshopify.com https://cdn.shopify.com https://shop.app https://vitals.vercel-insights.com",
   "frame-src https://*.myshopify.com https://shop.app",
   "form-action 'self' https://*.myshopify.com https://shop.app",
   "media-src 'self' blob: https://cdn.shopify.com",

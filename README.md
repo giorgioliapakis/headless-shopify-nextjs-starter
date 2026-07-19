@@ -145,7 +145,10 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-Add a Storefront API domain/token to `.env.local`. The token is runtime read access only; future
+With both Shopify values absent, the app starts as a neutral demo with deterministic sample catalogue
+data, a visible setup notice, checkout disabled, search indexing blocked and readiness reported as
+`setup-required`. Add `PUBLIC_STORE_DOMAIN` and `PUBLIC_STOREFRONT_API_TOKEN` together to connect a real
+store; partial configuration fails rather than silently falling back. The token is runtime read access only; future
 migration discovery uses a separate short-lived, allowlisted Admin credential broker.
 
 Verify the configuration before the first build. The report is redacted and never prints the token or
@@ -175,10 +178,10 @@ pnpm test:contracts
 Install the pinned Chromium revision and run the production desktop/mobile/no-JavaScript, axe and
 Lighthouse gates with `pnpm browser:install`, `pnpm browser:test` and `pnpm lighthouse`.
 
-The production build requires valid Storefront credentials because catalogue-backed static work is
-resolved during the build. Synthetic products are never substituted silently. For a credential-free
-platform build, explicitly set the three neutral fixture values documented in `.env.example`; fixture
-mode refuses any real merchant domain, token or private credential and fails on unknown operations.
+A production build with no Shopify configuration uses the visible, noindex neutral demo. Real catalogue
+work is resolved during the build once the complete public domain/token pair is present. The demo never
+masks partial merchant configuration, private credentials or an invalid fixture setup, and its
+deterministic transport fails on unknown operations.
 
 ## Project documents
 

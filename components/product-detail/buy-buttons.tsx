@@ -23,11 +23,13 @@ export interface BuyButtonVariant {
 }
 
 export function BuyButtons({
+  demo,
   selectedVariant,
   availableForSale = true,
   locale,
   requiresSellingPlan = false,
 }: {
+  demo: boolean;
   locale: string;
   requiresSellingPlan?: boolean;
   selectedVariant: BuyButtonVariant | undefined;
@@ -113,21 +115,27 @@ export function BuyButtons({
         </fieldset>
       ) : null}
       <div className="grid grid-cols-2 gap-2.5">
-        <ShopPayButton
-          variants={[{ id: selectedVariant.id, quantity: 1 }]}
-          channel="hydrogen"
-          disabled={
-            !availableForSale ||
-            isOutOfStock ||
-            requiresBundleConfiguration ||
-            pending ||
-            Boolean(sellingPlanId) ||
-            requiresSellingPlan
-          }
-          width="100%"
-          borderRadius="8px"
-          style={{ minHeight: 48 }}
-        />
+        {demo ? (
+          <Button type="button" disabled className="h-12 justify-center">
+            {t("demoShopPayDisabled")}
+          </Button>
+        ) : (
+          <ShopPayButton
+            variants={[{ id: selectedVariant.id, quantity: 1 }]}
+            channel="hydrogen"
+            disabled={
+              !availableForSale ||
+              isOutOfStock ||
+              requiresBundleConfiguration ||
+              pending ||
+              Boolean(sellingPlanId) ||
+              requiresSellingPlan
+            }
+            width="100%"
+            borderRadius="8px"
+            style={{ minHeight: 48 }}
+          />
+        )}
         <Button
           type="submit"
           disabled={isOutOfStock || requiresBundleConfiguration || missingRequiredSellingPlan}

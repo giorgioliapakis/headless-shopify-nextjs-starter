@@ -16,6 +16,16 @@ merchant's private copy.
 Do not begin by creating an Admin app. The credential-free report should establish that the store is a
 reasonable headless candidate first.
 
+## Zero-credential first deploy
+
+The starter can be built and deployed before Shopify is connected. Leave both
+`PUBLIC_STORE_DOMAIN` and `PUBLIC_STOREFRONT_API_TOKEN` unset to use deterministic sample data. The
+result is deliberately unmistakable: it shows a setup notice, disables hosted checkout, blocks search
+indexing and reports `setup-required` from `/api/readiness`.
+
+Add the domain and token together, then redeploy, to leave demo mode. Supplying only one value or adding
+dependent private checkout configuration without the public pair fails closed.
+
 ## 1. Create the runtime Storefront token
 
 In Shopify admin, open the **Headless** sales channel (add/pin it if necessary), choose **Add storefront**,

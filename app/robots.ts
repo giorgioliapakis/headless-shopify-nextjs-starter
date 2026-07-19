@@ -1,8 +1,13 @@
 import type { MetadataRoute } from "next";
 
+import { resolveStorefrontEnvironment } from "@/lib/shopify/hydrogen/env";
 import { shopConfig } from "@/shop.config";
 
 export default function robots(): MetadataRoute.Robots {
+  if (resolveStorefrontEnvironment().mode === "neutral-demo") {
+    return { rules: [{ userAgent: "*", disallow: "/" }] };
+  }
+
   return {
     rules: [
       {

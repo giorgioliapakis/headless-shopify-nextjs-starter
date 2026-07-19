@@ -1,10 +1,17 @@
 import "server-only";
+import {
+  NEUTRAL_FIXTURE_DOMAIN,
+  NEUTRAL_FIXTURE_TOKEN,
+  resolveStorefrontMode,
+  type StorefrontMode,
+} from "@/lib/shopify/storefront-mode";
 
 const DEFAULT_API_VERSION = "2026-07";
 
 export interface StorefrontEnvironment {
   apiVersion: string;
   checkoutDomain?: string;
+  mode: StorefrontMode;
   privateStorefrontToken?: string;
   publicStorefrontToken: string;
   storefrontId: string;
@@ -58,22 +65,17 @@ function normalizeDomain(
 export function resolveStorefrontEnvironment(
   source: EnvironmentSource = process.env,
 ): StorefrontEnvironment {
+  const mode = resolveStorefrontMode(source);
   const canonicalDomain = read(source, "PUBLIC_STORE_DOMAIN");
   const legacyDomain = read(source, "SHOPIFY_STORE_DOMAIN");
   const canonicalPublicToken = read(source, "PUBLIC_STOREFRONT_API_TOKEN");
   const legacyPublicToken = read(source, "SHOPIFY_STOREFRONT_ACCESS_TOKEN");
   const usedLegacyAliases: string[] = [];
 
-  const rawDomain = canonicalDomain ?? legacyDomain;
-  if (!rawDomain) {
-    throw new Error("Missing PUBLIC_STORE_DOMAIN. See .env.example.");
-  }
+  const rawDomain = canonicalDomain ?? legacyDomain ?? NEUTRAL_FIXTURE_DOMAIN;
   if (!canonicalDomain && legacyDomain) usedLegacyAliases.push("SHOPIFY_STORE_DOMAIN");
 
-  const publicStorefrontToken = canonicalPublicToken ?? legacyPublicToken;
-  if (!publicStorefrontToken) {
-    throw new Error("Missing PUBLIC_STOREFRONT_API_TOKEN. See .env.example.");
-  }
+  const publicStorefrontToken = canonicalPublicToken ?? legacyPublicToken ?? NEUTRAL_FIXTURE_TOKEN;
   if (!canonicalPublicToken && legacyPublicToken) {
     usedLegacyAliases.push("SHOPIFY_STOREFRONT_ACCESS_TOKEN");
   }
@@ -90,6 +92,7 @@ export function resolveStorefrontEnvironment(
     checkoutDomain: checkoutDomain
       ? normalizeDomain(checkoutDomain, "PUBLIC_CHECKOUT_DOMAIN")
       : undefined,
+    mode,
     privateStorefrontToken: read(source, "PRIVATE_STOREFRONT_API_TOKEN"),
     publicStorefrontToken,
     storefrontId: read(source, "PUBLIC_STOREFRONT_ID") ?? "0",

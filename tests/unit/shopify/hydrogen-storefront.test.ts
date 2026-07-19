@@ -8,6 +8,7 @@ import {
 
 const publicEnvironment: StorefrontEnvironment = {
   apiVersion: "2026-07",
+  mode: "shopify",
   publicStorefrontToken: "fixture-public-token",
   storefrontId: "0",
   storeDomain: "neutral-fixture.myshopify.com",

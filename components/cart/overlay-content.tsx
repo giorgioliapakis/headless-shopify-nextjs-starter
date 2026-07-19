@@ -13,10 +13,11 @@ import { OverlaySummary } from "./overlay-summary";
 import { CartWarnings } from "./warnings";
 
 interface OverlayContentProps {
+  demo: boolean;
   locale: string;
 }
 
-export function OverlayContent({ locale }: OverlayContentProps) {
+export function OverlayContent({ demo, locale }: OverlayContentProps) {
   const router = useRouter();
   const cart = useCart((state) => state.data);
   const loading = useCart((state) => state.loading);
@@ -63,11 +64,12 @@ export function OverlayContent({ locale }: OverlayContentProps) {
         <OverlaySummary cart={cart} locale={locale} pending={pending} />
 
         <Button
-          render={<a href={cart.checkoutUrl ?? "/checkout"} />}
+          render={demo ? undefined : <a href={cart.checkoutUrl ?? "/checkout"} />}
+          disabled={demo}
           className={cn("w-full h-12 justify-center", pending && "opacity-70")}
           aria-label={t("proceedToCheckout")}
         >
-          {t("completeCheckout")}
+          {demo ? t("demoCheckoutDisabled") : t("completeCheckout")}
         </Button>
       </footer>
     </div>

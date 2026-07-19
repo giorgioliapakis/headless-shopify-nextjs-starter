@@ -17,6 +17,7 @@ import {
   toSelectedOptionList,
 } from "@/lib/product";
 import { buildAlternates, buildOpenGraph } from "@/lib/seo";
+import { resolveStorefrontEnvironment } from "@/lib/shopify/hydrogen/env";
 import {
   getCatalogProducts,
   getProduct,
@@ -91,6 +92,7 @@ export default async function ProductPage({
   searchParams,
 }: PageProps<"/products/[handle]">) {
   const [{ handle }, locale] = await Promise.all([params, getLocale()]);
+  const isDemo = resolveStorefrontEnvironment().mode === "neutral-demo";
   if (handle === PLACEHOLDER_HANDLE) notFound();
 
   const product = await getProduct({ handle, locale });
@@ -126,6 +128,7 @@ export default async function ProductPage({
       <Container className="bg-background">
         <Sections>
           <ProductDetailSection
+            demo={isDemo}
             product={product}
             selectedOptionsPromise={selectedOptionsPromise}
             variantPromise={variantPromise}

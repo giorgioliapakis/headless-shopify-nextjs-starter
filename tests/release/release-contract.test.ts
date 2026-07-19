@@ -80,6 +80,22 @@ describe("release contract", () => {
     expect(assertionMatrix[3].assertions["categories:seo"]).toEqual(["error", { minScore: 1 }]);
   });
 
+  it("makes a zero-credential deployment visible and non-indexable", async () => {
+    const [layout, nextConfig, playwright, readiness, robots] = await Promise.all([
+      readFile("app/layout.tsx", "utf8"),
+      readFile("next.config.ts", "utf8"),
+      readFile("playwright.config.ts", "utf8"),
+      readFile("app/api/readiness/route.ts", "utf8"),
+      readFile("app/robots.ts", "utf8"),
+    ]);
+    expect(layout).toContain("DemoStorefrontNotice");
+    expect(nextConfig).toContain('X-Robots-Tag", value: "noindex, nofollow, noarchive');
+    expect(playwright).toContain("/api/health");
+    expect(playwright).not.toContain('url: "http://127.0.0.1:3100/api/readiness"');
+    expect(readiness).toContain('status: "setup-required"');
+    expect(robots).toContain('disallow: "/"');
+  });
+
   it("uses representative Lighthouse runs and preserves failed diagnostics", async () => {
     const config = JSON.parse(await readFile("lighthouserc.json", "utf8"));
     expect(config.ci.collect.numberOfRuns).toBe(3);
