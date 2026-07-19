@@ -76,6 +76,7 @@ export interface ProductDetails extends ProductCard {
     maxVariantPrice: Money;
     minVariantPrice: Money;
   };
+  requiresSellingPlan: boolean;
   seo: SEO;
   tags: string[];
   updatedAt: string;
@@ -94,8 +95,20 @@ export interface ProductVariant {
   image: Image | null;
   price: Money;
   requiresComponents: boolean;
+  sellingPlanAllocations: SellingPlanAllocation[];
   selectedOptions: SelectedOption[];
   title: string;
+}
+
+export interface SellingPlanAllocation {
+  compareAtPrice?: Money;
+  description?: string;
+  id: string;
+  name: string;
+  options: Array<{ name?: string; value?: string }>;
+  perDeliveryPrice?: Money;
+  price: Money;
+  recurringDeliveries: boolean;
 }
 
 export interface ProductVariantComponent {
@@ -144,76 +157,10 @@ export interface Category {
   name: string;
 }
 
-export interface Cart {
-  appliedGiftCards: AppliedGiftCard[];
-  checkoutUrl: string;
-  cost: {
-    subtotalAmount: Money;
-    totalAmount: Money;
-  };
-  discountAllocations: DiscountAllocation[];
-  discountCodes: DiscountCode[];
-  id: string | undefined;
-  lines: CartLine[];
-  note: string | null;
-  shippingCost: Money | null;
-  totalQuantity: number;
-}
-
-export interface CartLine {
-  canRemove: boolean;
-  canUpdateQuantity: boolean;
-  components: CartLine[];
-  cost: {
-    totalAmount: Money;
-  };
-  discountAllocations: DiscountAllocation[];
-  id: string | undefined;
-  merchandise: CartMerchandise;
-  quantity: number;
-}
-
-export interface DiscountCode {
-  applicable: boolean;
-  code: string;
-}
-
-export type DiscountAllocation =
-  | { kind: "code"; code: string; discountedAmount: Money }
-  | { kind: "automatic" | "custom"; title: string; discountedAmount: Money };
-
-export interface AppliedGiftCard {
-  amountUsed: Money;
-  balance: Money;
-  id: string;
-  lastCharacters: string;
-}
-
-export interface CartWarning {
-  code: string;
-  message: string;
-  target: string;
-}
-
-export interface CartMerchandise {
-  id: string;
-  image?: Image;
-  price?: Money;
-  product: CartProduct;
-  selectedOptions: SelectedOption[];
-  title: string;
-}
-
-export interface CartProduct {
-  featuredImage: Image;
-  handle: string;
-  id: string;
-  title: string;
-}
-
 export interface Collection {
   description: string;
   handle: string;
+  id?: string;
   image?: Image | null;
   path: string;
   seo: SEO;
@@ -231,6 +178,35 @@ export interface ContentPage {
   seo: SEO;
   title: string;
   updatedAt: string;
+}
+
+export interface BlogSummary {
+  handle: string;
+  id: string;
+  seo: SEO;
+  title: string;
+}
+
+export interface ArticleSummary {
+  author: string | null;
+  blog: Pick<BlogSummary, "handle" | "title">;
+  excerpt: string;
+  handle: string;
+  id: string;
+  image: Image | null;
+  publishedAt: string;
+  seo: SEO;
+  tags: string[];
+  title: string;
+}
+
+export interface Article extends ArticleSummary {
+  contentHtml: string;
+}
+
+export interface Blog extends BlogSummary {
+  articles: ArticleSummary[];
+  pageInfo: PageInfo;
 }
 
 export type FilterPresentation = "image" | "swatch" | "text";

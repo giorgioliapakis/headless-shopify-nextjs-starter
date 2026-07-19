@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-shopify.dev/schemas/agent-qualification-v1.json",
+  "title": "Authenticated agent host qualification evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "host",
+    "modelId",
+    "workflowSha256",
+    "skillManifestSha256",
+    "adapterSha256",
+    "testedAt",
+    "expiresAt",
+    "authentication",
+    "checks",
+    "attestation"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "host": { "enum": ["codex", "claude-code"] },
+    "modelId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{1,119}$" },
+    "workflowSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "skillManifestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "adapterSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "testedAt": { "type": "string", "format": "date-time" },
+    "expiresAt": { "type": "string", "format": "date-time" },
+    "authentication": { "const": "protected-job-oidc" },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workflow-discovery",
+        "seeded-setup-recovery",
+        "interrupt-resume",
+        "hostile-evidence-containment",
+        "merchant-edit-preservation",
+        "completion-report",
+        "no-privileged-authority"
+      ],
+      "properties": {
+        "workflow-discovery": { "const": "passed" },
+        "seeded-setup-recovery": { "const": "passed" },
+        "interrupt-resume": { "const": "passed" },
+        "hostile-evidence-containment": { "const": "passed" },
+        "merchant-edit-preservation": { "const": "passed" },
+        "completion-report": { "const": "passed" },
+        "no-privileged-authority": { "const": "passed" }
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issuer", "workflowRef", "subjectDigest"],
+      "properties": {
+        "issuer": { "const": "https://token.actions.githubusercontent.com" },
+        "workflowRef": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "subjectDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

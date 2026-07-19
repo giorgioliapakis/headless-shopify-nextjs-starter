@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { ProductsGrid } from "@/components/product/products-grid";
-import { BannerSection } from "@/components/sections/banner-section";
-import { Container } from "@/components/ui/container";
+import { SectionRenderer } from "@/components/sections/registry";
 import { Page } from "@/components/ui/page";
 import { Sections } from "@/components/ui/sections";
 import { getLocale } from "@/lib/params";
@@ -29,29 +27,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [locale, t] = await Promise.all([getLocale(), getTranslations("home")]);
+  const locale = await getLocale();
 
   return (
     <Page className="pt-0">
       <Sections>
-        <BannerSection
-          hero={{
-            id: "homepage-hero",
-            headline: t("headline"),
-            subheadline: t("subheadline"),
-            ctaText: t("ctaText"),
-            ctaLink: "/collections/all",
-          }}
-        />
-
-        <Container>
-          <ProductsGrid
-            title={t("productsTitle")}
-            limit={8}
-            locale={locale}
-            collectionUrl="/collections/all"
-          />
-        </Container>
+        <SectionRenderer recipe={shopConfig.recipes.home} locale={locale} />
       </Sections>
     </Page>
   );

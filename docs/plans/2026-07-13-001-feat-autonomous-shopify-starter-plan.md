@@ -126,13 +126,13 @@ from a pinned upstream or reimplemented from behavior-level specifications only.
 | Decision              | Resolution                                            | Rationale                                                                                                               |
 | --------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | Upstream              | Pinned `vercel/shop` template subtree                 | Current architecture already matches Next 16, Base UI and Shopify best practice.                                        |
-| Dependency channel    | Stable releases only by default                       | Confidence-first merchants should not inherit canary, preview or `unstable` runtime dependencies.                       |
+| Dependency channel    | Stable by default; one ADR-bound Hydrogen exception   | ADR 0002 pins, reviews and expires the framework-agnostic SDK preview without permitting other moving runtime channels. |
 | Shopify API           | Explicit `2026-07` Storefront and Admin schemas       | Shopify supports dated versions for a bounded window and can silently fall forward.                                     |
 | Agent substrate       | CLI + versioned JSON + shared files                   | Portable across coding agents, testable, resumable and independent of optional MCP.                                     |
 | Agent tools           | Atomic commands composed by playbooks                 | Preserves agent judgment without hiding safety or approval logic inside a mega workflow.                                |
 | Runtime state         | Ignored `.migration/<run-id>/` workspace              | User and agent share evidence while sensitive merchant data stays out of Git.                                           |
 | UI primitives         | shadcn `base-nova` + Base UI 1.6                      | Current stable default; freeze only after behavior-focused parity tests.                                                |
-| Accounts              | Hosted handoff initially                              | Lowest-risk parity boundary and avoids preview Hydrogen coupling.                                                       |
+| Accounts              | Hosted handoff initially                              | Lowest-risk baseline; Hydrogen headless accounts remain an optional, independently proven capability.                   |
 | Deployment            | Vercel first                                          | Cache Components, protected previews and launch verification can be guaranteed there first.                             |
 | Optional capabilities | Discovery-triggered modules                           | Keeps the invariant core excellent without pretending every store uses every feature.                                   |
 | Credential boundary   | OS-backed broker outside the agent-writable workspace | Raw Admin credentials must not be available through prompts, files, environment variables or child processes.           |
@@ -357,10 +357,9 @@ non-technical users and coding agents.
 **Approach:**
 
 - Pin stable Next 16.2.10, React 19.2.7, Base UI 1.6.0, Shopify API 2026-07 and compatible stable
-  dependencies. Replace Hydrogen's Storefront client with a direct typed GraphQL transport preserving
-  locale context, trusted buyer-IP forwarding, annotations, API-version checks and structured GraphQL
-  errors; remove Hydrogen only after no runtime import remains. A temporary preview exception must be
-  dated and removal-bound.
+  dependencies. Begin from a direct typed GraphQL transport preserving locale, API-version checks and
+  redacted errors. The companion Hydrogen plan and ADR 0002 then adopt the framework-agnostic SDK behind
+  that characterized operation boundary through one exact, dated and removal-bound preview exception.
 - Enable Cache Components and codify catalogue/content versus request-bound/cart caching boundaries.
 - Install a curated, pinned skill manifest and generate thin Codex/Claude/Conductor adapters from the
   canonical playbooks.
@@ -371,7 +370,8 @@ non-technical users and coding agents.
 
 - Happy path: clean install, codegen and production build succeed on the pinned Node/pnpm versions.
 - Contract: requested and observed Shopify API versions match 2026-07.
-- Error path: canary, preview, `unstable` or deprecated Next patterns fail policy checks.
+- Error path: canary, unapproved preview, `unstable` or deprecated Next patterns fail policy checks; only
+  ADR 0002's exact Hydrogen package is permitted.
 - Portability: Codex and Claude adapters reference the same canonical commands, schemas and completion
   protocol.
 

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "packages": [
+    {
+      "name": "@parcel/watcher",
+      "version": "2.5.6",
+      "scripts": { "install": "node scripts/build-from-source.js" },
+      "reason": "Installs the exact pinned native file-watcher binary used by the build toolchain."
+    },
+    {
+      "name": "@swc/core",
+      "version": "1.15.43",
+      "scripts": { "postinstall": "node postinstall.js" },
+      "reason": "Selects the exact pinned SWC native binary used by Next.js tooling."
+    },
+    {
+      "name": "esbuild",
+      "version": "0.28.1",
+      "scripts": { "postinstall": "node install.js" },
+      "reason": "Validates the exact pinned platform binary used by the dependency toolchain."
+    },
+    {
+      "name": "sharp",
+      "version": "0.34.5",
+      "scripts": { "install": "node install/check.js || npm run build" },
+      "reason": "Validates or builds the exact pinned image-processing binary used by Next.js."
+    }
+  ]
+}

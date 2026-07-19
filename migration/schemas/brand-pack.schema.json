@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-shopify-starter.invalid/schemas/brand-pack-v1.json",
+  "title": "Three-layer brand pack v1",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "source", "status", "layers", "rules"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "source": { "type": "object" },
+    "status": { "enum": ["requires-semantic-mapping", "not-observed"] },
+    "layers": {
+      "type": "object",
+      "required": ["observed", "semantic", "componentVariants"],
+      "properties": {
+        "observed": { "type": "object" },
+        "semantic": { "type": "object" },
+        "componentVariants": { "type": "object" }
+      },
+      "additionalProperties": false
+    },
+    "rules": { "type": "object" }
+  },
+  "additionalProperties": false
+}

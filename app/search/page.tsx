@@ -19,6 +19,7 @@ import {
   SearchResultsGrid,
   getSearchResultsData,
 } from "@/components/search/results";
+import { RouteAnalyticsEvent } from "@/components/shopify/route-analytics-event";
 import { Container } from "@/components/ui/container";
 import { Page } from "@/components/ui/page";
 import { Sections } from "@/components/ui/sections";
@@ -26,6 +27,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getLocale } from "@/lib/params";
 import { buildAlternates, buildOpenGraph } from "@/lib/seo";
 import { parseFiltersFromSearchParams } from "@/lib/utils";
+import { shopConfig } from "@/shop.config";
 
 export async function generateMetadata({ searchParams }: PageProps<"/search">): Promise<Metadata> {
   const resolvedSearchParams = await searchParams;
@@ -141,11 +143,28 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
               locale={locale}
               searchResultsDataPromise={searchResultsDataPromise}
             />
+            {shopConfig.analytics.shopify.enabled ? (
+              <Suspense>
+                <SearchAnalyticsEvent searchParamsPromise={searchParams} />
+              </Suspense>
+            ) : null}
           </Sections>
         </FilterTransitionProvider>
       </Container>
     </Page>
   );
+}
+
+async function SearchAnalyticsEvent({
+  searchParamsPromise,
+}: {
+  searchParamsPromise: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const resolved = await searchParamsPromise;
+  const raw = resolved.q;
+  const searchTerm = Array.isArray(raw) ? (raw[0] ?? "") : (raw ?? "");
+  if (!searchTerm) return null;
+  return <RouteAnalyticsEvent event="search" payload={{ searchTerm }} />;
 }
 
 async function SearchQueryLabel({

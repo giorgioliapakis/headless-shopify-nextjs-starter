@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import { useCartRender } from "@/components/cart/context-sync";
+import { useCart } from "@/components/cart/hydrogen";
 import { OverlayItem } from "@/components/cart/overlay-item";
 
 interface CartItemsListProps {
@@ -10,9 +10,8 @@ interface CartItemsListProps {
 }
 
 export function CartItemsList({ locale }: CartItemsListProps) {
-  const cart = useCartRender();
+  const lines = useCart((state) => state.data.lines.nodes);
   const t = useTranslations("cart");
-  const lines = cart?.lines ?? [];
 
   return lines.length === 0 ? (
     <div className="text-center py-10">

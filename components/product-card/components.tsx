@@ -115,15 +115,15 @@ function ProductCardContent({ className, children, ...props }: React.ComponentPr
   );
 }
 
-function ProductCardTitle({ className, children, ...props }: React.ComponentProps<"h3">) {
+function ProductCardTitle({ className, children, ...props }: React.ComponentProps<"h2">) {
   return (
-    <h3
+    <h2
       data-slot="product-card-title"
       className={cn("text-sm font-medium text-foreground line-clamp-1", className)}
       {...props}
     >
       {children}
-    </h3>
+    </h2>
   );
 }
 

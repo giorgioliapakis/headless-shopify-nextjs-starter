@@ -36,6 +36,13 @@ expiry, source drift, preview drift, check drift, environment mismatch, or actio
 Approval for one action never authorizes deploy, Shopify changes, tracking, domain attachment, DNS,
 cutover, rollback, or another environment.
 
+`migration/lib/approval-envelope.mjs` defines the portable canonical envelope and detached Ed25519
+verification contract. It accepts the trust anchor only from its caller and has no key-file, environment
+or migration-state fallback. Because repository code is agent-writable, its successful result is
+cryptographic evidence—not apply authority. The separately installed privileged service must pin this
+contract outside the workspace and independently reverify the signature, expiry and exact expected
+bindings immediately before acting.
+
 ## Hostile input and generated-code quarantine
 
 Public pages execute only in disposable browsers with fresh profiles, no credentials, no broker socket,
@@ -51,6 +58,10 @@ credentials, broker access, production environment, or writable evidence. Packag
 disabled by default. New dependencies, scripts, endpoints, subprocesses, dynamic execution, secret
 reads, filesystem mounts, and network destinations require static review and a separate signed approval
 before privileged execution.
+
+The executable contract and exact local command are in
+[`generated-code-quarantine.md`](generated-code-quarantine.md). A Node permission flag alone is not an
+acceptable sandbox.
 
 ## CI and deployment
 

@@ -2,12 +2,11 @@
 
 import { useTranslations } from "next-intl";
 
-import { useCartRender } from "@/components/cart/context-sync";
+import { useCart } from "@/components/cart/hydrogen";
 
 export function Header() {
   const t = useTranslations("cart");
-  const cart = useCartRender();
-  const count = cart?.totalQuantity ?? 0;
+  const count = useCart((state) => state.data.totalQuantity);
 
   return (
     <div className="flex items-center gap-2.5">

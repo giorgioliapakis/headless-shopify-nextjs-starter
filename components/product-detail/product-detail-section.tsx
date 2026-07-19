@@ -232,20 +232,19 @@ async function ProductInfoArea({
 
       {eagerSelection ? (
         <BuyButtons
+          key={eagerSelection.selectedVariant?.id}
           selectedVariant={toBuyButtonVariant(eagerSelection.selectedVariant)}
-          title={title}
-          handle={handle}
-          featuredImage={featuredImage}
           availableForSale={availableForSale}
+          locale={locale}
+          requiresSellingPlan={product.requiresSellingPlan}
         />
       ) : (
         <Suspense fallback={<BuyButtonsFallback t={buyFallbackT} allInStock={allInStock} />}>
           <ResolvedBuyButtons
-            title={title}
-            handle={handle}
-            featuredImage={featuredImage}
             availableForSale={availableForSale}
             variantPromise={variantPromise}
+            locale={locale}
+            requiresSellingPlan={product.requiresSellingPlan}
           />
         </Suspense>
       )}
@@ -335,31 +334,30 @@ function toBuyButtonVariant(variant: ProductVariant | undefined): BuyButtonVaria
     price: variant.price,
     requiresBundleConfiguration: variant.requiresComponents && variant.components.length === 0,
     selectedOptions: variant.selectedOptions,
+    sellingPlanAllocations: variant.sellingPlanAllocations,
     title: variant.title,
   };
 }
 
 async function ResolvedBuyButtons({
-  title,
-  handle,
-  featuredImage,
   availableForSale,
   variantPromise,
+  locale,
+  requiresSellingPlan,
 }: {
-  title: string;
-  handle: string;
-  featuredImage: ProductDetails["featuredImage"];
   availableForSale: boolean;
+  locale: string;
+  requiresSellingPlan: boolean;
   variantPromise: Promise<ProductVariant | undefined>;
 }) {
   const selectedVariant = await variantPromise;
   return (
     <BuyButtons
+      key={selectedVariant?.id}
       selectedVariant={toBuyButtonVariant(selectedVariant)}
-      title={title}
-      handle={handle}
-      featuredImage={featuredImage}
       availableForSale={availableForSale}
+      locale={locale}
+      requiresSellingPlan={requiresSellingPlan}
     />
   );
 }

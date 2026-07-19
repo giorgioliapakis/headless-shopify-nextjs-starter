@@ -1,0 +1,103 @@
+const CART_PERMALINK = /^\/cart\/\d+:\d+(?:,\d+:\d+)*$/;
+const STOREFRONT_API_PROXY = /^\/api\/(?:unstable|2\d{3}-\d{2})\/graphql\.json$/;
+const AJAX_CART =
+  /^(?:\/[a-z]{2}(?:-[a-z]{2})?)?\/cart(?:\.(?:js|json)|\/(?:add|update|change|clear)(?:\.(?:js|json))?)$/i;
+
+export type ShopifyProxyRoute =
+  | "blocked"
+  | "cart"
+  | "checkout"
+  | "consent"
+  | "next"
+  | "redirect-candidate";
+
+const APPLICATION_ROUTE_PREFIXES = [
+  "/api/draft",
+  "/api/health",
+  "/api/readiness",
+  "/api/webhooks/shopify",
+  "/blogs",
+  "/cart",
+  "/collections",
+  "/llms.txt",
+  "/md",
+  "/og-default.png",
+  "/pages",
+  "/policies",
+  "/products",
+  "/robots.txt",
+  "/search",
+  "/sitemap",
+  "/sitemap.xml",
+] as const;
+
+export function isKnownApplicationPath(pathname: string): boolean {
+  if (pathname === "/" || /\/[^/]+\.[A-Za-z0-9]+$/.test(pathname)) return true;
+  return APPLICATION_ROUTE_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
+
+/**
+ * Keep preview-only and unbounded proxy surfaces closed. We can promote one of
+ * these routes later only with an independently tested capability adapter.
+ */
+export function classifyShopifyProxyRoute(pathname: string): ShopifyProxyRoute {
+  if (pathname === "/api/unstable/graphql.json") return "consent";
+  if (
+    pathname === "/api/mcp" ||
+    pathname.startsWith("/agent/") ||
+    pathname === "/graphiql" ||
+    STOREFRONT_API_PROXY.test(pathname) ||
+    AJAX_CART.test(pathname)
+  ) {
+    return "blocked";
+  }
+
+  if (pathname === "/checkout" || CART_PERMALINK.test(pathname)) return "checkout";
+  if (pathname === "/api/cart") return "cart";
+  return isKnownApplicationPath(pathname) ? "next" : "redirect-candidate";
+}
+
+export function applyPrivateNoStoreHeaders(headers: Headers): void {
+  headers.set("cache-control", "private, no-store, max-age=0, must-revalidate");
+  headers.delete("cdn-cache-control");
+  headers.delete("vercel-cdn-cache-control");
+  headers.delete("surrogate-control");
+}
+
+export function isSameOriginMutation(request: Request): boolean {
+  const requestOrigin = new URL(request.url).origin;
+  const origin = request.headers.get("origin");
+  if (origin) return origin === requestOrigin;
+  const referer = request.headers.get("referer");
+  if (!referer) return false;
+  try {
+    return new URL(referer).origin === requestOrigin;
+  } catch {
+    return false;
+  }
+}
+
+export function hardenCartCookies(headers: Headers, production: boolean): void {
+  const cookies = headers.getSetCookie();
+  if (cookies.length === 0) return;
+  headers.delete("set-cookie");
+  for (const cookie of cookies) {
+    let value = cookie;
+    if (/^cart=/i.test(value)) {
+      if (!/;\s*HttpOnly/i.test(value)) value += "; HttpOnly";
+      if (production && !/;\s*Secure/i.test(value)) value += "; Secure";
+      if (!/;\s*Priority=/i.test(value)) value += "; Priority=High";
+    }
+    headers.append("set-cookie", value);
+  }
+}
+
+export const blockedShopifyProxyPaths = [
+  "/api/mcp",
+  "/agent/*",
+  "/graphiql",
+  "/api/:version/graphql.json",
+  "/cart.js and AJAX cart mutation routes",
+] as const;

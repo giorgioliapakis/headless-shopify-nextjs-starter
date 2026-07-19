@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-07-16",
+  "fixture": "neutral",
+  "environment": {
+    "node": "24.17.0",
+    "pnpm": "11.5.0",
+    "next": "16.2.10"
+  },
+  "measurements": {
+    "totalClientJavaScriptGzipBytes": 371339,
+    "largestClientChunkGzipBytes": 72485,
+    "totalCssGzipBytes": 21140
+  }
+}

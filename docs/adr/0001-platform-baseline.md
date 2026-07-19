@@ -26,7 +26,8 @@ source commits and checksums.
 ## Consequences
 
 - A clean install is reproducible and cannot silently take a new framework or API channel.
-- Quarterly Shopify upgrades are deliberate schema/codegen changes, not automatic fall-forward.
+- Quarterly Shopify upgrades are deliberate bundled-schema and query-validation changes, not automatic
+  fall-forward.
 - Upstream updates use the import/provenance tools and must record adapted checksums and rationale.
 - Storefront builds require valid Shopify read credentials; the starter never hides missing commerce
   truth behind demo products.

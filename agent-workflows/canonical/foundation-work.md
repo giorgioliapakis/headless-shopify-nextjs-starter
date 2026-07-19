@@ -1,7 +1,7 @@
 # Foundation work
 
-Use this workflow for changes to the distributable starter. Migration-run workflows will be added only
-after the thin vertical slice proves their command and artifact boundaries.
+Use this workflow for changes to the distributable starter. Use `migrate-storefront.md` for an actual
+downstream migration run.
 
 1. Read `AGENTS.md`, `CLEAN_ROOM.md`, the active plan, and the earliest eligible item in `docs/TASKS.md`.
 2. If the task touches Next.js behavior, search the installed version's docs in

@@ -3,21 +3,17 @@
 import { HandbagIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { useCart, useSeedCart } from "@/components/cart/context";
-import type { Cart } from "@/lib/types";
+import { useCartDrawer } from "@/components/cart/drawer-context";
+import { useCart } from "@/components/cart/hydrogen";
 
-export function CartIconClient({ initialCart }: { initialCart: Cart | null }) {
-  const { cartWithPending, openOverlay } = useCart();
+export function CartIconClient() {
+  const quantity = useCart((state) => state.data.totalQuantity);
+  const { openCart } = useCartDrawer();
   const t = useTranslations("nav");
-
-  useSeedCart(initialCart);
-
-  const displayCart = cartWithPending ?? initialCart;
-  const quantity = displayCart?.totalQuantity ?? 0;
 
   return (
     <button
-      onClick={openOverlay}
+      onClick={openCart}
       className="flex items-center justify-center gap-1.5 text-foreground hover:text-foreground/80 transition-colors"
       type="button"
     >

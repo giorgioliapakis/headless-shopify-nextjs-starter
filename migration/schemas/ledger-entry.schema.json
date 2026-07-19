@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-shopify-starter.invalid/schemas/ledger-entry-v1.json",
+  "title": "Migration ledger entry v1",
+  "type": "object",
+  "required": ["sequence", "previousHash", "at", "event", "entryHash"],
+  "properties": {
+    "sequence": { "type": "integer", "minimum": 1 },
+    "previousHash": {
+      "anyOf": [{ "type": "string", "pattern": "^[0-9a-f]{64}$" }, { "type": "null" }]
+    },
+    "at": { "type": "string", "format": "date-time" },
+    "event": { "type": "string", "minLength": 1, "maxLength": 100 },
+    "details": {},
+    "entryHash": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  },
+  "additionalProperties": false
+}

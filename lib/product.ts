@@ -1,4 +1,4 @@
-import type { Image, Money, ProductDetails, ProductOption, SelectedOption } from "@/lib/types";
+import type { Image, ProductDetails, ProductOption, SelectedOption } from "@/lib/types";
 
 export type SelectedOptions = Record<string, string>;
 
@@ -86,38 +86,4 @@ export function getSelectedColorImage(
       height: 0,
     }
   );
-}
-
-export type OptimisticProductInfo = {
-  variantTitle: string;
-  productTitle: string;
-  productHandle: string;
-  price: Money;
-  image: Image;
-  selectedOptions: SelectedOption[];
-};
-
-export function variantToOptimisticInfo(
-  variant: {
-    title: string;
-    price: Money;
-    image: Image | null;
-    selectedOptions: SelectedOption[];
-  },
-  product: { title: string; handle: string; featuredImage: Image | null },
-): OptimisticProductInfo {
-  return {
-    variantTitle: variant.title,
-    productTitle: product.title,
-    productHandle: product.handle,
-    price: variant.price,
-    image: variant.image ||
-      product.featuredImage || {
-        url: "",
-        altText: product.title,
-        width: 0,
-        height: 0,
-      },
-    selectedOptions: variant.selectedOptions,
-  };
 }

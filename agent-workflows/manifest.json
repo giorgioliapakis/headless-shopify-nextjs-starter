@@ -11,6 +11,10 @@
     {
       "id": "foundation-work",
       "path": "agent-workflows/canonical/foundation-work.md"
+    },
+    {
+      "id": "migrate-storefront",
+      "path": "agent-workflows/canonical/migrate-storefront.md"
     }
   ]
 }

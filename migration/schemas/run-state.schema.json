@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-shopify.dev/schemas/migration/run-state-v1.json",
+  "title": "Migration run state",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "runId",
+    "revision",
+    "createdAt",
+    "updatedAt",
+    "storeUrl",
+    "themeSource",
+    "status",
+    "foundationIdentity",
+    "agentQualificationIdentity",
+    "phases",
+    "artifacts",
+    "nextActions"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "runId": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,80}$" },
+    "revision": { "type": "integer", "minimum": 0 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "storeUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
+    "themeSource": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["active", "completed", "cancelled"] },
+    "foundationIdentity": { "type": "object" },
+    "agentQualificationIdentity": { "type": "object" },
+    "phases": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/phase" },
+      "required": [
+        "preflight",
+        "public-snapshot",
+        "reconstruction",
+        "verification",
+        "review",
+        "launch"
+      ]
+    },
+    "artifacts": { "type": "array", "items": { "$ref": "#/$defs/artifact" } },
+    "nextActions": {
+      "type": "array",
+      "maxItems": 20,
+      "items": { "type": "string", "maxLength": 300 }
+    }
+  },
+  "$defs": {
+    "phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "updatedAt"],
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "in_progress",
+            "completed",
+            "partial",
+            "blocked",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "reason": { "type": "string", "maxLength": 500 }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "path", "sha256", "recordedAt"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "kind": { "enum": ["snapshot", "report", "model", "decision", "context", "review"] },
+        "path": { "type": "string", "pattern": "^(?!/)" },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "recordedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

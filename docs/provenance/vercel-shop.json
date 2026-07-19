@@ -31,14 +31,14 @@
     {
       "path": ".env.example",
       "sourceSha256": "1152af1b90677027c7ea1de3d771e7b43d47aef4006d8fcc36d0f0af25802a11",
-      "currentSha256": "cbe7fa4ab6a2aa05d4bb8a691d80ef3c4c11460f70e85a54a8a6a41f9c915766",
-      "modification": "Remove excluded assistant/account setup and pin dated Storefront API configuration."
+      "currentSha256": "5b0933cb400329264da1b2aba6a7a0dc74f544df6f86fc5565afbfdfa17e4322",
+      "modification": "Document the optional consent-aware Shopify analytics capability."
     },
     {
       "path": ".graphqlrc.ts",
       "sourceSha256": "85ccec1ac6b6da6285c8f8a4aca6dc495d6a8a5e13770b516a8f2ea1bd5736b3",
-      "currentSha256": "6e1965038b78f85682298814422f4b9ff8f2cfae87d7736eb29b6936978657b3",
-      "modification": "Generate against the dated Shopify 2026-07 Storefront schema."
+      "modification": "Remove network-fetched GraphQL codegen after all Storefront documents moved to Hydrogen's bundled schema and gql.tada validation.",
+      "removed": true
     },
     {
       "path": ".npmrc",
@@ -64,7 +64,9 @@
     },
     {
       "path": "app/api/webhooks/shopify/route.ts",
-      "sourceSha256": "1215c8bd54c72c8e588afa07cc31c93b1f2279d94d2e53d11c47792400374a6a"
+      "sourceSha256": "1215c8bd54c72c8e588afa07cc31c93b1f2279d94d2e53d11c47792400374a6a",
+      "currentSha256": "3b6a49bcf26f5fd12763394aa8ff018a9874e4c6f42279d77876b1d7b2cf6380",
+      "modification": "Invalidate Shopify blog/article cache tags from authenticated article webhooks."
     },
     {
       "path": "app/cart/error.tsx",
@@ -72,7 +74,9 @@
     },
     {
       "path": "app/cart/page.tsx",
-      "sourceSha256": "1322c90599bdb846e43f352062f1ce6213d2e03e5fc44d03ac9d7a696d92407c"
+      "sourceSha256": "1322c90599bdb846e43f352062f1ce6213d2e03e5fc44d03ac9d7a696d92407c",
+      "currentSha256": "3b26c8bd01daad41b341bd9e0d2fda0f1a582828d84e449e7a44bc942c5754b3",
+      "modification": "Adds the cart canonical metadata contract and relies on the root layout's single main landmark."
     },
     {
       "path": "app/collections/[handle]/error.tsx",
@@ -80,7 +84,9 @@
     },
     {
       "path": "app/collections/[handle]/page.tsx",
-      "sourceSha256": "adf1d05b2e56f30996475b61ec707de38e65c683ec8b3daa6efef43ab0f449fb"
+      "sourceSha256": "adf1d05b2e56f30996475b61ec707de38e65c683ec8b3daa6efef43ab0f449fb",
+      "currentSha256": "bff64fc99eb1d128479fd933b4b4b138bae39f8e188cb9ab64dfcf7e6e9bd9d1",
+      "modification": "Publish the consent-gated Shopify collection-view event from the resolved collection route."
     },
     {
       "path": "app/collections/all/page.tsx",
@@ -100,7 +106,9 @@
     },
     {
       "path": "app/globals.css",
-      "sourceSha256": "54324c3eec08af906a48df5e5596d63886eecd28c49b141230398086961993f4"
+      "sourceSha256": "54324c3eec08af906a48df5e5596d63886eecd28c49b141230398086961993f4",
+      "currentSha256": "0653f85092f4bc45751355700505d397985506a9e49b6f114e048f3c7aecdb23",
+      "modification": "Apply validated merchant theme variables and zero-download system font defaults without accepting arbitrary CSS."
     },
     {
       "path": "app/llms.txt/route.ts",
@@ -124,7 +132,9 @@
     },
     {
       "path": "app/page.tsx",
-      "sourceSha256": "a45216a9b1d538641b0df22656ecde859d58300bf1caee3bc364ba5a74b46c1a"
+      "sourceSha256": "a45216a9b1d538641b0df22656ecde859d58300bf1caee3bc364ba5a74b46c1a",
+      "currentSha256": "728e6aa61c2a29f9a5ebf4f0bfb79ecaf0affd8f2baef85f0f223840358487c2",
+      "modification": "Render the neutral homepage from the versioned merchant-owned section recipe."
     },
     {
       "path": "app/pages/[handle]/page.tsx",
@@ -140,7 +150,9 @@
     },
     {
       "path": "app/products/[handle]/page.tsx",
-      "sourceSha256": "20a887ff81c9fc97207387239ffc0e1939ef34366add1e9c71018beaed983866"
+      "sourceSha256": "20a887ff81c9fc97207387239ffc0e1939ef34366add1e9c71018beaed983866",
+      "currentSha256": "363723331c3aede17b87c3f6405bace72bd1364d48d66b7597c5fa75c1bd1c12",
+      "modification": "Publish the consent-gated Shopify product-view event for the resolved variant."
     },
     {
       "path": "app/robots.ts",
@@ -152,15 +164,21 @@
     },
     {
       "path": "app/search/page.tsx",
-      "sourceSha256": "7ef869fc10f4ca32941a9f4cb3d1dd62194091eb93fef8b0592116196cea7c37"
+      "sourceSha256": "7ef869fc10f4ca32941a9f4cb3d1dd62194091eb93fef8b0592116196cea7c37",
+      "currentSha256": "b6c2547d3fc2ac31a7b0ce91b56c69d26d4c06c8a8793f40d562ecd38da4b53c",
+      "modification": "Publish the consent-gated Shopify search-view event for non-empty search terms."
     },
     {
       "path": "app/sitemap.xml/route.ts",
-      "sourceSha256": "55fc940a5c1ae1770e4687fa044cf8e016be8cf71577f388036382df414a0773"
+      "sourceSha256": "55fc940a5c1ae1770e4687fa044cf8e016be8cf71577f388036382df414a0773",
+      "currentSha256": "02744a1ccc76a4f53c35b6db0e3d2d23b36cf15cf8dfe94f61e1fcf4ab76ec9e",
+      "modification": "Include the Shopify blog/article sitemap shard."
     },
     {
       "path": "app/sitemap/[shard]/route.ts",
-      "sourceSha256": "6d91305268942847e89556ff687fd43f6f89eab2cf3f11ab8b95d58afa20fc4c"
+      "sourceSha256": "6d91305268942847e89556ff687fd43f6f89eab2cf3f11ab8b95d58afa20fc4c",
+      "currentSha256": "0899fd8c47246079b6c7c00fb6c915f8aaebd0d287a79a3c66de5736adbd6bec",
+      "modification": "Includes configured indexable landing-page recipes in the static sitemap shard."
     },
     {
       "path": "components.json",
@@ -168,7 +186,9 @@
     },
     {
       "path": "components/action-bar/predictive-search-results.tsx",
-      "sourceSha256": "9b3f944d038f8234c1b521aa98245b1e94f225f114bbc59aa80283ed147922e0"
+      "sourceSha256": "9b3f944d038f8234c1b521aa98245b1e94f225f114bbc59aa80283ed147922e0",
+      "currentSha256": "538c0a982f1c9aa7b7d4e1ca12d49aa2fe50159dea820f730f561c4397210f45",
+      "modification": "Reconstruct Shopify predictive-search emphasis from an explicit client-safe allowlist."
     },
     {
       "path": "components/analytics.tsx",
@@ -176,15 +196,21 @@
     },
     {
       "path": "components/cart-page/cart-items-list.tsx",
-      "sourceSha256": "4e925db8b98c8b093942e0474791b5731b992c63cbbfc31ba79392bfdb0bd946"
+      "sourceSha256": "4e925db8b98c8b093942e0474791b5731b992c63cbbfc31ba79392bfdb0bd946",
+      "currentSha256": "b39ac9f48b3526e0b524f3222043c4eea5c10cf6f08e8b8ee1a904fd89313594",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/cart-page/empty-cart.tsx",
-      "sourceSha256": "4d0e0d3c1c65896fe246745ced099259543f4526ef2a3e8fce8cc76a66ff6b8b"
+      "sourceSha256": "4d0e0d3c1c65896fe246745ced099259543f4526ef2a3e8fce8cc76a66ff6b8b",
+      "currentSha256": "0cf58fe9507ee442e7dc12b15501ca6b7f28ba576792b459d7e1d948c0aebb26",
+      "modification": "Preserves a single semantic page heading in the empty-cart state."
     },
     {
       "path": "components/cart-page/header.tsx",
-      "sourceSha256": "1553e15099c4d5f5ee5bfbc27bc43e57b7c40d62bfb80997ad5367551723d307"
+      "sourceSha256": "1553e15099c4d5f5ee5bfbc27bc43e57b7c40d62bfb80997ad5367551723d307",
+      "currentSha256": "fd6fac52adb5fc68726144eaa9111c4625641f8e2e1166dc4faf3a5525fc285e",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/cart-page/skeletons.tsx",
@@ -192,39 +218,57 @@
     },
     {
       "path": "components/cart-page/summary.tsx",
-      "sourceSha256": "849d4674dec8e431b6e43675bdac705ec7f1ed76f4bae7cb3bf8e42ca726cebb"
+      "sourceSha256": "849d4674dec8e431b6e43675bdac705ec7f1ed76f4bae7cb3bf8e42ca726cebb",
+      "currentSha256": "2f3f3b4daaf9b7b71bad2ca8156065f179ad93002e9ed1ec7e67cc4d5cc275d2",
+      "modification": "Expose Hydrogen cart notes and server-provided totals on the full cart page."
     },
     {
       "path": "components/cart/context-sync.tsx",
-      "sourceSha256": "7482f4e6b562d110b8813c1e5ebe2da5add3c5ba13fa461c447b6c06f08a8e92"
+      "sourceSha256": "7482f4e6b562d110b8813c1e5ebe2da5add3c5ba13fa461c447b6c06f08a8e92",
+      "removed": true,
+      "modification": "Replace manual cart seeding with Hydrogen providers and browser cart events."
     },
     {
       "path": "components/cart/context.tsx",
-      "sourceSha256": "55c6b3827ee4fb3d9844861a346e1f8296cdd8a9d2cb0bcaad32c9360b046549"
+      "sourceSha256": "55c6b3827ee4fb3d9844861a346e1f8296cdd8a9d2cb0bcaad32c9360b046549",
+      "removed": true,
+      "modification": "Replace the bespoke optimistic cart store with Hydrogen's typed cart store."
     },
     {
       "path": "components/cart/discount-form.tsx",
-      "sourceSha256": "798a0bbce9d54ee302ef9dc0c44f2da465af35cb000396c1ed45ba2e6d05d2d7"
+      "sourceSha256": "798a0bbce9d54ee302ef9dc0c44f2da465af35cb000396c1ed45ba2e6d05d2d7",
+      "currentSha256": "c1c96d98913bf445cfe5e115bcef66bacf695e4af2b8e1fecd0676345085a722",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/cart/overlay-content.tsx",
-      "sourceSha256": "a6a4f195e22e4b6666e7d6329dab9258b9809862ba63d4fe2afad306bce58632"
+      "sourceSha256": "a6a4f195e22e4b6666e7d6329dab9258b9809862ba63d4fe2afad306bce58632",
+      "currentSha256": "441f995041ec1396eb1a0e01d4ea217e2c6259ddf2f595d5ab3c53274061904d",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/cart/overlay-item.tsx",
-      "sourceSha256": "d25b1d08f435733da2313e6ff5086188db6d70e374fb09c8ff99b1354fb33237"
+      "sourceSha256": "d25b1d08f435733da2313e6ff5086188db6d70e374fb09c8ff99b1354fb33237",
+      "currentSha256": "80bb3dbea646fc8259664bf9e13061c0a8a2a541a3f74e93db4fb95617a73bc4",
+      "modification": "Display the selected Shopify selling-plan label on Hydrogen cart lines."
     },
     {
       "path": "components/cart/overlay-summary.tsx",
-      "sourceSha256": "958a7624a94831592413012159751fc76801d4b990f37b357b8040b7497ec9a4"
+      "sourceSha256": "958a7624a94831592413012159751fc76801d4b990f37b357b8040b7497ec9a4",
+      "currentSha256": "6b0407fa3a3b1732489516e5f4afe3e99cebcb4b415c230a17bf8132514cb7a6",
+      "modification": "Expose Hydrogen cart notes and server-provided totals in the cart drawer."
     },
     {
       "path": "components/cart/overlay.tsx",
-      "sourceSha256": "b006d165ed9d4a771c93b2ef77d7e1d5a71862d577fb509688c817125ba9bccf"
+      "sourceSha256": "b006d165ed9d4a771c93b2ef77d7e1d5a71862d577fb509688c817125ba9bccf",
+      "currentSha256": "8b3a4f20723b8fbf8c6fe2c17953d2252c4e37b0f67e78fc2c30dcd9de422b79",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/cart/warnings.tsx",
-      "sourceSha256": "f91ee27fb66f6a539a79d6361d2282e0a468db5db914ffd2f414d555ae9f97ef"
+      "sourceSha256": "f91ee27fb66f6a539a79d6361d2282e0a468db5db914ffd2f414d555ae9f97ef",
+      "currentSha256": "e8ab71fbe8f24f6aa861bee56499ac4be7638f8ac6b5053bf1b60f78ab010213",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/collections/collection-card.tsx",
@@ -260,7 +304,9 @@
     },
     {
       "path": "components/collections/infinite-product-grid.tsx",
-      "sourceSha256": "ccd03086e8be8607527e206173d6545e07d85a010a8b03572d8f4e59c75cce8f"
+      "sourceSha256": "ccd03086e8be8607527e206173d6545e07d85a010a8b03572d8f4e59c75cce8f",
+      "currentSha256": "e282bb51c286ca9b75e28615f41a2a5da6a1941ae807de00eb05230b1dca12f5",
+      "modification": "Disable automatic route prefetch across unbounded product lists to avoid speculative catalogue requests."
     },
     {
       "path": "components/collections/results-grid.tsx",
@@ -272,7 +318,9 @@
     },
     {
       "path": "components/collections/sort-select.tsx",
-      "sourceSha256": "9b239abca07bfbd2eccc4a95dc65fda532d0676b79e992f68fd682c8dff83cb3"
+      "sourceSha256": "9b239abca07bfbd2eccc4a95dc65fda532d0676b79e992f68fd682c8dff83cb3",
+      "currentSha256": "119ae073e7b50b86001e2854f1a441c8a777f79c31a08c7b3eb7263d74dade03",
+      "modification": "Give the Base UI sort trigger a localized accessible name."
     },
     {
       "path": "components/collections/toolbar.tsx",
@@ -280,7 +328,9 @@
     },
     {
       "path": "components/content/rich-text-page.tsx",
-      "sourceSha256": "769c8015df57314074c1aa74b640a8e5984d351d9aae266e0596b759c76a34cf"
+      "sourceSha256": "769c8015df57314074c1aa74b640a8e5984d351d9aae266e0596b759c76a34cf",
+      "currentSha256": "8dd3d1e29955b44405fef5539de0cb8171c281b8f6494d2d3891d189feed3b7d",
+      "modification": "Sanitize Shopify page and policy HTML through the local editorial allowlist before rendering."
     },
     {
       "path": "components/footer/social-links.tsx",
@@ -288,11 +338,15 @@
     },
     {
       "path": "components/nav/cart-client.tsx",
-      "sourceSha256": "dd8eefbf0551d6bb9980040b0cc80545b06675949899174235f42da48cab5d45"
+      "sourceSha256": "dd8eefbf0551d6bb9980040b0cc80545b06675949899174235f42da48cab5d45",
+      "currentSha256": "58e97d564e66b67b5d52b4523320973268c5b8e712af6fc2c7f260b6e8cd2082",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/nav/cart.tsx",
-      "sourceSha256": "47e6cc47476cc915ec9ba6256f539a281a044728198158f27f7453eb561f7785"
+      "sourceSha256": "47e6cc47476cc915ec9ba6256f539a281a044728198158f27f7453eb561f7785",
+      "currentSha256": "df8cc23222c53aa79ef7f6c93dbfd9ca41c5e3264f5b46599a6c946bedcb9a09",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/nav/mobile-menu.tsx",
@@ -312,15 +366,21 @@
     },
     {
       "path": "components/product-card/components.tsx",
-      "sourceSha256": "7dd05fccac82a67f101883a0a6451e3d24653a93b4ef49fe509a95ddd22b54c1"
+      "sourceSha256": "7dd05fccac82a67f101883a0a6451e3d24653a93b4ef49fe509a95ddd22b54c1",
+      "currentSha256": "31104eeb8d8beec8bc98469a4e28d4c3b03c9541ed42f47ab66029f5a4ce809e",
+      "modification": "Use level-two product-card headings under each route's single page heading."
     },
     {
       "path": "components/product-card/product-card.tsx",
-      "sourceSha256": "7d93fa59a82f40d6faf94edb2de9b26d38c2c425f0868103d6e621533940d78d"
+      "sourceSha256": "7d93fa59a82f40d6faf94edb2de9b26d38c2c425f0868103d6e621533940d78d",
+      "currentSha256": "157878db180d1dc330ea0728dbd0b62f3199e7a68e2cc8fbaf1dc16153291ac5",
+      "modification": "Disable automatic route prefetch on repeated product-card links."
     },
     {
       "path": "components/product-detail/about-item.tsx",
-      "sourceSha256": "9dab114b23b3a2615ef7038596aa7909671f0f241e1f261c8997686a60ab4396"
+      "sourceSha256": "9dab114b23b3a2615ef7038596aa7909671f0f241e1f261c8997686a60ab4396",
+      "currentSha256": "159682dda5e5eec21efbb596437aa4d90f67aca2084efec2f2d2361e4e61bc17",
+      "modification": "Sanitize Shopify product HTML through the local editorial allowlist before rendering."
     },
     {
       "path": "components/product-detail/bundle-components.tsx",
@@ -328,7 +388,9 @@
     },
     {
       "path": "components/product-detail/buy-buttons.tsx",
-      "sourceSha256": "d26c43fcc8c0fa2a2ea62e22fdd0752554a4036db0e7159490f477047647a29f"
+      "sourceSha256": "d26c43fcc8c0fa2a2ea62e22fdd0752554a4036db0e7159490f477047647a29f",
+      "currentSha256": "3ee6d955794c15b0c53cf3ff2712eb78c9a6a03fcbe5ad993c0f540468c490f6",
+      "modification": "Add accessible native selling-plan selection and pass sellingPlanId through Hydrogen progressive forms."
     },
     {
       "path": "components/product-detail/color-picker.tsx",
@@ -336,7 +398,9 @@
     },
     {
       "path": "components/product-detail/complementary-products.tsx",
-      "sourceSha256": "fc5150994bfe0be4bebf527ea7b62dc712b304368d0ad98616666ac2351638f8"
+      "sourceSha256": "fc5150994bfe0be4bebf527ea7b62dc712b304368d0ad98616666ac2351638f8",
+      "currentSha256": "21fd0be0d08dc238c28b1a6ebe3ccbe894b1f61e6ffa69a9541c270353833df0",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/product-detail/lightbox.tsx",
@@ -352,7 +416,9 @@
     },
     {
       "path": "components/product-detail/product-detail-section.tsx",
-      "sourceSha256": "35bdb0c886a18e9c97c330005cf1a99e81d4e4e432ca465c5f4a050759ba8464"
+      "sourceSha256": "35bdb0c886a18e9c97c330005cf1a99e81d4e4e432ca465c5f4a050759ba8464",
+      "currentSha256": "00cef159bd1bdb5e1c30d56d3faf03e99f7ca35bc6b11a9a437efadb3b49e680",
+      "modification": "Bind selected-variant selling plans and required-plan state to the Hydrogen buy form."
     },
     {
       "path": "components/product-detail/product-info.tsx",
@@ -381,12 +447,14 @@
     {
       "path": "components/product/price.tsx",
       "sourceSha256": "7ce3017f11130863c8d66b398872b4077f19f1a0ed4b9926a4c2d6cba73dd60e",
-      "currentSha256": "7dc9302a445f5c1838a09b09b83c3931ea1e4e4872468ba7a8d3bf81191196c7",
-      "modification": "Replace Hydrogen money formatting with the platform Intl implementation."
+      "currentSha256": "60ec16eb1e600ce0dee24898138250a4094f96eaa61e6400d9da3dd085919903",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "components/product/products-grid.tsx",
-      "sourceSha256": "84ebc2bee25e3a87e498fd0f311bfe8df936a5431de6682b33542e76af59ed3c"
+      "sourceSha256": "84ebc2bee25e3a87e498fd0f311bfe8df936a5431de6682b33542e76af59ed3c",
+      "currentSha256": "586058bee8efa1be1f83e1bcfb92ea4b3bffc6f3cf4ad15dde990a68d3b52178",
+      "modification": "Allow registry-backed product sections to scope the existing search grid and avoid speculative collection prefetch."
     },
     {
       "path": "components/product/products-slider.tsx",
@@ -442,7 +510,9 @@
     },
     {
       "path": "components/ui/button.tsx",
-      "sourceSha256": "59b63f4f2ca9d362454a86a35e83e1ca8875c2e8583755a7217e807074a5ba9c"
+      "sourceSha256": "59b63f4f2ca9d362454a86a35e83e1ca8875c2e8583755a7217e807074a5ba9c",
+      "currentSha256": "4746adbdf4c8ccf24da7ebb94dc17bf333027a88c1945392d3e7a3dd722f292a",
+      "modification": "Drive transition duration from the validated merchant motion token."
     },
     {
       "path": "components/ui/card.tsx",
@@ -458,7 +528,9 @@
     },
     {
       "path": "components/ui/container.tsx",
-      "sourceSha256": "04b3587ff8c6df0ad227c14139b04fa9c8ad61987a314f64251ce25bab90a4a2"
+      "sourceSha256": "04b3587ff8c6df0ad227c14139b04fa9c8ad61987a314f64251ce25bab90a4a2",
+      "currentSha256": "c7339ddb47c5edab8b51fd22858efcdf5eb45af97baff44c2b1a8fed09e77a18",
+      "modification": "Drive the shared container width from the validated merchant layout token."
     },
     {
       "path": "components/ui/country-flag.tsx",
@@ -518,7 +590,9 @@
     },
     {
       "path": "components/ui/sections.tsx",
-      "sourceSha256": "1cc07414831ff166a93a1abc7852fce486299d029ebbaccc1d0a205412f017a1"
+      "sourceSha256": "1cc07414831ff166a93a1abc7852fce486299d029ebbaccc1d0a205412f017a1",
+      "currentSha256": "01e03aa8f215d49af55bc579cf246ee54e073ea12958e59b196c9b5e953d89fd",
+      "modification": "Drive shared section spacing from the validated merchant density token."
     },
     {
       "path": "components/ui/select.tsx",
@@ -582,15 +656,21 @@
     },
     {
       "path": "lib/cart/action.ts",
-      "sourceSha256": "3d373ddbf5469c7a29b2ec2551e0ab863042c05d5885a0e2b0f9ebe20f60402c"
+      "sourceSha256": "3d373ddbf5469c7a29b2ec2551e0ab863042c05d5885a0e2b0f9ebe20f60402c",
+      "modification": "Remove the retired bespoke cart action stack after adopting Hydrogen cart server handlers and React bindings.",
+      "removed": true
     },
     {
       "path": "lib/cart/index.ts",
-      "sourceSha256": "0009722760e937ba6c96e24f264f7f048242f73b6c45500b2769d2a9943b6a5e"
+      "sourceSha256": "0009722760e937ba6c96e24f264f7f048242f73b6c45500b2769d2a9943b6a5e",
+      "removed": true,
+      "modification": "Remove legacy client-side cart arithmetic after Hydrogen became the sole cart state owner."
     },
     {
       "path": "lib/cart/server.ts",
-      "sourceSha256": "414436a44256231c10fb13d416af0ff3560f0e34ecb5fce1e18751e9db24ed8f"
+      "sourceSha256": "414436a44256231c10fb13d416af0ff3560f0e34ecb5fce1e18751e9db24ed8f",
+      "removed": true,
+      "modification": "Remove the duplicate shopify_cartId cookie implementation after adopting Hydrogen standard cart cookies."
     },
     {
       "path": "lib/collections/action.ts",
@@ -602,17 +682,21 @@
     },
     {
       "path": "lib/i18n/index.ts",
-      "sourceSha256": "5db53f951c092766bf97739d11511ea242207c0e43c402ad0d00ae8de466541c"
+      "sourceSha256": "5db53f951c092766bf97739d11511ea242207c0e43c402ad0d00ae8de466541c",
+      "currentSha256": "dcdebbb829950e082bc45784720613aaaa039014c4a5c197d5b7d922ee028044",
+      "modification": "Define an explicit opt-in market allowlist and bounded storefront locale cookie contract."
     },
     {
       "path": "lib/i18n/messages/en.json",
       "sourceSha256": "1c6c710e305fb380212f2bf0cac55e355a6613d90668f7809108114662c7c9c3",
-      "currentSha256": "808f5ac65aa4cd947b5c60400576399c788e06e8d04c7853994b62e3f147528b",
-      "modification": "Remove excluded assistant/headless-account copy from runtime messages."
+      "currentSha256": "d8348d8b47de9048a69081550c0566bd05c4670489d39b8a7d8191e0216cdf23",
+      "modification": "Add neutral cart-note labels for the Hydrogen form."
     },
     {
       "path": "lib/i18n/request.ts",
-      "sourceSha256": "5640465b3525ca4e82941e50102a6094bb1ffca6f3f3616f10de22579bbfd2a5"
+      "sourceSha256": "5640465b3525ca4e82941e50102a6094bb1ffca6f3f3616f10de22579bbfd2a5",
+      "currentSha256": "e7849be2432acbb5c49b971e9a10678e1efe1e22c753487172185d68997ffa1b",
+      "modification": "Load the request's verified market locale while reusing neutral English messages."
     },
     {
       "path": "lib/markdown/catalog.ts",
@@ -642,11 +726,15 @@
     },
     {
       "path": "lib/params.ts",
-      "sourceSha256": "ad84e18cd38d09b903ab269e7e40ac85a988035d8e8e1327dbfb5ee24fbaca81"
+      "sourceSha256": "ad84e18cd38d09b903ab269e7e40ac85a988035d8e8e1327dbfb5ee24fbaca81",
+      "currentSha256": "c1dd0c4bc9395d0c82b3041f30a19e186f2e8505470df5dc5f100a39a41f95c7",
+      "modification": "Keep single-market locale resolution static and read the allowlisted cookie only when switching is enabled."
     },
     {
       "path": "lib/product.ts",
-      "sourceSha256": "fcf14616dd4dd31460f747650fd9b72c3955f539568bede438eb3e58068efec4"
+      "sourceSha256": "fcf14616dd4dd31460f747650fd9b72c3955f539568bede438eb3e58068efec4",
+      "currentSha256": "ffe9b05912e0ed325c5be74cf3da11fe12ed387aeb4d397b748ce641709c687c",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "lib/search/action.ts",
@@ -658,7 +746,9 @@
     },
     {
       "path": "lib/shopify/discovery.ts",
-      "sourceSha256": "d7ce2acaa9057a647dd34207cfb1090ce1afa86372117211a4f69acdf3459bac"
+      "sourceSha256": "d7ce2acaa9057a647dd34207cfb1090ce1afa86372117211a4f69acdf3459bac",
+      "currentSha256": "602d488cc9793e00276ed2f48ccca0e2280d0f6f680511cdb6d68ef3012fdf4a",
+      "modification": "Resolve the canonical Storefront domain lazily through the validated server-only environment boundary."
     },
     {
       "path": "lib/shopify/encoded-variants.ts",
@@ -667,62 +757,86 @@
     {
       "path": "lib/shopify/errors.ts",
       "sourceSha256": "d6c8c98a41c38724324f447c48cbbb22e5a78fe1e472680540d72d5d46c2d222",
-      "currentSha256": "640c1e251e9dfd33960c7fc15a4a91ecc3e85d32950f1930fd80e6ac870ad989",
-      "modification": "Own the GraphQL error contract instead of importing Hydrogen types."
+      "currentSha256": "cc18fc50f47cdb184d2cb5f5cd4431fce2e7e85faa1a91a1fb847b9fa6c450ea",
+      "modification": "Keep only shared Storefront and user-error contracts after removing the duplicate cart mutation model."
     },
     {
       "path": "lib/shopify/fetch.ts",
-      "sourceSha256": "9ea8c8fea450cbd64084a34041541f6c6d425027657e704ecec609a24008321f"
+      "sourceSha256": "9ea8c8fea450cbd64084a34041541f6c6d425027657e704ecec609a24008321f",
+      "currentSha256": "8336ffa49ce279e2810f23387f56bdf454e460b07c2c51b09770a66a33886da1",
+      "modification": "Retain catalogue reads while removing bespoke cart documents now owned by Hydrogen."
     },
     {
       "path": "lib/shopify/fragments.ts",
-      "sourceSha256": "c83878f0dac9165482fd63a918f48b0faae59851a47feca24e2ae87ddc3e75a6"
+      "sourceSha256": "c83878f0dac9165482fd63a918f48b0faae59851a47feca24e2ae87ddc3e75a6",
+      "currentSha256": "0d548f846267811807b7b06311d1ed53a13c9474aa62db2b6b012e9836a7f3a3",
+      "modification": "Include the collection GID required by Shopify standard collection analytics."
     },
     {
       "path": "lib/shopify/operations/cart.ts",
-      "sourceSha256": "5e6eb091193b8f3452fa0aa55fece637c23a62077a45d01428925ffbdb57253c"
+      "sourceSha256": "5e6eb091193b8f3452fa0aa55fece637c23a62077a45d01428925ffbdb57253c",
+      "modification": "Remove duplicate cart operations after cart mutations moved to Hydrogen server handlers and market sync moved to a narrow adapter.",
+      "removed": true
     },
     {
       "path": "lib/shopify/operations/collections.ts",
-      "sourceSha256": "963b21dcb20b362f49cce059a012edd117ac56b43675d6c4972cae7ec1e26d98"
+      "sourceSha256": "963b21dcb20b362f49cce059a012edd117ac56b43675d6c4972cae7ec1e26d98",
+      "currentSha256": "42765d6967c9f724ff47f9f384f646e957a6a40ea33b6cb34925abb12fcdf985",
+      "modification": "Validate collection documents with Hydrogen's bundled Storefront schema."
     },
     {
       "path": "lib/shopify/operations/menu.ts",
-      "sourceSha256": "348145b13f237af05b4bd465e5cc3e5c9fa95809bc825dd4ac7fa3668b43252c"
+      "sourceSha256": "348145b13f237af05b4bd465e5cc3e5c9fa95809bc825dd4ac7fa3668b43252c",
+      "currentSha256": "e2702561c42c38e2e223197c254e754d087473cf2b6feed4d865a81dadd8a348",
+      "modification": "Migrate the menu document to Hydrogen gql.tada validation as the first typed query slice."
     },
     {
       "path": "lib/shopify/operations/pages.ts",
-      "sourceSha256": "34b8ee8e25d7a80d4dab8e43726d236da096761c3c432a8b8c59c26c0e4e8f79"
+      "sourceSha256": "34b8ee8e25d7a80d4dab8e43726d236da096761c3c432a8b8c59c26c0e4e8f79",
+      "currentSha256": "2c3365eb2566b877f0d265bcb2e7c2f532422e127300e6b4b6b314e51e7f4813",
+      "modification": "Validate Shopify page documents with Hydrogen's bundled Storefront schema."
     },
     {
       "path": "lib/shopify/operations/policies.ts",
-      "sourceSha256": "9cb730ea057eba3e295151a2fb4c0a5b9670048d3d7b43d22d6f908ab1dc0639"
+      "sourceSha256": "9cb730ea057eba3e295151a2fb4c0a5b9670048d3d7b43d22d6f908ab1dc0639",
+      "currentSha256": "18f3c4175a676092905a74514a18f60f9f1db8328b4027225b0942df4969bae4",
+      "modification": "Validate Shopify policy documents with Hydrogen's bundled Storefront schema."
     },
     {
       "path": "lib/shopify/operations/products.ts",
-      "sourceSha256": "031f67444cb2c6282647dc0801885283cb96b5c8b44c638815954219fccd76d5"
+      "sourceSha256": "031f67444cb2c6282647dc0801885283cb96b5c8b44c638815954219fccd76d5",
+      "currentSha256": "170b0f69200fbc2945d2079b9d6222ae33a4ccc7d77ee569de354c37d57eb6a5",
+      "modification": "Resolve selected variants with native Shopify selling-plan allocation data."
     },
     {
       "path": "lib/shopify/operations/search.ts",
-      "sourceSha256": "c5b861a6629f89ad12c27a55c49b550c63da3fdb24bc92b6a4b56bbf05ec5242"
+      "sourceSha256": "c5b861a6629f89ad12c27a55c49b550c63da3fdb24bc92b6a4b56bbf05ec5242",
+      "currentSha256": "68a93ac80fa4fd4f97ba7e552c6f68e3f12a3fb12fb2de9612750cceed7b521a",
+      "modification": "Validate predictive-search documents with Hydrogen's bundled Storefront schema."
     },
     {
       "path": "lib/shopify/operations/sitemap.ts",
-      "sourceSha256": "5c6dc4e01af8136fe2b92edbb5effe6bf21869d6b420c752b8a84d537ddf07cf"
+      "sourceSha256": "5c6dc4e01af8136fe2b92edbb5effe6bf21869d6b420c752b8a84d537ddf07cf",
+      "currentSha256": "df9818602f6defc386b7a5a72e64fd6c7359718f3dc3876c3c56548ab1b0b08b",
+      "modification": "Validate sitemap documents with Hydrogen's bundled Storefront schema."
     },
     {
       "path": "lib/shopify/storefront.ts",
       "sourceSha256": "0329a52ff2066d1200c235165519dc3a7d4ad56129e1cb4e3a28fe6e652447d1",
-      "currentSha256": "782b5994c32f09acee217cbc66e86d8b581dbac2bf35280d56088e8cd4be93f9",
-      "modification": "Use a direct dated Storefront GraphQL transport and remove Hydrogen preview coupling."
+      "currentSha256": "9f2ba24e10b6fcd4110d8e991993d63d362ba7647144785b5b5bfe80e452f036",
+      "modification": "Route the stable application transport contract through the lazy Hydrogen adapter and remove unused MCP helpers."
     },
     {
       "path": "lib/shopify/transforms/cart.ts",
-      "sourceSha256": "c8a21dd04dfd780f0e2a3713135b7bca30e18526328333bc7dcfdde7a4b20ef9"
+      "sourceSha256": "c8a21dd04dfd780f0e2a3713135b7bca30e18526328333bc7dcfdde7a4b20ef9",
+      "removed": true,
+      "modification": "Remove the obsolete parallel cart model after Hydrogen became the canonical cart contract."
     },
     {
       "path": "lib/shopify/transforms/collection.ts",
-      "sourceSha256": "a97ae4bcb0f2aa55702fb8634ea1a3ca69b15bd8fe436ead03e76958aa9c65b8"
+      "sourceSha256": "a97ae4bcb0f2aa55702fb8634ea1a3ca69b15bd8fe436ead03e76958aa9c65b8",
+      "currentSha256": "d00fa75c220e2d4cb167af5046a193812e6ceea6602188f4a7d7c87f896fcfec",
+      "modification": "Preserve the collection GID required by Shopify standard collection analytics."
     },
     {
       "path": "lib/shopify/transforms/filters.ts",
@@ -734,7 +848,9 @@
     },
     {
       "path": "lib/shopify/transforms/product.ts",
-      "sourceSha256": "4456fee3e45bb31c0fe5cc49c09ff4dc9de40324f828f2f903ea58fe8cda3def"
+      "sourceSha256": "4456fee3e45bb31c0fe5cc49c09ff4dc9de40324f828f2f903ea58fe8cda3def",
+      "currentSha256": "b72bb5b02f2e2e4a5395bff39179503dd7f96f6ba6f24aa7a8e35db5da736cca",
+      "modification": "Normalize native Shopify selling-plan allocation prices and labels."
     },
     {
       "path": "lib/shopify/transforms/search.ts",
@@ -750,29 +866,33 @@
     },
     {
       "path": "lib/shopify/utils.ts",
-      "sourceSha256": "a65b156261cd92260ccefcc273781faec5f66da8f1425632dad09bed3254ef7e"
+      "sourceSha256": "a65b156261cd92260ccefcc273781faec5f66da8f1425632dad09bed3254ef7e",
+      "currentSha256": "292f1a74db8ed2ff50e51e67b625d3f9744803cfac1cee1135e4e4621a846afb",
+      "modification": "Recognize canonical Storefront domains and raw numeric webhook IDs during URL and cache-tag normalization."
     },
     {
       "path": "lib/types.ts",
-      "sourceSha256": "ce8c5d1200434827b94bf447824cc2e7f276e62280abdae60d13c9fd2034c6fe"
+      "sourceSha256": "ce8c5d1200434827b94bf447824cc2e7f276e62280abdae60d13c9fd2034c6fe",
+      "currentSha256": "4f92d80fa0a2973d0a767a3b645c812383c17e0031cfbeffcb7f428eb32dac7d",
+      "modification": "Expose the optional collection GID while retaining the synthetic all-products collection."
     },
     {
       "path": "lib/utils.ts",
       "sourceSha256": "40cda8ec0a6bbb8cff6bbc8a41e9a45b5eca443d65e463e5eaae85f399cb9168",
-      "currentSha256": "90034a812f81d59980164584a32b5ad3d44142edcc8eedf251532d33969e6d22",
-      "modification": "Replace Hydrogen money formatting with the platform Intl implementation."
+      "currentSha256": "03a7f470770e2adaed099be7880bb0eb8610ef5d4c56e9b1c8fd35c43ecbc377",
+      "modification": "Adopt Hydrogen cart and money primitives while preserving the app-owned storefront UI."
     },
     {
       "path": "next.config.ts",
       "sourceSha256": "46e1f4b08ae4f3d951af147c2f5eb7d10d2642d4b7e47e5c2c08f9a2413d4f5f",
-      "currentSha256": "b143040e3ac85f2ef29d304e751d5bb39bd0946c906d8cbe40002c461c5324da",
-      "modification": "Remove excluded auth checks and scope Turbopack to this workspace."
+      "currentSha256": "a04c87753c9101eb799e824d4d1e5f47baefdce8c72ff71521c71c954aa5625f",
+      "modification": "Apply storefront security headers alongside the existing Next image, cache and rewrite configuration."
     },
     {
       "path": "package.json",
       "sourceSha256": "ae662f2818fe83f3a91d3eabe6bedee2709d5703b11d7e2bdc26e4bd151fd85e",
-      "currentSha256": "5a70b9c1a709e1a0e6566eb65bfe0008398d8315499a1239780440ab8a39c647",
-      "modification": "Pin the stable platform, exclude preview dependencies, and enforce type, unit, provenance, skill, and clean-room checks."
+      "currentSha256": "7907eb2ba8ee4d0598b89e3b91e6d244651e21cb125e006b832f6a1fd163c9c8",
+      "modification": "Add deterministic agent-host qualification commands and remove the neutral preset's bundled font dependency."
     },
     {
       "path": "postcss.config.mjs",
@@ -780,7 +900,9 @@
     },
     {
       "path": "tsconfig.json",
-      "sourceSha256": "c5805d483585cee002979ca95018b75f6f9e9fe57ef540c765b931fc58dd03fc"
+      "sourceSha256": "c5805d483585cee002979ca95018b75f6f9e9fe57ef540c765b931fc58dd03fc",
+      "currentSha256": "cad8eef270ca14553f7bcf39e50a2cd8674af09b7b94b9b66b5f32a7e8bdbcc4",
+      "modification": "Remove legacy generated-type exclusions after Hydrogen's packaged schema takes ownership."
     }
   ]
 }

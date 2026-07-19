@@ -23,13 +23,20 @@ export function ProductsGridSkeleton({ count, className }: ProductsGridSkeletonP
 }
 
 interface ProductsGridProps {
+  collectionHandle?: string;
   collectionUrl?: string;
   limit: number;
   locale: Locale;
   title: string;
 }
 
-export async function ProductsGrid({ collectionUrl, limit, locale, title }: ProductsGridProps) {
+export async function ProductsGrid({
+  collectionHandle,
+  collectionUrl,
+  limit,
+  locale,
+  title,
+}: ProductsGridProps) {
   const t = await getTranslations("product");
 
   return (
@@ -39,6 +46,7 @@ export async function ProductsGrid({ collectionUrl, limit, locale, title }: Prod
         {collectionUrl && (
           <Link
             href={collectionUrl}
+            prefetch={false}
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             {t("viewAll")}
@@ -46,23 +54,34 @@ export async function ProductsGrid({ collectionUrl, limit, locale, title }: Prod
         )}
       </div>
       <Suspense fallback={<ProductsGridSkeleton count={limit} />}>
-        <ProductsGridContent limit={limit} locale={locale} outOfStockText={t("outOfStock")} />
+        <ProductsGridContent
+          collectionHandle={collectionHandle}
+          limit={limit}
+          locale={locale}
+          outOfStockText={t("outOfStock")}
+        />
       </Suspense>
     </div>
   );
 }
 
 async function ProductsGridContent({
+  collectionHandle,
   limit,
   locale,
   outOfStockText,
 }: {
+  collectionHandle?: string;
   limit: number;
   locale: Locale;
   outOfStockText: string;
 }) {
   // Use the search index (not the products connection) so these match the first items on /collections/all.
-  const { products } = await searchIndexProducts({ limit, locale });
+  const { products } = await searchIndexProducts({
+    collection: collectionHandle && collectionHandle !== "all" ? collectionHandle : undefined,
+    limit,
+    locale,
+  });
 
   if (products.length === 0) return null;
 

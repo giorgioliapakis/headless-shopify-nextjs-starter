@@ -2,24 +2,21 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Suspense } from "react";
+import { Suspense, type CSSProperties } from "react";
 
 import { AnalyticsComponents } from "@/components/analytics";
-import { CartProvider } from "@/components/cart/context";
+import { CartDrawerProvider } from "@/components/cart/drawer-context";
+import { CartProvider } from "@/components/cart/hydrogen";
 import { CartOverlay } from "@/components/cart/overlay";
 import { Footer } from "@/components/footer";
 import { Nav } from "@/components/nav";
 import { SiteSchema } from "@/components/schema/site-schema";
+import { ShopifyAnalyticsBoundary } from "@/components/shopify/analytics-boundary";
+import { ShopifyRuntime } from "@/components/shopify/runtime";
+import { themeToCssVariables } from "@/config/schema/theme";
 import { getLocale } from "@/lib/params";
 import { buildAlternates } from "@/lib/seo";
 import { shopConfig } from "@/shop.config";
-
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const [locale, messages, t] = await Promise.all([
@@ -31,7 +28,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang={locale}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} flex min-h-dvh flex-col font-sans antialiased`}
+        className="flex min-h-dvh flex-col font-sans antialiased"
+        style={themeToCssVariables(shopConfig.theme) as CSSProperties}
       >
         <a
           href="#main-content"
@@ -41,17 +39,28 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <SiteSchema locale={locale} />
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <CartProvider initialCart={null}>
-            <Nav locale={locale} />
-            <main id="main-content" className="flex min-w-0 flex-1 flex-col">
-              {children}
-            </main>
-            <Footer locale={locale} />
-            <Suspense>
-              <CartOverlay locale={locale} />
-            </Suspense>
+          <CartProvider>
+            <CartDrawerProvider>
+              <Nav locale={locale} />
+              <main
+                id="main-content"
+                className="flex min-h-[calc(100dvh-var(--header-height))] min-w-0 flex-1 flex-col"
+              >
+                {children}
+              </main>
+              <Footer locale={locale} />
+              <Suspense>
+                <CartOverlay locale={locale} />
+              </Suspense>
+              {shopConfig.analytics.shopify.enabled ? (
+                <Suspense>
+                  <ShopifyAnalyticsBoundary locale={locale} />
+                </Suspense>
+              ) : null}
+            </CartDrawerProvider>
           </CartProvider>
         </NextIntlClientProvider>
+        <ShopifyRuntime locale={locale} />
         <AnalyticsComponents />
       </body>
     </html>

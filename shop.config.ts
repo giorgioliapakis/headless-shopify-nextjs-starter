@@ -1,3 +1,8 @@
+import { neutralHomeRecipe } from "@/config/presets/neutral-home";
+import { neutralThemePreset } from "@/config/presets/neutral-theme";
+import type { SectionRecipe } from "@/config/schema/sections";
+import type { LandingPageConfig } from "@/config/schema/shop";
+import type { ThemeConfig } from "@/config/schema/theme";
 import type { MenuItem } from "@/lib/shopify/types/menu";
 
 export type SocialPlatform =
@@ -18,6 +23,7 @@ export interface SocialLink {
 export interface ShopConfig {
   accounts: { url: string | null };
   analytics: {
+    shopify: { enabled: boolean };
     speedInsights: { enabled: boolean };
     vercel: { enabled: boolean };
   };
@@ -27,7 +33,9 @@ export interface ShopConfig {
     complementaryProducts: { enabled: boolean };
     relatedProducts: { enabled: boolean };
   };
+  recipes: { home: SectionRecipe; landing: Record<string, LandingPageConfig> };
   site: { name: string; socialLinks: SocialLink[]; url: string };
+  theme: ThemeConfig;
 }
 
 function trimTrailingSlash(value: string): string {
@@ -45,6 +53,7 @@ export const shopConfig = {
       : null,
   },
   analytics: {
+    shopify: { enabled: process.env.NEXT_PUBLIC_SHOPIFY_ANALYTICS_ENABLED === "true" },
     speedInsights: { enabled: false },
     vercel: { enabled: false },
   },
@@ -65,9 +74,11 @@ export const shopConfig = {
     complementaryProducts: { enabled: false },
     relatedProducts: { enabled: false },
   },
+  recipes: { home: neutralHomeRecipe, landing: {} as Record<string, LandingPageConfig> },
   site: {
     name: process.env.NEXT_PUBLIC_SITE_NAME ?? "Your Store",
     socialLinks: [],
     url: trimTrailingSlash(process.env.NEXT_PUBLIC_BASE_URL || defaultUrl),
   },
+  theme: neutralThemePreset,
 } satisfies ShopConfig;

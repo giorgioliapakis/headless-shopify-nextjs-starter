@@ -1,0 +1,64 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "node scripts/verify/browser-server.mjs",
+      "startServerReadyPattern": "Ready in",
+      "startServerReadyTimeout": 60000,
+      "url": [
+        "http://127.0.0.1:3100/",
+        "http://127.0.0.1:3100/collections/neutral-collection",
+        "http://127.0.0.1:3100/products/neutral-product",
+        "http://127.0.0.1:3100/search",
+        "http://127.0.0.1:3100/cart"
+      ],
+      "numberOfRuns": 3,
+      "settings": {
+        "chromeFlags": "--no-sandbox --disable-gpu",
+        "onlyCategories": ["performance", "accessibility", "best-practices", "seo"]
+      }
+    },
+    "assert": {
+      "assertMatrix": [
+        {
+          "matchingUrlPattern": ".*",
+          "aggregationMethod": "median-run",
+          "assertions": {
+            "categories:accessibility": ["error", { "minScore": 1 }],
+            "categories:best-practices": ["error", { "minScore": 1 }],
+            "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }]
+          }
+        },
+        {
+          "matchingUrlPattern": "^http://127\\.0\\.0\\.1:3100/(?:$|products/|cart$)",
+          "aggregationMethod": "median-run",
+          "assertions": {
+            "categories:performance": ["error", { "minScore": 0.95 }],
+            "largest-contentful-paint": [
+              "error",
+              { "maxNumericValue": 3000, "aggregationMethod": "median" }
+            ]
+          }
+        },
+        {
+          "matchingUrlPattern": "^http://127\\.0\\.0\\.1:3100/(?:collections/|search$)",
+          "aggregationMethod": "median-run",
+          "assertions": {
+            "categories:performance": ["error", { "minScore": 0.93 }],
+            "largest-contentful-paint": [
+              "error",
+              { "maxNumericValue": 3400, "aggregationMethod": "median" }
+            ]
+          }
+        },
+        {
+          "matchingUrlPattern": "^http://127\\.0\\.0\\.1:3100/(?:$|collections/|products/)",
+          "aggregationMethod": "median-run",
+          "assertions": {
+            "categories:seo": ["error", { "minScore": 1 }]
+          }
+        }
+      ]
+    },
+    "upload": { "target": "filesystem", "outputDir": ".artifacts/lighthouse" }
+  }
+}

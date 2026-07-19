@@ -1,3 +1,4 @@
+import { gql } from "@shopify/hydrogen";
 import { cacheLife, cacheTag } from "next/cache";
 
 import { defaultLocale, getCountryCode, getLanguageCode } from "@/lib/i18n";
@@ -18,7 +19,7 @@ interface ShopifyPage {
   updatedAt: string;
 }
 
-const GET_PAGE_QUERY = `#graphql
+const GET_PAGE_QUERY = gql(`
   query getPage($handle: String!, $country: CountryCode, $language: LanguageCode) @inContext(country: $country, language: $language) {
     page(handle: $handle) {
       body
@@ -32,7 +33,7 @@ const GET_PAGE_QUERY = `#graphql
       updatedAt
     }
   }
-` as const;
+`);
 
 export async function getPage({
   handle,

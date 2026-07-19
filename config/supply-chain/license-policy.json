@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "approvedExpressions": ["0BSD", "Apache-2.0", "Apache-2.0 AND MIT", "BSD-3-Clause", "ISC", "MIT"],
+  "reviewedExceptions": [
+    {
+      "license": "LGPL-3.0-or-later",
+      "packagePattern": "^@img/sharp-libvips-(?:darwin-(?:arm64|x64)|linux-(?:arm|arm64|ppc64|riscv64|s390x|x64)|linuxmusl-(?:arm64|x64))$",
+      "reason": "Sharp distributes these platform-specific libvips binaries as unmodified optional dependencies; the application does not copy or modify libvips source. Distribution must retain the package's license notices."
+    },
+    {
+      "license": "MPL-2.0",
+      "packagePattern": "^lightningcss(?:-(?:android-arm64|darwin-arm64|darwin-x64|freebsd-x64|linux-arm-gnueabihf|linux-arm64-gnu|linux-arm64-musl|linux-x64-gnu|linux-x64-musl|win32-arm64-msvc|win32-x64-msvc))?$",
+      "reason": "Next.js uses Lightning CSS as an unmodified build/runtime dependency. MPL file-level obligations remain isolated to the dependency and its notices must be retained."
+    },
+    {
+      "license": "CC-BY-4.0",
+      "packagePattern": "^caniuse-lite$",
+      "reason": "Browserslist consumes the Can I Use compatibility dataset as an unmodified dependency. Distribution must preserve attribution and the upstream license notice."
+    }
+  ]
+}

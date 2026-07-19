@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-shopify.dev/schemas/migration/capture-manifest-v1.json",
+  "title": "Source and preview capture manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "generatedAt", "evidenceTrust", "rules", "routes", "summary"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "evidenceTrust": { "const": "source-derived-capture-instructions" },
+    "rules": { "type": "object" },
+    "routes": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "sourceUrl",
+          "sourcePath",
+          "sourceType",
+          "target",
+          "mappingStatus",
+          "states",
+          "viewports",
+          "locales",
+          "preferences",
+          "consentStates",
+          "inputs",
+          "sourceBreakpointCandidates",
+          "sourceBreakpointsRequireReview",
+          "scenarios",
+          "dynamicMasks",
+          "dynamicMasksRequireReview",
+          "captureStatus"
+        ]
+      }
+    },
+    "summary": { "type": "object" }
+  }
+}

@@ -14,7 +14,6 @@ const root = resolve(process.cwd());
 
 const allowedRootFiles = new Set([
   ".env.example",
-  ".graphqlrc.ts",
   ".npmrc",
   ".nvmrc",
   ".oxfmtrc.json",

@@ -1,15 +1,21 @@
 "use client";
 
-import { AlertTriangle, X } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { useCart } from "@/components/cart/context";
+import { useCart } from "@/components/cart/hydrogen";
 
 export function CartWarnings() {
-  const { lastWarnings, clearWarnings } = useCart();
+  const cartErrors = useCart((state) => state.errors.cart);
+  const networkErrors = useCart((state) => state.errors.network);
   const t = useTranslations("cart");
+  const messages = [
+    ...cartErrors.userErrors.map((error) => error.message),
+    ...cartErrors.warnings.map((warning) => warning.message),
+    ...networkErrors.map((error) => error.message),
+  ];
 
-  if (lastWarnings.length === 0) return null;
+  if (messages.length === 0) return null;
 
   return (
     <div
@@ -22,19 +28,11 @@ export function CartWarnings() {
         <div className="flex-1 grid gap-1">
           <p className="font-medium">{t("warningsTitle")}</p>
           <ul className="grid gap-0.5 text-amber-800 dark:text-amber-200/90">
-            {lastWarnings.map((w) => (
-              <li key={`${w.code}:${w.target}`}>{w.message}</li>
+            {messages.map((message, index) => (
+              <li key={`${index}:${message}`}>{message}</li>
             ))}
           </ul>
         </div>
-        <button
-          type="button"
-          onClick={clearWarnings}
-          aria-label={t("dismissWarnings")}
-          className="shrink-0 size-6 inline-flex items-center justify-center rounded-md hover:bg-amber-100 dark:hover:bg-amber-900/40 cursor-pointer"
-        >
-          <X className="size-4" aria-hidden="true" />
-        </button>
       </div>
     </div>
   );

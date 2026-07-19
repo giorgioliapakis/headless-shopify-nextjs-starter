@@ -16,6 +16,17 @@
     "plugins": [
       {
         "name": "next"
+      },
+      {
+        "name": "gql.tada/ts-plugin",
+        "schemas": [
+          {
+            "name": "storefront",
+            "schema": "node_modules/@shopify/hydrogen/dist/storefront.schema.json",
+            "tadaOutputLocation": "./lib/shopify/types/storefront-graphql-env.d.ts"
+          }
+        ],
+        "trackFieldUsage": false
       }
     ],
     "resolveJsonModule": true,
@@ -23,7 +34,7 @@
     "strict": true,
     "target": "ES2017"
   },
-  "exclude": ["node_modules", "scripts", "tmp", "lib/shopify/types/generated"],
+  "exclude": ["node_modules", "scripts", "tmp"],
   "include": [
     "next-env.d.ts",
     "**/*.ts",

@@ -5,6 +5,7 @@ export function flattenEdges<T>(connection: ShopifyEdges<T>): T[] {
 }
 
 export function getNumericShopifyId(gid: string): string | null {
+  if (/^\d+$/.test(gid)) return gid;
   let decoded = gid;
 
   if (!decoded.startsWith("gid://")) {
@@ -19,7 +20,8 @@ export function getNumericShopifyId(gid: string): string | null {
   return match?.[1] ?? null;
 }
 
-const SHOPIFY_STORE_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN ?? "";
+const SHOPIFY_STORE_DOMAIN =
+  process.env.PUBLIC_STORE_DOMAIN ?? process.env.SHOPIFY_STORE_DOMAIN ?? "";
 
 export function transformShopifyMenuItemUrl(
   url: string | null,

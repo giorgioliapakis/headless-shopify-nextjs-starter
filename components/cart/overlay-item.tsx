@@ -6,126 +6,126 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import type { CartLine } from "@/lib/types";
-import { formatPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 
-import { useCart } from "./context";
+import { useCart, useCartForm } from "./hydrogen";
+import type { StorefrontCartLine } from "./hydrogen";
 
 interface OverlayItemProps {
-  item: CartLine;
+  item: StorefrontCartLine;
   locale: string;
 }
 
 export function OverlayItem({ item, locale }: OverlayItemProps) {
-  const { cartWithPending, updateItemOptimistic } = useCart();
+  const { formProps, register } = useCartForm();
+  const pending = useCart((state) => state.pending.lines.has(item.id));
+  const errors = useCart((state) => state.errors.lines.get(item.id));
   const t = useTranslations("cart");
-
-  const currentLine = cartWithPending?.lines.find((l) => l.id === item.id);
-  const quantity = currentLine?.quantity ?? item.quantity;
-
-  const currencyCode = item.cost.totalAmount.currencyCode;
-  const unitPrice = item.merchandise.price
-    ? parseFloat(item.merchandise.price.amount)
-    : parseFloat(item.cost.totalAmount.amount) / item.quantity;
+  const merchandise = item.merchandise;
+  const productTitle = merchandise?.product.title ?? merchandise?.title ?? t("cartItemsLabel");
+  const productHref = merchandise?.product.handle
+    ? `/products/${merchandise.product.handle}`
+    : undefined;
+  const image = merchandise?.image;
 
   return (
     <li
-      className="flex gap-2.5"
-      aria-label={`${item.merchandise.product.title} - ${formatPrice(unitPrice * quantity, currencyCode, locale)}`}
+      className={cn("flex gap-2.5 transition-opacity", pending && "opacity-60")}
+      aria-label={`${productTitle} - ${formatPrice(item.cost.totalAmount, locale)}`}
     >
-      <Link
-        href={`/products/${item.merchandise.product.handle}`}
-        className="shrink-0 relative w-16 h-16 bg-muted overflow-hidden hover:opacity-80 transition-opacity"
-      >
-        <Image
-          src={item.merchandise.image?.url || item.merchandise.product.featuredImage.url}
-          alt={item.merchandise.image?.altText || item.merchandise.product.featuredImage.altText}
-          fill
-          className="object-cover"
-          sizes="64px"
-        />
-      </Link>
+      {productHref ? (
+        <Link
+          href={productHref}
+          className="shrink-0 relative w-16 h-16 bg-muted overflow-hidden hover:opacity-80 transition-opacity"
+        >
+          {image ? (
+            <Image
+              src={image.url}
+              alt={image.altText ?? productTitle}
+              fill
+              className="object-cover"
+              sizes="64px"
+            />
+          ) : null}
+        </Link>
+      ) : (
+        <div className="shrink-0 relative w-16 h-16 bg-muted" aria-hidden="true" />
+      )}
 
       <div className="flex-1 min-w-0 flex flex-col gap-2 py-0.5">
         <div>
-          <Link
-            href={`/products/${item.merchandise.product.handle}`}
-            className="hover:opacity-70 transition-opacity"
-          >
-            <h3 className="font-medium text-sm text-foreground line-clamp-2">
-              {item.merchandise.product.title}
-            </h3>
-          </Link>
+          {productHref ? (
+            <Link href={productHref} className="hover:opacity-70 transition-opacity">
+              <h3 className="font-medium text-sm text-foreground line-clamp-2">{productTitle}</h3>
+            </Link>
+          ) : (
+            <h3 className="font-medium text-sm text-foreground line-clamp-2">{productTitle}</h3>
+          )}
 
-          {item.merchandise.selectedOptions.length > 0 && (
+          {(merchandise?.selectedOptions?.length ?? 0) > 0 && (
             <p className="text-xs text-muted-foreground mt-0.5">
-              {item.merchandise.selectedOptions.map((option) => option.value).join(" / ")}
+              {merchandise?.selectedOptions?.map((option) => option.value).join(" / ")}
             </p>
           )}
-
-          {item.components.length > 0 && (
-            <div className="mt-2 grid gap-1">
-              <p className="text-xs font-medium text-muted-foreground">{t("bundleIncludes")}</p>
-              <ul className="grid gap-0.5">
-                {item.components.map((component) => (
-                  <li
-                    key={component.id}
-                    className="flex items-center gap-1.5 text-xs text-muted-foreground"
-                  >
-                    <span className="truncate">{component.merchandise.product.title}</span>
-                    {component.quantity > 1 ? <span>×{component.quantity}</span> : null}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {item.sellingPlanAllocation ? (
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {item.sellingPlanAllocation.sellingPlan.name}
+            </p>
+          ) : null}
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <form {...formProps()} className="flex items-center gap-1.5">
+          <button {...register("set")} />
+          <input type="hidden" {...register("lineId", { value: item.id })} />
           <Button
-            type="button"
+            type="submit"
             variant="secondary"
             size="icon"
             className="size-7 rounded-full"
-            onClick={() => updateItemOptimistic(item.id || "", quantity - 1)}
-            disabled={!item.canUpdateQuantity || quantity === 1}
+            disabled={item.quantity <= 1}
             aria-label={t("decreaseQuantity")}
+            {...register("decrease")}
           >
             <MinusIcon className="size-3" />
           </Button>
 
-          <span className="inline-flex items-center justify-center rounded-full bg-muted min-w-10.5 h-7 px-2.5 text-xs font-medium text-foreground">
-            {quantity}
-          </span>
+          <input
+            {...register("quantity", { interactive: true, value: item.quantity })}
+            aria-label={t("itemQuantity")}
+            className="inline-flex rounded-full bg-muted w-10.5 h-7 px-2 text-center text-xs font-medium text-foreground"
+          />
 
           <Button
-            type="button"
+            type="submit"
             variant="secondary"
             size="icon"
             className="size-7 rounded-full"
-            onClick={() => updateItemOptimistic(item.id || "", quantity + 1)}
-            disabled={!item.canUpdateQuantity || quantity === 99}
             aria-label={t("increaseQuantity")}
+            {...register("increase")}
           >
             <PlusIcon className="size-3" />
           </Button>
 
           <Button
-            type="button"
+            type="submit"
             variant="ghost"
             size="icon"
             className="size-7 text-muted-foreground hover:text-foreground"
-            onClick={() => updateItemOptimistic(item.id || "", 0)}
-            disabled={!item.canRemove}
             aria-label={t("removeItem")}
+            {...register("remove")}
           >
             <Trash2Icon className="size-4" />
           </Button>
-        </div>
+        </form>
+        {errors && (errors.userErrors.length > 0 || errors.warnings.length > 0) ? (
+          <p role="alert" className="text-xs text-destructive">
+            {[...errors.userErrors, ...errors.warnings].map((error) => error.message).join(" ")}
+          </p>
+        ) : null}
       </div>
 
       <div className="text-sm font-medium text-foreground self-start py-0.5">
-        {formatPrice(unitPrice * quantity, currencyCode, locale)}
+        {formatPrice(item.cost.totalAmount, locale)}
       </div>
     </li>
   );

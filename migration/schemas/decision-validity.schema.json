@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-shopify.dev/schemas/migration/decision-validity-v1.json",
+  "title": "Source-bound migration review decision validity",
+  "type": "object",
+  "required": ["schemaVersion", "sourceSnapshotId", "sourceDriftStatus", "authority", "decisions"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "sourceSnapshotId": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "sourceDriftStatus": { "enum": ["baseline", "unchanged", "changed"] },
+    "authority": { "const": "review-state-only" },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "recordedStatus", "boundSnapshotId", "validity"],
+        "properties": {
+          "id": { "type": "string" },
+          "recordedStatus": { "enum": ["pending", "accepted", "rejected"] },
+          "boundSnapshotId": { "type": ["string", "null"] },
+          "validity": { "enum": ["current-review-only", "stale-source-drift"] }
+        }
+      }
+    }
+  }
+}
