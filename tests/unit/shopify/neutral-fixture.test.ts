@@ -8,6 +8,7 @@ import type { StorefrontEnvironment } from "@/lib/shopify/hydrogen/env";
 
 const environment: StorefrontEnvironment = {
   apiVersion: "2026-07",
+  mode: "shopify",
   publicStorefrontToken: "fixture-public-token",
   storefrontId: "0",
   storeDomain: "neutral-fixture.myshopify.com",
@@ -26,6 +27,12 @@ describe("neutral Storefront fixture", () => {
         { SHOPIFY_STOREFRONT_FIXTURE: "neutral" },
       ),
     ).toThrow("documented fixture domain");
+  });
+
+  it("automatically serves deterministic data for a zero-credential demo", () => {
+    expect(resolveNeutralStorefrontFixtureFetch({ ...environment, mode: "neutral-demo" }, {})).toBe(
+      neutralStorefrontFixtureFetch,
+    );
   });
 
   it("returns deterministic empty catalogue shapes and rejects unknown operations", async () => {

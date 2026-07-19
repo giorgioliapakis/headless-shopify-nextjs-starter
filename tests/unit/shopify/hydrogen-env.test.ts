@@ -18,6 +18,7 @@ describe("Hydrogen Storefront environment", () => {
     expect(environment).toEqual({
       apiVersion: "2026-07",
       checkoutDomain: "checkout.example.com",
+      mode: "shopify",
       privateStorefrontToken: "private-token",
       publicStorefrontToken: "public-token",
       storefrontId: "gid://shopify/Storefront/fixture",
@@ -33,6 +34,7 @@ describe("Hydrogen Storefront environment", () => {
     });
 
     expect(environment.publicStorefrontToken).toBe("legacy-public-token");
+    expect(environment.mode).toBe("shopify");
     expect(environment.privateStorefrontToken).toBeUndefined();
     expect(environment.usedLegacyAliases).toEqual([
       "SHOPIFY_STORE_DOMAIN",
@@ -57,6 +59,18 @@ describe("Hydrogen Storefront environment", () => {
   it("fails with variable names but never includes credential values", () => {
     expect(() =>
       resolveStorefrontEnvironment({ PUBLIC_STORE_DOMAIN: "neutral-fixture.myshopify.com" }),
-    ).toThrow("Missing PUBLIC_STOREFRONT_API_TOKEN");
+    ).toThrow("PUBLIC_STOREFRONT_API_TOKEN");
+  });
+
+  it("uses the neutral demo only when Shopify configuration is completely absent", () => {
+    expect(resolveStorefrontEnvironment({})).toMatchObject({
+      mode: "neutral-demo",
+      publicStorefrontToken: "fixture-public-token",
+      storeDomain: "neutral-fixture.myshopify.com",
+    });
+
+    expect(() =>
+      resolveStorefrontEnvironment({ PRIVATE_STOREFRONT_API_TOKEN: "private-without-store" }),
+    ).toThrow("PUBLIC_STORE_DOMAIN, PUBLIC_STOREFRONT_API_TOKEN");
   });
 });

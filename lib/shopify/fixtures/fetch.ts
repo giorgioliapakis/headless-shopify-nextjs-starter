@@ -1,8 +1,7 @@
 import "server-only";
 import type { StorefrontEnvironment } from "@/lib/shopify/hydrogen/env";
+import { NEUTRAL_FIXTURE_DOMAIN, NEUTRAL_FIXTURE_TOKEN } from "@/lib/shopify/storefront-mode";
 
-const FIXTURE_DOMAIN = "neutral-fixture.myshopify.com";
-const FIXTURE_TOKEN = "fixture-public-token";
 const PAGE_INFO = {
   endCursor: null,
   hasNextPage: false,
@@ -389,11 +388,13 @@ export function resolveNeutralStorefrontFixtureFetch(
   source: Readonly<Record<string, string | undefined>> = process.env,
 ): typeof globalThis.fetch | undefined {
   const mode = source.SHOPIFY_STOREFRONT_FIXTURE;
-  if (!mode) return undefined;
-  if (mode !== "neutral") throw new Error("SHOPIFY_STOREFRONT_FIXTURE must be 'neutral' when set");
+  if (!mode && environment.mode !== "neutral-demo") return undefined;
+  if (mode && mode !== "neutral") {
+    throw new Error("SHOPIFY_STOREFRONT_FIXTURE must be 'neutral' when set");
+  }
   if (
-    environment.storeDomain !== FIXTURE_DOMAIN ||
-    environment.publicStorefrontToken !== FIXTURE_TOKEN ||
+    environment.storeDomain !== NEUTRAL_FIXTURE_DOMAIN ||
+    environment.publicStorefrontToken !== NEUTRAL_FIXTURE_TOKEN ||
     environment.privateStorefrontToken
   ) {
     throw new Error(

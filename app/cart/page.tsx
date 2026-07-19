@@ -19,6 +19,7 @@ import { getLocale } from "@/lib/params";
 import { buildAlternates } from "@/lib/seo";
 import { withFallback } from "@/lib/shopify/errors";
 import { getHydrogenCartEnvelope } from "@/lib/shopify/hydrogen/cart-server";
+import { resolveStorefrontEnvironment } from "@/lib/shopify/hydrogen/env";
 import { shopConfig } from "@/shop.config";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -44,6 +45,7 @@ export default async function CartPage() {
 }
 
 async function CartContent({ locale }: { locale: Locale }) {
+  const isDemo = resolveStorefrontEnvironment().mode === "neutral-demo";
   const [cartData, messages] = await Promise.all([
     withFallback(getHydrogenCartEnvelope(), { cart: null }),
     getMessages(),
@@ -67,7 +69,7 @@ async function CartContent({ locale }: { locale: Locale }) {
                   </div>
                   <aside className="lg:col-span-4 xl:col-span-3">
                     <div className="lg:sticky lg:top-20">
-                      <Summary locale={locale} />
+                      <Summary locale={locale} demo={isDemo} />
                     </div>
                   </aside>
                 </div>

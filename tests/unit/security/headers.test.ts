@@ -13,6 +13,9 @@ describe("storefront response security", () => {
     expect(headers.get("content-security-policy")).toContain(
       "font-src 'self' data: https://cdn.shopify.com",
     );
+    expect(headers.get("content-security-policy")).toContain(
+      "connect-src 'self' https://*.myshopify.com https://cdn.shopify.com",
+    );
     expect(headers.get("content-security-policy")).not.toContain("unsafe-eval");
     expect(headers.get("strict-transport-security")).toContain("includeSubDomains");
     expect(headers.get("permissions-policy")).toContain("camera=()");

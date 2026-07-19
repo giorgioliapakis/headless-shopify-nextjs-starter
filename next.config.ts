@@ -7,21 +7,10 @@ import {
 } from "next/constants";
 
 import { storefrontSecurityHeaders } from "./lib/security/headers";
+import { resolveStorefrontMode } from "./lib/shopify/storefront-mode";
 
-function assertRequiredEnv() {
-  const missingShopify: string[] = [];
-  if (!process.env.PUBLIC_STORE_DOMAIN && !process.env.SHOPIFY_STORE_DOMAIN) {
-    missingShopify.push("PUBLIC_STORE_DOMAIN");
-  }
-  if (!process.env.PUBLIC_STOREFRONT_API_TOKEN && !process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN) {
-    missingShopify.push("PUBLIC_STOREFRONT_API_TOKEN");
-  }
-
-  if (missingShopify.length > 0) {
-    throw new Error(
-      `Missing required Shopify environment variables: ${missingShopify.join(", ")}. See .env.example.`,
-    );
-  }
+function validateStorefrontConfiguration() {
+  resolveStorefrontMode(process.env);
 }
 
 const nextConfig: NextConfig = {
@@ -41,10 +30,14 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   turbopack: { root: process.cwd() },
   async headers() {
+    const headers = storefrontSecurityHeaders(process.env.NODE_ENV === "production");
+    if (resolveStorefrontMode(process.env) === "neutral-demo") {
+      headers.push({ key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" });
+    }
     return [
       {
         source: "/(.*)",
-        headers: storefrontSecurityHeaders(process.env.NODE_ENV === "production"),
+        headers,
       },
     ];
   },
@@ -89,7 +82,7 @@ function getConfig(phase: string): NextConfig {
     phase === PHASE_PRODUCTION_SERVER;
 
   if (isRuntime && !isTypegen) {
-    assertRequiredEnv();
+    validateStorefrontConfiguration();
   }
 
   return config;

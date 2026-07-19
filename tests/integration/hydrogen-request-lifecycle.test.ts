@@ -14,6 +14,7 @@ import { shopifyRouteTemplates } from "@/lib/shopify/routing/templates";
 
 const privateEnvironment: StorefrontEnvironment = {
   apiVersion: "2026-07",
+  mode: "shopify",
   privateStorefrontToken: "fixture-private-token",
   publicStorefrontToken: "fixture-public-token",
   storefrontId: "0",
@@ -279,6 +280,38 @@ describe("Hydrogen request lifecycle", () => {
         }),
       ),
     ).toBe(true);
+    expect(
+      isSameOriginMutation(
+        new Request("http://localhost:3000/api/cart", {
+          headers: {
+            host: "127.0.0.1:3100",
+            origin: "http://127.0.0.1:3100",
+          },
+        }),
+      ),
+    ).toBe(true);
+    expect(
+      isSameOriginMutation(
+        new Request("http://internal:3000/api/cart", {
+          headers: {
+            origin: "https://shop.example",
+            "x-forwarded-host": "shop.example",
+            "x-forwarded-proto": "https",
+          },
+        }),
+      ),
+    ).toBe(true);
+    expect(
+      isSameOriginMutation(
+        new Request("http://internal:3000/api/cart", {
+          headers: {
+            origin: "https://attacker.example",
+            "x-forwarded-host": "shop.example",
+            "x-forwarded-proto": "https",
+          },
+        }),
+      ),
+    ).toBe(false);
     const headers = new Headers();
     headers.append("set-cookie", "cart=fixture; Path=/; SameSite=Lax; Max-Age=1");
     headers.append("set-cookie", "preference=compact; Path=/");

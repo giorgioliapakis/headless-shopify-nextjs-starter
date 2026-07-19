@@ -13,12 +13,15 @@ import { Nav } from "@/components/nav";
 import { SiteSchema } from "@/components/schema/site-schema";
 import { ShopifyAnalyticsBoundary } from "@/components/shopify/analytics-boundary";
 import { ShopifyRuntime } from "@/components/shopify/runtime";
+import { DemoStorefrontNotice } from "@/components/storefront/demo-notice";
 import { themeToCssVariables } from "@/config/schema/theme";
 import { getLocale } from "@/lib/params";
 import { buildAlternates } from "@/lib/seo";
+import { resolveStorefrontEnvironment } from "@/lib/shopify/hydrogen/env";
 import { shopConfig } from "@/shop.config";
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const isDemo = resolveStorefrontEnvironment().mode === "neutral-demo";
   const [locale, messages, t] = await Promise.all([
     getLocale(),
     getMessages(),
@@ -41,6 +44,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <NextIntlClientProvider locale={locale} messages={messages}>
           <CartProvider>
             <CartDrawerProvider>
+              {isDemo ? <DemoStorefrontNotice /> : null}
               <Nav locale={locale} />
               <main
                 id="main-content"
@@ -50,7 +54,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
               </main>
               <Footer locale={locale} />
               <Suspense>
-                <CartOverlay locale={locale} />
+                <CartOverlay locale={locale} demo={isDemo} />
               </Suspense>
               {shopConfig.analytics.shopify.enabled ? (
                 <Suspense>
@@ -68,7 +72,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
 }
 
 export const generateMetadata = async (): Promise<Metadata> => {
-  const t = await getTranslations("seo");
+  const [t, environment] = await Promise.all([
+    getTranslations("seo"),
+    Promise.resolve(resolveStorefrontEnvironment()),
+  ]);
 
   return {
     alternates: buildAlternates({ pathname: "/" }),
@@ -78,6 +85,10 @@ export const generateMetadata = async (): Promise<Metadata> => {
     openGraph: {
       images: [{ url: "/og-default.png", width: 1200, height: 630 }],
     },
+    robots:
+      environment.mode === "neutral-demo"
+        ? { index: false, follow: false, nocache: true }
+        : undefined,
     title: {
       default: shopConfig.site.name,
       template: `%s | ${shopConfig.site.name}`,

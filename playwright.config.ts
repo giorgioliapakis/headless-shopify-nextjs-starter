@@ -36,7 +36,8 @@ export default defineConfig({
   ],
   webServer: {
     command: "node scripts/verify/browser-server.mjs",
-    url: "http://127.0.0.1:3100/api/readiness",
+    // Demo mode is intentionally not production-ready; health only proves the test server started.
+    url: "http://127.0.0.1:3100/api/health",
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
   },

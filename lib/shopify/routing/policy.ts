@@ -67,16 +67,37 @@ export function applyPrivateNoStoreHeaders(headers: Headers): void {
 }
 
 export function isSameOriginMutation(request: Request): boolean {
-  const requestOrigin = new URL(request.url).origin;
   const origin = request.headers.get("origin");
-  if (origin) return origin === requestOrigin;
   const referer = request.headers.get("referer");
-  if (!referer) return false;
+  const browserOrigin = origin ?? referer;
+  if (!browserOrigin) return false;
+
+  let normalizedBrowserOrigin: string;
   try {
-    return new URL(referer).origin === requestOrigin;
+    normalizedBrowserOrigin = new URL(browserOrigin).origin;
   } catch {
     return false;
   }
+
+  const requestUrl = new URL(request.url);
+  const acceptedOrigins = new Set([requestUrl.origin]);
+  const forwardedHost = request.headers.get("x-forwarded-host");
+  const host = forwardedHost ?? request.headers.get("host");
+  const forwardedProtocol = request.headers.get("x-forwarded-proto");
+  const protocol = forwardedProtocol ?? requestUrl.protocol.slice(0, -1);
+
+  if (host && !host.includes(",") && (protocol === "http" || protocol === "https")) {
+    try {
+      const publicUrl = new URL(`${protocol}://${host}`);
+      if (!publicUrl.username && !publicUrl.password && publicUrl.pathname === "/") {
+        acceptedOrigins.add(publicUrl.origin);
+      }
+    } catch {
+      // The request URL remains the only accepted origin when proxy headers are malformed.
+    }
+  }
+
+  return acceptedOrigins.has(normalizedBrowserOrigin);
 }
 
 export function hardenCartCookies(headers: Headers, production: boolean): void {
