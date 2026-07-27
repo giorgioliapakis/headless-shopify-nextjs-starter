@@ -11,6 +11,7 @@ import { CartWarnings } from "@/components/cart/warnings";
 import { Container } from "@/components/ui/container";
 import { Page } from "@/components/ui/page";
 import { Sections } from "@/components/ui/sections";
+import { useMounted } from "@/hooks/use-mounted";
 
 import { EmptyCart } from "./empty-cart";
 import { Header } from "./header";
@@ -26,9 +27,12 @@ interface CartViewProps {
 export function CartView({ initialCart, locale, relatedProducts }: CartViewProps) {
   const t = useTranslations("cart");
   const storeCart = useCart((state) => state.data);
-  // `loading` is true until the browser store settles, which is also the SSR/first-hydration state.
   const storeSettled = useCart((state) => !state.loading);
-  const cart = storeSettled ? storeCart : initialCart;
+
+  // The SSR snapshot owns the markup until after mount, so hydration compares like with like.
+  const mounted = useMounted();
+
+  const cart = mounted && storeSettled ? storeCart : initialCart;
   const lines = cart?.lines.nodes ?? [];
   // A cart with lines always has an id/checkoutUrl, but narrow explicitly for the summary.
   const activeCart = lines.length > 0 && cart ? cart : null;

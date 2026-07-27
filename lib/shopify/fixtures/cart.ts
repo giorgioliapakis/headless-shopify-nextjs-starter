@@ -29,8 +29,26 @@ interface FixtureCartState {
   revision: number;
 }
 
-const carts = new Map<string, FixtureCartState>();
-const sequences = new Map<string, number>();
+/**
+ * Next evaluates route handlers and the React Server Component graph in separate module
+ * registries, so a plain module-level Map becomes two independent stores: a cart written through
+ * `/api/cart` is then invisible to the server render of `/cart`, and the page falls back to the
+ * empty state. A real storefront never hits this because Shopify holds the cart. The fixture is
+ * its own source of truth, so it is pinned to `globalThis` to give every server layer one store.
+ */
+interface FixtureCartRegistry {
+  carts: Map<string, FixtureCartState>;
+  sequences: Map<string, number>;
+}
+
+const registryKey = Symbol.for("headless-shopify-nextjs-starter.fixture-carts");
+const globalRegistry = globalThis as typeof globalThis & {
+  [registryKey]?: FixtureCartRegistry;
+};
+
+globalRegistry[registryKey] ??= { carts: new Map(), sequences: new Map() };
+
+const { carts, sequences } = globalRegistry[registryKey];
 
 /** Test-only reset so cart assertions never inherit another suite's state. */
 export function resetFixtureCarts(): void {

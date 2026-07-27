@@ -22,22 +22,22 @@ unsupported cases.
 
 ## Shopper routes
 
-| Surface           | Route contract             | Status | Current behavior                                                                                      |
-| ----------------- | -------------------------- | ------ | ----------------------------------------------------------------------------------------------------- |
-| Home              | `/`                        | Core   | Server-rendered section composition using neutral configuration.                                      |
-| Product detail    | `/products/[handle]`       | Core   | Metadata, variant URL state, gallery, options, add/buy actions, related-products flag and hard 404.   |
-| Collection index  | `/collections`             | Core   | Published collection navigation.                                                                      |
-| Collection detail | `/collections/[handle]`    | Core   | Metadata, filters, sorting, pagination and hard 404.                                                  |
-| All products      | `/collections/all`         | Core   | Catalogue listing behavior.                                                                           |
-| Search            | `/search`                  | Core   | Storefront product search, filters, sorting and pagination.                                           |
-| Content page      | `/pages/[handle]`          | Core   | Shopify page content, metadata and hard 404.                                                          |
-| Policy            | `/policies/[handle]`       | Core   | Shopify policy content, metadata and hard 404.                                                        |
-| Cart              | `/cart`                    | Core   | Hydrogen request-bound cart, warnings, discounts, progressive line forms and hosted checkout handoff. |
-| Customer account  | configured external URL    | Hosted | No local account session by default.                                                                  |
-| Checkout          | Shopify `cart.checkoutUrl` | Hosted | No custom checkout.                                                                                   |
-| Blog/article      | `/blogs/[handle]/**`       | Core   | Shopify-backed listing/article routes, pagination, metadata, Article schema, sitemap and hard 404.    |
-| Landing pages     | `/landing/[handle]`        | Core   | Versioned metadata/indexing and section recipes; empty until merchant config supplies approved pages. |
-| Unknown path      | any unmatched URL          | Core   | Safe redirect lookup for paths outside the app manifest, otherwise a static hard 404.                 |
+| Surface           | Route contract             | Status | Current behavior                                                                                                                                               |
+| ----------------- | -------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Home              | `/`                        | Core   | Server-rendered section composition using neutral configuration.                                                                                               |
+| Product detail    | `/products/[handle]`       | Core   | Metadata, variant URL state, gallery, options, add/buy actions, related-products flag and hard 404.                                                            |
+| Collection index  | `/collections`             | Core   | Published collection navigation.                                                                                                                               |
+| Collection detail | `/collections/[handle]`    | Core   | Metadata, filters, sorting, pagination and hard 404.                                                                                                           |
+| All products      | `/collections/all`         | Core   | Catalogue listing behavior.                                                                                                                                    |
+| Search            | `/search`                  | Core   | Storefront product search, filters, sorting and pagination.                                                                                                    |
+| Content page      | `/pages/[handle]`          | Core   | Shopify page content, metadata and hard 404.                                                                                                                   |
+| Policy            | `/policies/[handle]`       | Core   | Shopify policy content, metadata and hard 404.                                                                                                                 |
+| Cart              | `/cart`                    | Core   | Hydrogen request-bound cart, warnings, discounts, progressive line forms and hosted checkout handoff. Streamed, so it needs JavaScript to display — see below. |
+| Customer account  | configured external URL    | Hosted | No local account session by default.                                                                                                                           |
+| Checkout          | Shopify `cart.checkoutUrl` | Hosted | No custom checkout.                                                                                                                                            |
+| Blog/article      | `/blogs/[handle]/**`       | Core   | Shopify-backed listing/article routes, pagination, metadata, Article schema, sitemap and hard 404.                                                             |
+| Landing pages     | `/landing/[handle]`        | Core   | Versioned metadata/indexing and section recipes; empty until merchant config supplies approved pages.                                                          |
+| Unknown path      | any unmatched URL          | Core   | Safe redirect lookup for paths outside the app manifest, otherwise a static hard 404.                                                                          |
 
 The app also exposes neutral SEO/agent representations: `robots.txt`, a sharded sitemap, `llms.txt`,
 dynamic default Open Graph imagery and markdown representations for product, collection and search
@@ -66,6 +66,18 @@ surfaces. Draft mode and the Shopify webhook handler are server endpoints, not s
 | First-party consent-aware analytics contract    | Conditional | Disabled by default; page/product/collection/search/cart and confirmed cart-delta events use Hydrogen's consent bus. |
 | Headless customer accounts                      | Planned     | Optional pack only; hosted accounts remain default.                                                                  |
 | Reviews, loyalty, wishlists and external search | Unsupported | Require a provider-specific adapter you write yourself.                                                              |
+
+## JavaScript requirements
+
+Catalogue and content routes render fully server-side and are readable with JavaScript disabled.
+Adding to cart also works without it: the product form is a native `POST`.
+
+`/cart` is the exception. It is per-shopper, so `cacheComponents` requires the cart read to sit
+inside a Suspense boundary, and React swaps a Suspense fallback in with an inline script. With
+scripts disabled that fallback is the final render, so the page shows its heading, an explanation
+and a link back to the catalogue rather than the line items. Everything else degrades gracefully:
+collection pagination falls back to plain links, and the header cart icon is a real anchor to
+`/cart`.
 
 ## Cache ownership and invalidation
 

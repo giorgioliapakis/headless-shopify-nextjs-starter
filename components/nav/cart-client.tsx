@@ -2,10 +2,10 @@
 
 import { HandbagIcon } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 import { useCartDrawer } from "@/components/cart/drawer-context";
 import { useCart } from "@/components/cart/hydrogen";
+import { useMounted } from "@/hooks/use-mounted";
 
 const TRIGGER_CLASS =
   "flex items-center justify-center gap-1.5 text-foreground transition-colors hover:text-foreground/80";
@@ -40,11 +40,11 @@ export function CartIconClient({
 }) {
   const storeQuantity = useCart((state) => state.data.totalQuantity);
   const storeSettled = useCart((state) => !state.loading);
-  const quantity = storeSettled ? storeQuantity : initialQuantity;
   const { openCart } = useCartDrawer();
-  // Pre-hydration the trigger must be a real link so `/cart` stays reachable without JavaScript.
-  const [hasHydrated, setHasHydrated] = useState(false);
-  useEffect(() => setHasHydrated(true), []);
+  // Pre-hydration the trigger must be a real link so `/cart` stays reachable without JavaScript,
+  // and the badge must show the server's count or the two renders disagree.
+  const hasHydrated = useMounted();
+  const quantity = hasHydrated && storeSettled ? storeQuantity : initialQuantity;
 
   if (!hasHydrated) {
     return (

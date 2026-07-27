@@ -34,6 +34,7 @@
     "reviewCartDescription": "Review your cart items and proceed to checkout",
     "saveNote": "Save note",
     "shoppingCart": "Cart",
+    "requiresJavaScript": "Your cart needs JavaScript enabled to load.",
     "taxesAndShippingNote": "Taxes and shipping calculated at checkout.",
     "title": "Cart",
     "updatingCart": "Updating cart...",
