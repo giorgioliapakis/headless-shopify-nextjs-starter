@@ -8,8 +8,10 @@ import { cn } from "@/lib/utils";
 
 import { useCartDrawer } from "./drawer-context";
 import { useCart } from "./hydrogen";
+import { CartLiveRegion } from "./live-region";
 import { OverlayItem } from "./overlay-item";
 import { OverlaySummary } from "./overlay-summary";
+import { hasUnavailableLines } from "./unavailable-lines";
 import { CartWarnings } from "./warnings";
 
 interface OverlayContentProps {
@@ -26,6 +28,8 @@ export function OverlayContent({ locale }: OverlayContentProps) {
   );
   const { closeCart } = useCartDrawer();
   const t = useTranslations("cart");
+  const tProduct = useTranslations("product");
+  const blocked = hasUnavailableLines(cart);
 
   if (loading && !cart.id) {
     return <div className="h-full animate-pulse bg-muted/30" aria-label={t("updatingCart")} />;
@@ -52,6 +56,7 @@ export function OverlayContent({ locale }: OverlayContentProps) {
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto p-5 space-y-5">
         <CartWarnings />
+        <CartLiveRegion locale={locale} />
         <ul className="space-y-5" aria-label={t("cartItemsLabel")}>
           {cart.lines.nodes.map((item) => (
             <OverlayItem key={item.id} item={item} locale={locale} />
@@ -62,9 +67,19 @@ export function OverlayContent({ locale }: OverlayContentProps) {
       <footer className="px-5 py-5 space-y-5">
         <OverlaySummary cart={cart} locale={locale} pending={pending} />
 
+        {blocked ? (
+          <p role="alert" className="text-xs text-destructive">
+            {tProduct("outOfStock")}
+          </p>
+        ) : null}
         <Button
           render={<a href={cart.checkoutUrl ?? "/checkout"} />}
-          className={cn("w-full h-12 justify-center", pending && "opacity-70")}
+          className={cn(
+            "w-full h-12 justify-center",
+            pending && "opacity-70",
+            blocked && "pointer-events-none opacity-50",
+          )}
+          aria-disabled={blocked || undefined}
           aria-label={t("proceedToCheckout")}
         >
           {t("completeCheckout")}

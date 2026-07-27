@@ -14,8 +14,13 @@ import { RESULTS_PER_PAGE, parseFiltersFromSearchParams } from "@/lib/utils";
 // /collections/all is a local virtual collection with no Storefront API equivalent.
 export const ALL_PRODUCTS_HANDLE = "all";
 
+/** Storefront cursors are opaque base64; anything longer than this is not one. */
+const MAX_CURSOR_LENGTH = 512;
+
 export interface CollectionSearchState {
   activeFilters: Record<string, string | string[] | undefined>;
+  /** Cursor from the crawlable `?after=` pagination fallback. */
+  after?: string;
   sort?: string;
 }
 
@@ -35,8 +40,14 @@ export async function getCollectionSearchState(
 
   return {
     activeFilters: parseFiltersFromSearchParams(searchParams),
+    after: parseCursorParam(searchParams.after),
     sort: getSingleSearchParam(searchParams.sort),
   };
+}
+
+export function parseCursorParam(value: string | string[] | undefined): string | undefined {
+  const cursor = getSingleSearchParam(value);
+  return cursor && cursor.length <= MAX_CURSOR_LENGTH ? cursor : undefined;
 }
 
 export async function getCollectionResultsData({
@@ -48,11 +59,12 @@ export async function getCollectionResultsData({
   locale: Locale;
   searchStatePromise: Promise<CollectionSearchState>;
 }): Promise<CollectionResultsData> {
-  const { activeFilters, sort } = await searchStatePromise;
+  const { activeFilters, after, sort } = await searchStatePromise;
   const shopifyFilters = buildProductFiltersFromParams(activeFilters);
   const result = await fetchCollectionProducts({
     activeFilters,
     collection: handle,
+    cursor: after,
     sortKey: sort,
     limit: RESULTS_PER_PAGE,
     filters: shopifyFilters,
@@ -107,10 +119,11 @@ export async function getAllProductsResultsData({
   locale: Locale;
   searchStatePromise: Promise<CollectionSearchState>;
 }): Promise<CollectionResultsData> {
-  const { activeFilters, sort } = await searchStatePromise;
+  const { activeFilters, after, sort } = await searchStatePromise;
   const shopifyFilters = buildProductFiltersFromParams(activeFilters);
   const [products, facets] = await Promise.all([
     fetchSearchIndexProducts({
+      cursor: after,
       sortKey: sort,
       limit: RESULTS_PER_PAGE,
       filters: shopifyFilters,

@@ -4,7 +4,10 @@ import Link from "next/link";
 import { ProductsGrid } from "@/components/product/products-grid";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import type { SectionDefinition } from "@/config/schema/sections";
+import { ImagePlaceholder } from "@/components/ui/image-placeholder";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import type { CardAspect, LocalMedia, SectionDefinition } from "@/config/schema/sections";
 import type { Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +19,16 @@ function sectionTone(tone: SectionDefinition["tone"]): string {
   return "bg-background text-foreground";
 }
 
+const ASPECTS: Record<Exclude<CardAspect, "none">, string> = {
+  landscape: "aspect-[3/2]",
+  portrait: "aspect-[4/5]",
+  square: "aspect-square",
+};
+
+/**
+ * Every section band uses the same rhythm tokens (`py-section` inside, `gap-stack` between blocks,
+ * `gap-inline` between sibling controls) so `theme.layout.density` moves the whole storefront.
+ */
 function SectionShell({
   children,
   id,
@@ -28,9 +41,32 @@ function SectionShell({
   tone: SectionDefinition["tone"];
 }) {
   return (
-    <Container id={id} className={cn("py-10 sm:py-14", sectionTone(tone), className)}>
+    <Container id={id} className={cn("py-section", sectionTone(tone), className)}>
       {children}
     </Container>
+  );
+}
+
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  return <h2 className="text-3xl sm:text-4xl">{children}</h2>;
+}
+
+function CardMedia({ aspect, media }: { aspect: CardAspect; media?: LocalMedia }) {
+  if (aspect === "none") return null;
+  return (
+    <div className={cn("relative overflow-hidden rounded-lg bg-muted", ASPECTS[aspect])}>
+      {media ? (
+        <Image
+          src={media.src}
+          alt={media.alt}
+          fill
+          className="object-cover transition-transform group-hover:scale-[1.02]"
+          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+        />
+      ) : (
+        <ImagePlaceholder className="absolute inset-0 size-full" />
+      )}
+    </div>
   );
 }
 
@@ -38,7 +74,7 @@ export function AnnouncementSection({ section }: { section: SectionOf<"announcem
   return (
     <section
       id={section.id}
-      className={cn("px-5 py-2.5 text-center text-sm", sectionTone(section.tone))}
+      className={cn("px-gutter py-2.5 text-center text-sm", sectionTone(section.tone))}
     >
       <p>
         {section.message}
@@ -61,16 +97,20 @@ export function AnnouncementSection({ section }: { section: SectionOf<"announcem
 
 export function HeroRecipeSection({ section }: { section: SectionOf<"hero"> }) {
   return (
-    <SectionShell id={section.id} tone={section.tone} className="py-16 sm:py-24">
+    <SectionShell
+      id={section.id}
+      tone={section.tone}
+      className="py-[calc(var(--spacing-section)*1.5)]"
+    >
       <div
         className={cn(
-          "grid gap-6",
+          "grid gap-stack",
           section.variant === "centered"
             ? "mx-auto max-w-4xl justify-items-center text-center"
             : "max-w-5xl lg:grid-cols-[1fr_auto] lg:items-end",
         )}
       >
-        <div className="grid gap-4">
+        <div className="grid gap-stack">
           {section.eyebrow ? (
             <p className="text-sm font-medium uppercase tracking-widest opacity-70">
               {section.eyebrow}
@@ -80,7 +120,7 @@ export function HeroRecipeSection({ section }: { section: SectionOf<"hero"> }) {
           {section.body ? <p className="max-w-2xl text-lg opacity-75">{section.body}</p> : null}
         </div>
         {section.primaryAction || section.secondaryAction ? (
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-inline">
             {section.primaryAction ? (
               <Button
                 render={<Link href={section.primaryAction.href} prefetch={false} />}
@@ -109,9 +149,12 @@ export function RichTextSection({ section }: { section: SectionOf<"rich-text"> }
   return (
     <SectionShell id={section.id} tone={section.tone}>
       <div
-        className={cn("grid max-w-3xl gap-4", section.align === "center" && "mx-auto text-center")}
+        className={cn(
+          "grid max-w-3xl gap-stack",
+          section.align === "center" && "mx-auto text-center",
+        )}
       >
-        {section.heading ? <h2 className="text-3xl sm:text-4xl">{section.heading}</h2> : null}
+        {section.heading ? <SectionHeading>{section.heading}</SectionHeading> : null}
         <p className="whitespace-pre-line text-base leading-7 opacity-80">{section.body}</p>
       </div>
     </SectionShell>
@@ -131,18 +174,16 @@ export function MediaTextSection({ section }: { section: SectionOf<"media-text">
           sizes="(min-width: 1024px) 50vw, 100vw"
         />
       ) : (
-        <div className="flex size-full items-center justify-center text-sm text-muted-foreground">
-          Add approved local media
-        </div>
+        <ImagePlaceholder className="absolute inset-0 size-full" />
       )}
     </div>
   );
   return (
     <SectionShell id={section.id} tone={section.tone}>
-      <div className="grid items-center gap-8 lg:grid-cols-2">
+      <div className="grid items-center gap-section-gap lg:grid-cols-2">
         {section.mediaPosition === "start" ? media : null}
-        <div className="grid gap-4">
-          <h2 className="text-3xl sm:text-4xl">{section.heading}</h2>
+        <div className="grid gap-stack">
+          <SectionHeading>{section.heading}</SectionHeading>
           <p className="leading-7 opacity-80">{section.body}</p>
           {section.action ? (
             <Button
@@ -162,9 +203,9 @@ export function MediaTextSection({ section }: { section: SectionOf<"media-text">
 export function LogoListSection({ section }: { section: SectionOf<"logo-list"> }) {
   return (
     <SectionShell id={section.id} tone={section.tone}>
-      <div className="grid gap-6 text-center">
+      <div className="grid gap-stack text-center">
         {section.heading ? <h2 className="text-2xl">{section.heading}</h2> : null}
-        <ul className="flex flex-wrap items-center justify-center gap-x-10 gap-y-5" role="list">
+        <ul className="flex flex-wrap items-center justify-center gap-x-10 gap-y-stack" role="list">
           {section.logos.map((logo) => (
             <li key={logo} className="text-lg font-medium opacity-70">
               {logo}
@@ -179,11 +220,11 @@ export function LogoListSection({ section }: { section: SectionOf<"logo-list"> }
 export function CollectionGridSection({ section }: { section: SectionOf<"collection-grid"> }) {
   return (
     <SectionShell id={section.id} tone={section.tone}>
-      <div className="grid gap-6">
-        <h2 className="text-3xl sm:text-4xl">{section.heading}</h2>
+      <div className="grid gap-stack">
+        <SectionHeading>{section.heading}</SectionHeading>
         <div
           className={cn(
-            "grid gap-5 sm:grid-cols-2",
+            "grid gap-stack sm:grid-cols-2",
             section.columns === 3 && "lg:grid-cols-3",
             section.columns === 4 && "lg:grid-cols-4",
           )}
@@ -193,10 +234,18 @@ export function CollectionGridSection({ section }: { section: SectionOf<"collect
               key={collection.title}
               href={collection.href ?? "/collections"}
               prefetch={false}
-              className="group grid min-h-56 content-end rounded-xl border bg-card p-6 text-card-foreground transition-transform hover:-translate-y-0.5"
+              className={cn(
+                "group grid gap-3 rounded-xl transition-transform hover:-translate-y-0.5",
+                "outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+                section.aspect === "none" &&
+                  "min-h-56 content-end border bg-card p-6 text-card-foreground",
+              )}
             >
-              <h3 className="text-2xl">{collection.title}</h3>
-              {collection.body ? <p className="mt-2 opacity-70">{collection.body}</p> : null}
+              <CardMedia aspect={section.aspect} media={collection.media} />
+              <div className="grid gap-1">
+                <h3 className="text-xl">{collection.title}</h3>
+                {collection.body ? <p className="opacity-70">{collection.body}</p> : null}
+              </div>
             </Link>
           ))}
         </div>
@@ -228,20 +277,22 @@ export async function ProductCarouselSection({
 export function EditorialGridSection({ section }: { section: SectionOf<"editorial-grid"> }) {
   return (
     <SectionShell id={section.id} tone={section.tone}>
-      <div className="grid gap-6">
-        <h2 className="text-3xl sm:text-4xl">{section.heading}</h2>
-        <div className="grid gap-5 md:grid-cols-3">
+      <div className="grid gap-stack">
+        <SectionHeading>{section.heading}</SectionHeading>
+        <div className="grid gap-stack md:grid-cols-3">
           {section.items.map((item) => (
-            <article key={item.title} className="grid gap-3 rounded-xl border p-6">
+            <article key={item.title} className="group grid content-start gap-3">
+              <CardMedia aspect={section.aspect} media={item.media} />
               <h3 className="text-xl">{item.title}</h3>
               {item.body ? <p className="opacity-70">{item.body}</p> : null}
               {item.href ? (
                 <Link
                   href={item.href}
                   prefetch={false}
-                  className="mt-auto font-medium underline underline-offset-4"
+                  className="font-medium underline underline-offset-4"
                 >
-                  Read more
+                  {section.readMoreLabel}
+                  <span className="sr-only">: {item.title}</span>
                 </Link>
               ) : null}
             </article>
@@ -255,16 +306,16 @@ export function EditorialGridSection({ section }: { section: SectionOf<"editoria
 export function TestimonialsSection({ section }: { section: SectionOf<"testimonials"> }) {
   return (
     <SectionShell id={section.id} tone={section.tone}>
-      <div className="grid gap-6">
-        {section.heading ? <h2 className="text-3xl sm:text-4xl">{section.heading}</h2> : null}
-        <div className="grid gap-5 md:grid-cols-3">
+      <div className="grid gap-stack">
+        {section.heading ? <SectionHeading>{section.heading}</SectionHeading> : null}
+        <div className="grid gap-stack md:grid-cols-3">
           {section.items.map((item) => (
             <figure
               key={`${item.attribution}:${item.quote}`}
-              className="grid gap-4 rounded-xl border p-6"
+              className="grid gap-stack rounded-xl border bg-card p-6 text-card-foreground"
             >
               <blockquote className="text-lg">“{item.quote}”</blockquote>
-              <figcaption className="text-sm opacity-70">{item.attribution}</figcaption>
+              <figcaption className="text-sm text-muted-foreground">{item.attribution}</figcaption>
             </figure>
           ))}
         </div>
@@ -276,8 +327,8 @@ export function TestimonialsSection({ section }: { section: SectionOf<"testimoni
 export function FaqSection({ section }: { section: SectionOf<"faq"> }) {
   return (
     <SectionShell id={section.id} tone={section.tone}>
-      <div className="mx-auto grid max-w-3xl gap-6">
-        <h2 className="text-3xl sm:text-4xl">{section.heading}</h2>
+      <div className="mx-auto grid max-w-3xl gap-stack">
+        <SectionHeading>{section.heading}</SectionHeading>
         <div className="divide-y border-y">
           {section.items.map((item) => (
             <details key={item.question} className="group py-5">
@@ -294,33 +345,36 @@ export function FaqSection({ section }: { section: SectionOf<"faq"> }) {
 }
 
 export function NewsletterSection({ section }: { section: SectionOf<"newsletter"> }) {
+  const emailId = `${section.id}-email`;
   return (
     <SectionShell id={section.id} tone={section.tone}>
-      <div className="mx-auto grid max-w-2xl gap-5 text-center">
-        <h2 className="text-3xl sm:text-4xl">{section.heading}</h2>
+      <div className="mx-auto grid max-w-2xl gap-stack text-center">
+        <SectionHeading>{section.heading}</SectionHeading>
         {section.body ? <p className="opacity-75">{section.body}</p> : null}
         {section.action ? (
-          <form action={section.action} method="post" className="flex flex-col gap-3 sm:flex-row">
-            <label className="sr-only" htmlFor={`${section.id}-email`}>
-              Email address
-            </label>
-            <input
-              id={`${section.id}-email`}
+          <form
+            action={section.action}
+            method="post"
+            className="flex flex-col gap-inline sm:flex-row"
+          >
+            <Label className="sr-only" htmlFor={emailId}>
+              {section.emailLabel}
+            </Label>
+            <Input
+              id={emailId}
               name="email"
               type="email"
               autoComplete="email"
               required
-              className="min-h-11 flex-1 rounded-lg border bg-background px-4 text-foreground"
-              placeholder="Email address"
+              className="min-h-11 flex-1"
+              placeholder={section.emailPlaceholder}
             />
             <Button type="submit" size="lg">
-              Subscribe
+              {section.submitLabel}
             </Button>
           </form>
         ) : (
-          <p className="text-sm opacity-60">
-            Connect an approved newsletter provider to enable signup.
-          </p>
+          <p className="text-sm text-muted-foreground">{section.unavailableNote}</p>
         )}
       </div>
     </SectionShell>
@@ -329,7 +383,7 @@ export function NewsletterSection({ section }: { section: SectionOf<"newsletter"
 
 export function TrustStripSection({ section }: { section: SectionOf<"trust-strip"> }) {
   return (
-    <SectionShell id={section.id} tone={section.tone} className="py-6">
+    <SectionShell id={section.id} tone={section.tone} className="py-stack">
       <ul
         className="flex flex-wrap justify-center gap-x-10 gap-y-3 text-center text-sm font-medium"
         role="list"

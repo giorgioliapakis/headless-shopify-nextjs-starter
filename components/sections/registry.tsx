@@ -1,6 +1,7 @@
 import type { SectionDefinition, SectionRecipe, SectionType } from "@/config/schema/sections";
 import type { Locale } from "@/lib/i18n";
 
+import { BannerSection } from "./banner-section";
 import {
   AnnouncementSection,
   CollectionGridSection,
@@ -37,6 +38,25 @@ export const sectionRegistry = {
     allowedSlots: ["layout"],
     dataNeeds: ["Shopify menu"],
   }),
+  banner: registration(
+    "components/sections/banner-section.tsx",
+    ["background media", "scrim", "eyebrow", "headline", "subheadline", "action"],
+    {
+      accessibility: [
+        "semantic structure",
+        "visible focus",
+        "reduced-motion safe",
+        "scrim keeps copy at 4.5:1 through the overlay token pair",
+        "decorative background media is aria-hidden",
+      ],
+      // Only when a video is configured: AutoPlayVideo pauses off-screen and honours
+      // prefers-reduced-motion. An image or empty banner renders as a server component.
+      clientJavaScript: true,
+      dataNeeds: ["local image or video in /public"],
+      performanceCost: "moderate",
+      variants: ["compact", "standard", "tall", "align-start", "align-center"],
+    },
+  ),
   hero: registration(
     "components/sections/starter-sections.tsx",
     ["eyebrow", "heading", "body", "actions"],
@@ -58,9 +78,11 @@ export const sectionRegistry = {
   "logo-list": registration("components/sections/starter-sections.tsx", ["heading", "logos"]),
   "collection-grid": registration(
     "components/sections/starter-sections.tsx",
-    ["heading", "collection cards"],
+    ["heading", "collection cards", "card media"],
     {
-      variants: ["2 columns", "3 columns", "4 columns"],
+      dataNeeds: ["optional local card imagery"],
+      performanceCost: "moderate",
+      variants: ["2 columns", "3 columns", "4 columns", "square", "portrait", "landscape", "none"],
     },
   ),
   "product-carousel": registration(
@@ -71,10 +93,15 @@ export const sectionRegistry = {
       performanceCost: "moderate",
     },
   ),
-  "editorial-grid": registration("components/sections/starter-sections.tsx", [
-    "heading",
-    "article cards",
-  ]),
+  "editorial-grid": registration(
+    "components/sections/starter-sections.tsx",
+    ["heading", "article cards", "card media", "read-more link"],
+    {
+      dataNeeds: ["optional local card imagery"],
+      performanceCost: "moderate",
+      variants: ["square", "portrait", "landscape", "none"],
+    },
+  ),
   testimonials: registration("components/sections/starter-sections.tsx", [
     "heading",
     "quotes",
@@ -91,7 +118,13 @@ export const sectionRegistry = {
     "components/sections/starter-sections.tsx",
     ["heading", "body", "email form"],
     {
-      dataNeeds: ["approved newsletter provider endpoint when enabled"],
+      accessibility: [
+        "semantic structure",
+        "visible focus",
+        "reduced-motion safe",
+        "labelled email field",
+      ],
+      dataNeeds: ["newsletter provider endpoint when enabled"],
     },
   ),
   "trust-strip": registration("components/sections/starter-sections.tsx", ["trust statements"]),
@@ -109,10 +142,18 @@ export function SectionRenderer({ recipe, locale }: { locale: Locale; recipe: Se
   );
 }
 
-function RegisteredSection({ section, locale }: { locale: Locale; section: SectionDefinition }) {
+export function RegisteredSection({
+  section,
+  locale,
+}: {
+  locale: Locale;
+  section: SectionDefinition;
+}) {
   switch (section.type) {
     case "announcement":
       return <AnnouncementSection section={section} />;
+    case "banner":
+      return <BannerSection section={section} />;
     case "hero":
       return <HeroRecipeSection section={section} />;
     case "rich-text":

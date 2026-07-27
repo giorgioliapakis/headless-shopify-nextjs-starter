@@ -5,6 +5,7 @@ import { AlertCircleIcon } from "lucide-react";
 import "./globals.css";
 
 export default function GlobalError({
+  error,
   reset,
 }: {
   error: Error & { digest?: string };
@@ -30,6 +31,11 @@ export default function GlobalError({
           >
             Try again
           </button>
+          {error.digest ? (
+            <p className="mt-6 font-mono text-xs text-muted-foreground">
+              Reference: {error.digest}
+            </p>
+          ) : null}
         </div>
       </body>
     </html>

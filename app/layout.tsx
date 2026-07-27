@@ -2,7 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
-import { Suspense, type CSSProperties } from "react";
+import { Suspense } from "react";
 
 import { AnalyticsComponents } from "@/components/analytics";
 import { CartDrawerProvider } from "@/components/cart/drawer-context";
@@ -13,7 +13,7 @@ import { Nav } from "@/components/nav";
 import { SiteSchema } from "@/components/schema/site-schema";
 import { ShopifyAnalyticsBoundary } from "@/components/shopify/analytics-boundary";
 import { ShopifyRuntime } from "@/components/shopify/runtime";
-import { themeToCssVariables } from "@/config/schema/theme";
+import { themeInitScript, themeStyleSheet } from "@/config/schema/theme";
 import { getLocale } from "@/lib/params";
 import { buildAlternates } from "@/lib/seo";
 import { shopConfig } from "@/shop.config";
@@ -26,11 +26,14 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   ]);
 
   return (
-    <html lang={locale}>
-      <body
-        className="flex min-h-dvh flex-col font-sans antialiased"
-        style={themeToCssVariables(shopConfig.theme) as CSSProperties}
-      >
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        {/* Merchant theme tokens for both colour schemes. Validated hex/enum values only. */}
+        <style>{themeStyleSheet(shopConfig.theme)}</style>
+        {/* Resolves the scheme before first paint so there is no flash of the wrong theme. */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className="flex min-h-dvh flex-col font-sans antialiased">
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-100 focus:rounded-md focus:bg-background focus:px-5 focus:py-2 focus:text-sm focus:font-medium focus:shadow-lg focus:ring-2 focus:ring-foreground focus:outline-none"
@@ -39,6 +42,13 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <SiteSchema locale={locale} />
         <NextIntlClientProvider locale={locale} messages={messages}>
+          {/*
+            The single browser cart store for the whole app. It stays free of `initialData` on
+            purpose: the envelope needs `headers()`, and reading that outside a Suspense boundary
+            would make the entire layout — every route's static shell — dynamic. Server snapshots
+            are handed to the surfaces that need them (`CartIcon`, `/cart`), each inside its own
+            Suspense boundary, and the store reconciles on hydration.
+          */}
           <CartProvider>
             <CartDrawerProvider>
               <Nav locale={locale} />

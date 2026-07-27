@@ -1,40 +1,70 @@
-# Section recipes
+# Sections and recipes
 
-The homepage is assembled from `shopConfig.recipes.home`. Recipes are versioned, strict and contain
-only content/layout data; commerce stays in the shared operations and Hydrogen layers.
+Pages are assembled from **sections**. A _recipe_ is an ordered, validated list of them.
+`shopConfig.recipes.home` builds the homepage; `shopConfig.recipes.landing` builds any number of
+landing pages served at `/landing/[handle]`.
 
-The registry at `components/sections/registry.tsx` documents each section's anatomy, variants, data
-needs, accessibility contract, client-JavaScript cost and source owner. The neutral registry includes:
+Recipes carry content and layout only. Commerce data stays in the shared Shopify operations, so a
+recipe can never reach around the caching or security layers.
 
-- announcement, header, hero, rich text and media/text;
-- logo list, collection grid, product carousel and editorial grid;
-- testimonials, FAQ, newsletter, trust strip and footer.
+## The registry
 
-Header and footer occupy the global layout slot. The other entries can appear in a page recipe. Disabled
-sections render nothing. Every shipped recipe section is a Server Component; native HTML provides FAQ
-interaction, and the newsletter form remains inert until an approved provider endpoint is configured.
-Enabling an external newsletter endpoint also requires adding that exact origin to the CSP `form-action`
-allowlist in `lib/security/headers.ts` and rerunning the security/browser gates.
+`components/sections/registry.tsx` is the source of truth. Each entry declares its anatomy, variants,
+data needs, accessibility contract, client-JavaScript cost and owner — which is what lets a coding
+agent compose a page without inventing markup.
 
-## Reconstruction rules
+Global layout slots: `header`, `footer`.
 
-- Map a discovered source section to a registered section when anatomy and behavior match.
-- Preserve approved order, text, links, responsive precedence and media crop in the downstream recipe.
-- Keep an unmatched pattern in the downstream storefront as a one-off section. Record why it did not
-  match; do not weaken a generic registry entry to force parity.
-- Promote a new foundation section only after the pattern repeats across independent stores.
+Page sections: `announcement`, `banner`, `hero`, `rich-text`, `media-text`, `logo-list`,
+`collection-grid`, `product-carousel`, `editorial-grid`, `testimonials`, `faq`, `newsletter`,
+`trust-strip`.
 
-## Landing-page recipes
+Every section is a Server Component with one deliberate exception: `banner` sets
+`clientJavaScript: true` because video autoplay requires it. FAQ interaction uses native `<details>`.
+A disabled section renders nothing.
 
-Add approved performance/editorial pages to `shopConfig.recipes.landing` using a lowercase handle,
-metadata, indexing choice and the same validated section recipe used by the homepage. The foundation
-serves them at `/landing/[handle]`, includes indexable entries in the static sitemap shard and hard-404s
-unknown handles. Preserve a different existing merchant URL by creating a merchant-owned route that
-renders the same recipe; do not redirect an approved revenue URL merely to fit the generic prefix.
+See them all rendered at **`/styleguide`**, with their registry metadata.
 
-- Store approved local media under the downstream project's public assets. Do not commit source capture
-  files or unlicensed merchant assets to this starter.
+## Writing a recipe
 
-Unknown types, duplicate IDs, external internal-link values and invalid section-specific values fail
-with a schema path. Run the registry/theme unit tests, full check, production build and browser gallery
-before accepting a recipe.
+```ts
+recipes: {
+  home: {
+    version: 1,
+    sections: [
+      { id: "hero", type: "hero", headline: "…", action: { label: "Shop", href: "/collections/all" } },
+      { id: "featured", type: "product-carousel", collectionHandle: "new-arrivals" },
+    ],
+  },
+}
+```
+
+Validation is strict and fails with a schema path. Unknown types, duplicate IDs, external values in
+internal-link fields, and invalid section-specific values are all rejected at config time.
+
+Internal links must start with `/`. Local media must live under your project's public assets — never
+commit unlicensed imagery to this repository.
+
+## Landing pages
+
+Add an entry to `shopConfig.recipes.landing` with a lowercase handle, metadata and an indexing choice.
+The starter serves it at `/landing/[handle]`, includes indexable entries in the sitemap, and hard-404s
+unknown handles.
+
+To keep an existing URL that does not fit the `/landing/` prefix, add your own route that renders the
+same recipe. Do not redirect a revenue URL just to fit the generic path.
+
+## Adding a section
+
+1. Add its schema to `config/schema/sections.ts`.
+2. Add the component to `components/sections/`.
+3. Register it in `components/sections/registry.tsx` with complete metadata.
+4. Add it to a recipe so it is actually exercised — a test asserts that the shipped recipes cover
+   every registered type.
+5. `pnpm check`, then look at it in `/styleguide`.
+
+## Newsletter
+
+The newsletter section stays inert until you configure a provider endpoint. Enabling one also requires
+adding that exact origin to the CSP `form-action` allowlist in `lib/security/headers.ts` and rerunning
+`pnpm check` and `pnpm browser:test`.

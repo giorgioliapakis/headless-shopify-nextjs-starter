@@ -24,8 +24,15 @@ function assertRequiredEnv() {
   }
 }
 
+// `/styleguide` is a builder tool, not a shopper surface. Routes written as
+// `page.dev.tsx` exist while developing and are dropped from production builds,
+// so a merchant never ships the design-system browser to their customers.
+const developmentOnlyPageExtensions =
+  process.env.NODE_ENV === "production" ? [] : ["dev.tsx", "dev.ts"];
+
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  pageExtensions: ["tsx", "ts", "jsx", "js", ...developmentOnlyPageExtensions],
   images: {
     deviceSizes: [1080, 1920],
     imageSizes: [],

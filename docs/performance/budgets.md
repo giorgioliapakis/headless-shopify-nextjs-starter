@@ -1,8 +1,8 @@
 # Storefront performance budgets
 
-Performance is a release contract, not a one-time score. These budgets govern the neutral starter and
-must be rerun for every generated merchant storefront because real fonts, images, sections, scripts and
-catalogue shapes can materially change results.
+Performance is a release contract, not a one-time score. These budgets govern the starter itself. Re-run
+them against your own storefront before you launch — real fonts, imagery, sections, apps and catalogue
+shape all move the numbers.
 
 ## Field outcomes
 
@@ -17,10 +17,10 @@ At the 75th percentile, segmented by mobile/desktop and key route family:
 Field data is the outcome gate once a store has enough traffic. Lab checks prevent obvious regressions
 before field data exists; they do not prove real-user performance.
 
-## Neutral production-mode lab gate
+## Production-mode lab gate
 
 The required route set is `/`, one product, one collection, `/search` and `/cart`. Tests run against a
-production build with deterministic neutral Shopify fixtures, fixed viewport/network/CPU profiles and no
+production build with the deterministic Shopify fixture, fixed viewport/network/CPU profiles and no
 browser extensions.
 
 | Measure                                                     |                                     Initial budget |
@@ -63,7 +63,7 @@ fails rather than silently skipping it.
 
 ## Measurement protocol
 
-1. Build with exact Node/pnpm/dependency versions and deterministic neutral fixtures.
+1. Build with exact Node/pnpm/dependency versions and the deterministic fixture.
 2. Lighthouse runs each required route three times. Category scores gate LHCI's coherent representative
    `median-run`; LCP overrides that with the per-audit `median`, because one representative run can carry
    a non-median LCP value. The streamed route ceiling includes 150 ms of declared cross-runner tolerance
@@ -73,8 +73,8 @@ fails rather than silently skipping it.
    requests, server timing and Lighthouse/a11y outputs.
 4. Compare against the versioned baseline and explain every regression. Variance outside the declared
    tolerance is a failure, not a flaky retry until green.
-5. Rerun with downstream merchant evidence before review approval and again before cutover if material
-   assets, integrations or catalogue structure changed.
+5. Re-run against your own storefront before launch, and again whenever assets, integrations or
+   catalogue structure change materially.
 
 Failed CI runs preserve the complete Lighthouse report set for seven days. Diagnose the failing audit and
 runner variance from those reports before changing a threshold; do not retry a red gate until it happens
@@ -86,10 +86,36 @@ An exception must name the route/capability, measured delta, user value, alterna
 expiry and removal condition. It cannot waive serious accessibility failures, shared caching of personal
 data, missing content/status behavior or a field Core Web Vital failure. Expired exceptions fail CI.
 
+## Running the gates
+
+```bash
+pnpm check              # source and GraphQL document budgets
+pnpm verify:production  # credential-free production build + emitted asset budgets
+
+pnpm browser:install    # once — installs the pinned Chromium revision
+pnpm browser:test       # desktop, mobile and no-JavaScript journeys, plus axe
+pnpm lighthouse         # route Lighthouse budgets
+```
+
+The production verifier strips credential-like environment values and builds against the deterministic
+fixture, so it runs anywhere without a Shopify account. Artifacts land in ignored `.artifacts/`.
+
+When a budget fails, inspect the exact reported document, asset or chunk before touching a limit. Failed
+CI runs preserve the full Lighthouse report set for seven days — diagnose from those rather than retrying
+a red gate until it happens to pass.
+
+Re-run after any change to theme tokens, home or landing recipes, LCP media, analytics, Hydrogen or
+Next.js.
+
+## Your storefront is not this baseline
+
+These numbers describe the starter with generated demo data. Your real fonts, photography, apps and
+catalogue shape will change them materially. Measure your own build separately before you launch, and
+never use the demo score to sign off on your own assets or third-party scripts.
+
 ## Current state
 
-The field targets, GraphQL ceilings, emitted JS/CSS limits, secretless production build and CI enforcement
-are active. A pinned Playwright 1.61.1, axe 4.12.1 and Lighthouse CI 0.15.1 harness is wired into protected
-CI. The deterministic browser suite covers desktop, mobile and JavaScript-disabled behaviour; Lighthouse
-gates performance, accessibility, best practices and indexable-route SEO. Real merchant assets and field
-data must still be measured before cutover.
+The field targets, GraphQL ceilings, emitted JS/CSS limits, credential-free production build and CI
+enforcement are active. A pinned Playwright 1.61.1, axe 4.12.1 and Lighthouse CI 0.15.1 harness runs in
+CI, covering desktop, mobile and JavaScript-disabled behaviour, and gating performance, accessibility,
+best practices and indexable-route SEO.

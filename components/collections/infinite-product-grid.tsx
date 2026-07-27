@@ -1,7 +1,9 @@
 "use client";
 
 import { LoaderCircleIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
@@ -12,6 +14,7 @@ import {
   ProductCardTitle,
   ProductCard as ProductCardRoot,
 } from "@/components/product-card/components";
+import { Button } from "@/components/ui/button";
 import type { PageInfo, ProductCard } from "@/lib/types";
 
 interface InfiniteProductGridProps<TParams> {
@@ -27,6 +30,19 @@ interface InfiniteProductGridProps<TParams> {
   children: React.ReactNode;
 }
 
+/**
+ * Crawlable "next page" URL. Without JavaScript — and for crawlers that never fire
+ * IntersectionObserver — this is the only way past page 1.
+ */
+function useNextPageHref(endCursor: string | null | undefined): string | undefined {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  if (!endCursor) return undefined;
+  const params = new URLSearchParams(searchParams.toString());
+  params.set("after", endCursor);
+  return `${pathname}?${params.toString()}`;
+}
+
 export function InfiniteProductGrid<TParams>({
   initialProducts,
   initialPageInfo,
@@ -36,9 +52,12 @@ export function InfiniteProductGrid<TParams>({
   loadMoreParams,
   children,
 }: InfiniteProductGridProps<TParams>) {
+  const t = useTranslations("search");
+  const tCommon = useTranslations("common");
   const [additionalProducts, setAdditionalProducts] = useState<ProductCard[]>([]);
   const [pageInfo, setPageInfo] = useState<PageInfo>(initialPageInfo);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
   // Live cursor pages can re-emit a boundary product if the ranking shifts mid-scroll; skip ids already shown.
@@ -48,6 +67,7 @@ export function InfiniteProductGrid<TParams>({
     setAdditionalProducts([]);
     setPageInfo(initialPageInfo);
     setIsLoading(false);
+    setHasError(false);
     loadingRef.current = false;
     seenIdsRef.current = new Set(initialProducts.map((product) => product.id));
   }, [initialProducts, initialPageInfo]);
@@ -56,6 +76,7 @@ export function InfiniteProductGrid<TParams>({
     if (loadingRef.current || !pageInfo.hasNextPage || !pageInfo.endCursor) return;
     loadingRef.current = true;
     setIsLoading(true);
+    setHasError(false);
 
     try {
       const result = await loadMore({ ...loadMoreParams, cursor: pageInfo.endCursor });
@@ -63,6 +84,11 @@ export function InfiniteProductGrid<TParams>({
       for (const product of fresh) seenIdsRef.current.add(product.id);
       setAdditionalProducts((prev) => [...prev, ...fresh]);
       setPageInfo(result.pageInfo);
+    } catch (error) {
+      // Without this the sentinel stays intersecting and IntersectionObserver never re-fires,
+      // so the grid would dead-end silently.
+      console.error("[collections] failed to load more products:", error);
+      setHasError(true);
     } finally {
       setIsLoading(false);
       loadingRef.current = false;
@@ -71,7 +97,8 @@ export function InfiniteProductGrid<TParams>({
 
   useEffect(() => {
     const sentinel = sentinelRef.current;
-    if (!sentinel) return;
+    // Pause auto-loading while an error is showing so the retry button owns the next attempt.
+    if (!sentinel || hasError) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -84,7 +111,10 @@ export function InfiniteProductGrid<TParams>({
 
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [handleLoadMore]);
+  }, [handleLoadMore, hasError]);
+
+  const loadedCount = initialProducts.length + additionalProducts.length;
+  const nextPageHref = useNextPageHref(pageInfo.hasNextPage ? pageInfo.endCursor : null);
 
   return (
     <>
@@ -100,9 +130,36 @@ export function InfiniteProductGrid<TParams>({
         ))}
       </div>
 
+      {/* Scroll-loading progress only; the initial/filtered count is owned by `ResultsAnnouncer`. */}
+      <p aria-live="polite" role="status" className="sr-only">
+        {isLoading
+          ? t("loadingMore")
+          : additionalProducts.length > 0
+            ? t("pagination.totalResults", { totalResults: String(loadedCount) })
+            : ""}
+      </p>
+
       {pageInfo.hasNextPage && (
-        <div ref={sentinelRef} className="flex justify-center py-10">
+        <div ref={sentinelRef} className="flex flex-col items-center gap-2.5 py-10">
           {isLoading && <LoaderCircleIcon className="size-6 animate-spin text-muted-foreground" />}
+          {hasError && (
+            <div role="alert" className="flex flex-col items-center gap-2.5 text-center">
+              <p className="text-sm text-muted-foreground">{t("loadMoreFailed")}</p>
+              <Button variant="outline" onClick={handleLoadMore}>
+                {tCommon("tryAgain")}
+              </Button>
+            </div>
+          )}
+          {nextPageHref && (
+            <Link
+              href={nextPageHref}
+              prefetch={false}
+              // Crawlable fallback: keeps page 2+ reachable without JavaScript and for crawlers.
+              className={hasError || isLoading ? "text-sm underline" : "sr-only"}
+            >
+              {t("pagination.next")}
+            </Link>
+          )}
         </div>
       )}
     </>

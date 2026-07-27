@@ -7,7 +7,7 @@ Hydrogen is an exact dependency and a commerce-boundary change, never a routine 
 2. Read the candidate package changelog, bundled type declarations, schema and matching versioned
    Hydrogen skills. Confirm its license and lifecycle scripts before installation.
 3. Install one exact version with pnpm. Do not use `preview`, `latest`, a range or an unreviewed lockfile.
-4. Refresh `docs/provenance/hydrogen-sdk.json`, `agent-workflows/skills.json` and the copied package skills
+4. Refresh `docs/provenance/hydrogen-sdk.json`, `.agents/skills.json` and the copied package skills
    through the repository sync commands. Record checksum and API differences.
 5. Run transport, routing/cache, cart, money, Shop Pay, analytics, Markets, selling-plan and webhook
    characterization tests. Any change to cookie, header, cache, redirect, event or user-error semantics is

@@ -1,0 +1,1249 @@
+{
+  "0:searchProducts": {
+    "search": {
+      "edges": [
+        {
+          "cursor": "fixture-product",
+          "node": {
+            "availableForSale": true,
+            "compareAtPriceRange": null,
+            "featuredImage": null,
+            "handle": "neutral-product",
+            "id": "gid://shopify/Product/1000",
+            "priceRange": {
+              "maxVariantPrice": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "minVariantPrice": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              }
+            },
+            "selectedOrFirstAvailableVariant": {
+              "availableForSale": true,
+              "compareAtPrice": null,
+              "id": "gid://shopify/ProductVariant/1001",
+              "image": null,
+              "price": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "selectedOptions": [
+                {
+                  "name": "Title",
+                  "value": "Default Title"
+                }
+              ],
+              "title": "Default Title"
+            },
+            "title": "Neutral Product",
+            "vendor": "Fixture Supply"
+          }
+        }
+      ],
+      "pageInfo": {
+        "endCursor": null,
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": null
+      },
+      "totalCount": 1
+    }
+  },
+  "1:searchProducts": {
+    "search": {
+      "edges": [
+        {
+          "cursor": "fixture-product",
+          "node": {
+            "availableForSale": true,
+            "compareAtPriceRange": null,
+            "featuredImage": null,
+            "handle": "neutral-product",
+            "id": "gid://shopify/Product/1000",
+            "priceRange": {
+              "maxVariantPrice": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "minVariantPrice": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              }
+            },
+            "selectedOrFirstAvailableVariant": {
+              "availableForSale": true,
+              "compareAtPrice": null,
+              "id": "gid://shopify/ProductVariant/1001",
+              "image": null,
+              "price": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "selectedOptions": [
+                {
+                  "name": "Title",
+                  "value": "Default Title"
+                }
+              ],
+              "title": "Default Title"
+            },
+            "title": "Neutral Product",
+            "vendor": "Fixture Supply"
+          }
+        }
+      ],
+      "pageInfo": {
+        "endCursor": null,
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": null
+      },
+      "totalCount": 1
+    }
+  },
+  "2:searchProducts": {
+    "search": {
+      "edges": [
+        {
+          "cursor": "fixture-product",
+          "node": {
+            "availableForSale": true,
+            "compareAtPriceRange": null,
+            "featuredImage": null,
+            "handle": "neutral-product",
+            "id": "gid://shopify/Product/1000",
+            "priceRange": {
+              "maxVariantPrice": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "minVariantPrice": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              }
+            },
+            "selectedOrFirstAvailableVariant": {
+              "availableForSale": true,
+              "compareAtPrice": null,
+              "id": "gid://shopify/ProductVariant/1001",
+              "image": null,
+              "price": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "selectedOptions": [
+                {
+                  "name": "Title",
+                  "value": "Default Title"
+                }
+              ],
+              "title": "Default Title"
+            },
+            "title": "Neutral Product",
+            "vendor": "Fixture Supply"
+          }
+        }
+      ],
+      "pageInfo": {
+        "endCursor": null,
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": null
+      },
+      "totalCount": 1
+    }
+  },
+  "3:catalogProducts": {
+    "products": {
+      "edges": [
+        {
+          "cursor": "fixture-product",
+          "node": {
+            "availableForSale": true,
+            "compareAtPriceRange": null,
+            "featuredImage": null,
+            "handle": "neutral-product",
+            "id": "gid://shopify/Product/1000",
+            "priceRange": {
+              "maxVariantPrice": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "minVariantPrice": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              }
+            },
+            "selectedOrFirstAvailableVariant": {
+              "availableForSale": true,
+              "compareAtPrice": null,
+              "id": "gid://shopify/ProductVariant/1001",
+              "image": null,
+              "price": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "selectedOptions": [
+                {
+                  "name": "Title",
+                  "value": "Default Title"
+                }
+              ],
+              "title": "Default Title"
+            },
+            "title": "Neutral Product",
+            "vendor": "Fixture Supply"
+          }
+        }
+      ],
+      "pageInfo": {
+        "endCursor": null,
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": null
+      }
+    }
+  },
+  "4:catalogProducts": {
+    "products": {
+      "edges": [
+        {
+          "cursor": "fixture-product",
+          "node": {
+            "availableForSale": true,
+            "compareAtPriceRange": null,
+            "featuredImage": null,
+            "handle": "neutral-product",
+            "id": "gid://shopify/Product/1000",
+            "priceRange": {
+              "maxVariantPrice": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "minVariantPrice": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              }
+            },
+            "selectedOrFirstAvailableVariant": {
+              "availableForSale": true,
+              "compareAtPrice": null,
+              "id": "gid://shopify/ProductVariant/1001",
+              "image": null,
+              "price": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "selectedOptions": [
+                {
+                  "name": "Title",
+                  "value": "Default Title"
+                }
+              ],
+              "title": "Default Title"
+            },
+            "title": "Neutral Product",
+            "vendor": "Fixture Supply"
+          }
+        }
+      ],
+      "pageInfo": {
+        "endCursor": null,
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": null
+      }
+    }
+  },
+  "5:catalogProducts": {
+    "products": {
+      "edges": [
+        {
+          "cursor": "fixture-product",
+          "node": {
+            "availableForSale": true,
+            "compareAtPriceRange": null,
+            "featuredImage": null,
+            "handle": "neutral-product",
+            "id": "gid://shopify/Product/1000",
+            "priceRange": {
+              "maxVariantPrice": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "minVariantPrice": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              }
+            },
+            "selectedOrFirstAvailableVariant": {
+              "availableForSale": true,
+              "compareAtPrice": null,
+              "id": "gid://shopify/ProductVariant/1001",
+              "image": null,
+              "price": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "selectedOptions": [
+                {
+                  "name": "Title",
+                  "value": "Default Title"
+                }
+              ],
+              "title": "Default Title"
+            },
+            "title": "Neutral Product",
+            "vendor": "Fixture Supply"
+          }
+        }
+      ],
+      "pageInfo": {
+        "endCursor": null,
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": null
+      }
+    }
+  },
+  "6:searchFacets": {
+    "search": {
+      "nodes": [
+        {
+          "availableForSale": true,
+          "compareAtPriceRange": null,
+          "featuredImage": null,
+          "handle": "neutral-product",
+          "id": "gid://shopify/Product/1000",
+          "priceRange": {
+            "maxVariantPrice": {
+              "amount": "24.00",
+              "currencyCode": "USD"
+            },
+            "minVariantPrice": {
+              "amount": "24.00",
+              "currencyCode": "USD"
+            }
+          },
+          "selectedOrFirstAvailableVariant": {
+            "availableForSale": true,
+            "compareAtPrice": null,
+            "id": "gid://shopify/ProductVariant/1001",
+            "image": null,
+            "price": {
+              "amount": "24.00",
+              "currencyCode": "USD"
+            },
+            "selectedOptions": [
+              {
+                "name": "Title",
+                "value": "Default Title"
+              }
+            ],
+            "title": "Default Title"
+          },
+          "title": "Neutral Product",
+          "vendor": "Fixture Supply"
+        }
+      ],
+      "productFilters": [],
+      "totalCount": 1
+    }
+  },
+  "7:searchFacets": {
+    "search": {
+      "nodes": [
+        {
+          "availableForSale": true,
+          "compareAtPriceRange": null,
+          "featuredImage": null,
+          "handle": "neutral-product",
+          "id": "gid://shopify/Product/1000",
+          "priceRange": {
+            "maxVariantPrice": {
+              "amount": "24.00",
+              "currencyCode": "USD"
+            },
+            "minVariantPrice": {
+              "amount": "24.00",
+              "currencyCode": "USD"
+            }
+          },
+          "selectedOrFirstAvailableVariant": {
+            "availableForSale": true,
+            "compareAtPrice": null,
+            "id": "gid://shopify/ProductVariant/1001",
+            "image": null,
+            "price": {
+              "amount": "24.00",
+              "currencyCode": "USD"
+            },
+            "selectedOptions": [
+              {
+                "name": "Title",
+                "value": "Default Title"
+              }
+            ],
+            "title": "Default Title"
+          },
+          "title": "Neutral Product",
+          "vendor": "Fixture Supply"
+        }
+      ],
+      "productFilters": [],
+      "totalCount": 1
+    }
+  },
+  "8:collectionProducts": {
+    "collection": {
+      "products": {
+        "edges": [
+          {
+            "cursor": "fixture-product",
+            "node": {
+              "availableForSale": true,
+              "compareAtPriceRange": null,
+              "featuredImage": null,
+              "handle": "neutral-product",
+              "id": "gid://shopify/Product/1000",
+              "priceRange": {
+                "maxVariantPrice": {
+                  "amount": "24.00",
+                  "currencyCode": "USD"
+                },
+                "minVariantPrice": {
+                  "amount": "24.00",
+                  "currencyCode": "USD"
+                }
+              },
+              "selectedOrFirstAvailableVariant": {
+                "availableForSale": true,
+                "compareAtPrice": null,
+                "id": "gid://shopify/ProductVariant/1001",
+                "image": null,
+                "price": {
+                  "amount": "24.00",
+                  "currencyCode": "USD"
+                },
+                "selectedOptions": [
+                  {
+                    "name": "Title",
+                    "value": "Default Title"
+                  }
+                ],
+                "title": "Default Title"
+              },
+              "title": "Neutral Product",
+              "vendor": "Fixture Supply"
+            }
+          }
+        ],
+        "filters": [],
+        "pageInfo": {
+          "endCursor": null,
+          "hasNextPage": false,
+          "hasPreviousPage": false,
+          "startCursor": null
+        }
+      }
+    }
+  },
+  "9:collectionProducts": {
+    "collection": {
+      "products": {
+        "edges": [
+          {
+            "cursor": "fixture-product",
+            "node": {
+              "availableForSale": true,
+              "compareAtPriceRange": null,
+              "featuredImage": null,
+              "handle": "neutral-product",
+              "id": "gid://shopify/Product/1000",
+              "priceRange": {
+                "maxVariantPrice": {
+                  "amount": "24.00",
+                  "currencyCode": "USD"
+                },
+                "minVariantPrice": {
+                  "amount": "24.00",
+                  "currencyCode": "USD"
+                }
+              },
+              "selectedOrFirstAvailableVariant": {
+                "availableForSale": true,
+                "compareAtPrice": null,
+                "id": "gid://shopify/ProductVariant/1001",
+                "image": null,
+                "price": {
+                  "amount": "24.00",
+                  "currencyCode": "USD"
+                },
+                "selectedOptions": [
+                  {
+                    "name": "Title",
+                    "value": "Default Title"
+                  }
+                ],
+                "title": "Default Title"
+              },
+              "title": "Neutral Product",
+              "vendor": "Fixture Supply"
+            }
+          }
+        ],
+        "filters": [],
+        "pageInfo": {
+          "endCursor": null,
+          "hasNextPage": false,
+          "hasPreviousPage": false,
+          "startCursor": null
+        }
+      }
+    }
+  },
+  "10:collectionProducts": {
+    "collection": null
+  },
+  "11:collectionProducts": {
+    "collection": null
+  },
+  "12:getCollections": {
+    "collections": {
+      "edges": [
+        {
+          "node": {
+            "description": "A neutral synthetic collection for deterministic verification.",
+            "handle": "neutral-collection",
+            "id": "gid://shopify/Collection/200",
+            "image": null,
+            "seo": {
+              "description": null,
+              "title": null
+            },
+            "title": "Neutral Collection",
+            "updatedAt": "2026-01-01T00:00:00Z"
+          }
+        }
+      ]
+    }
+  },
+  "13:getCollectionsWithFeaturedImage": {
+    "collections": {
+      "edges": [
+        {
+          "node": {
+            "description": "A neutral synthetic collection for deterministic verification.",
+            "handle": "neutral-collection",
+            "id": "gid://shopify/Collection/200",
+            "image": null,
+            "seo": {
+              "description": null,
+              "title": null
+            },
+            "title": "Neutral Collection",
+            "updatedAt": "2026-01-01T00:00:00Z",
+            "products": {
+              "edges": [
+                {
+                  "node": {
+                    "featuredImage": null,
+                    "id": "gid://shopify/Product/1000"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "14:getProductsByHandles": {
+    "products": {
+      "edges": [
+        {
+          "node": {
+            "availableForSale": true,
+            "compareAtPriceRange": null,
+            "featuredImage": null,
+            "handle": "neutral-product",
+            "id": "gid://shopify/Product/1000",
+            "priceRange": {
+              "maxVariantPrice": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "minVariantPrice": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              }
+            },
+            "selectedOrFirstAvailableVariant": {
+              "availableForSale": true,
+              "compareAtPrice": null,
+              "id": "gid://shopify/ProductVariant/1001",
+              "image": null,
+              "price": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "selectedOptions": [
+                {
+                  "name": "Title",
+                  "value": "Default Title"
+                }
+              ],
+              "title": "Default Title"
+            },
+            "title": "Neutral Product",
+            "vendor": "Fixture Supply"
+          }
+        }
+      ]
+    }
+  },
+  "15:getCollection": {
+    "collection": {
+      "description": "A neutral synthetic collection for deterministic verification.",
+      "handle": "neutral-collection",
+      "id": "gid://shopify/Collection/200",
+      "image": null,
+      "seo": {
+        "description": null,
+        "title": null
+      },
+      "title": "Neutral Collection",
+      "updatedAt": "2026-01-01T00:00:00Z"
+    }
+  },
+  "16:getCollection": {
+    "collection": null
+  },
+  "17:getProductByHandle": {
+    "productByHandle": {
+      "availableForSale": true,
+      "category": null,
+      "collections": {
+        "edges": [
+          {
+            "node": {
+              "handle": "neutral-collection"
+            }
+          }
+        ]
+      },
+      "compareAtPriceRange": null,
+      "description": "A neutral synthetic product used only for deterministic platform verification.",
+      "descriptionHtml": "<p>A neutral synthetic product used only for deterministic platform verification.</p>",
+      "encodedVariantAvailability": null,
+      "encodedVariantExistence": null,
+      "featuredImage": null,
+      "handle": "neutral-product",
+      "id": "gid://shopify/Product/1000",
+      "media": {
+        "edges": []
+      },
+      "options": [
+        {
+          "id": "gid://shopify/ProductOption/1002",
+          "name": "Title",
+          "optionValues": [
+            {
+              "firstSelectableVariant": {
+                "image": null
+              },
+              "id": "gid://shopify/ProductOptionValue/1003",
+              "name": "Default Title",
+              "swatch": null
+            }
+          ]
+        }
+      ],
+      "priceRange": {
+        "maxVariantPrice": {
+          "amount": "24.00",
+          "currencyCode": "USD"
+        },
+        "minVariantPrice": {
+          "amount": "24.00",
+          "currencyCode": "USD"
+        }
+      },
+      "selectedOrFirstAvailableVariant": {
+        "availableForSale": true,
+        "compareAtPrice": null,
+        "id": "gid://shopify/ProductVariant/1001",
+        "image": null,
+        "price": {
+          "amount": "24.00",
+          "currencyCode": "USD"
+        },
+        "selectedOptions": [
+          {
+            "name": "Title",
+            "value": "Default Title"
+          }
+        ],
+        "title": "Default Title"
+      },
+      "seo": {
+        "description": null,
+        "title": null
+      },
+      "tags": [],
+      "title": "Neutral Product",
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "variants": {
+        "edges": [
+          {
+            "node": {
+              "availableForSale": true,
+              "compareAtPrice": null,
+              "id": "gid://shopify/ProductVariant/1001",
+              "image": null,
+              "price": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "selectedOptions": [
+                {
+                  "name": "Title",
+                  "value": "Default Title"
+                }
+              ],
+              "title": "Default Title"
+            }
+          }
+        ]
+      },
+      "variantsCount": {
+        "count": 1
+      },
+      "vendor": "Fixture Supply"
+    }
+  },
+  "18:getProductByHandle": {
+    "productByHandle": null
+  },
+  "19:getProductByHandleWithBundles": {
+    "productByHandle": {
+      "availableForSale": true,
+      "category": null,
+      "collections": {
+        "edges": [
+          {
+            "node": {
+              "handle": "neutral-collection"
+            }
+          }
+        ]
+      },
+      "compareAtPriceRange": null,
+      "description": "A neutral synthetic product used only for deterministic platform verification.",
+      "descriptionHtml": "<p>A neutral synthetic product used only for deterministic platform verification.</p>",
+      "encodedVariantAvailability": null,
+      "encodedVariantExistence": null,
+      "featuredImage": null,
+      "handle": "neutral-product",
+      "id": "gid://shopify/Product/1000",
+      "media": {
+        "edges": []
+      },
+      "options": [
+        {
+          "id": "gid://shopify/ProductOption/1002",
+          "name": "Title",
+          "optionValues": [
+            {
+              "firstSelectableVariant": {
+                "image": null
+              },
+              "id": "gid://shopify/ProductOptionValue/1003",
+              "name": "Default Title",
+              "swatch": null
+            }
+          ]
+        }
+      ],
+      "priceRange": {
+        "maxVariantPrice": {
+          "amount": "24.00",
+          "currencyCode": "USD"
+        },
+        "minVariantPrice": {
+          "amount": "24.00",
+          "currencyCode": "USD"
+        }
+      },
+      "selectedOrFirstAvailableVariant": {
+        "availableForSale": true,
+        "compareAtPrice": null,
+        "id": "gid://shopify/ProductVariant/1001",
+        "image": null,
+        "price": {
+          "amount": "24.00",
+          "currencyCode": "USD"
+        },
+        "selectedOptions": [
+          {
+            "name": "Title",
+            "value": "Default Title"
+          }
+        ],
+        "title": "Default Title"
+      },
+      "seo": {
+        "description": null,
+        "title": null
+      },
+      "tags": [],
+      "title": "Neutral Product",
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "variants": {
+        "edges": [
+          {
+            "node": {
+              "availableForSale": true,
+              "compareAtPrice": null,
+              "id": "gid://shopify/ProductVariant/1001",
+              "image": null,
+              "price": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "selectedOptions": [
+                {
+                  "name": "Title",
+                  "value": "Default Title"
+                }
+              ],
+              "title": "Default Title"
+            }
+          }
+        ]
+      },
+      "variantsCount": {
+        "count": 1
+      },
+      "vendor": "Fixture Supply"
+    }
+  },
+  "20:getProductWithVariants": {
+    "productByHandle": {
+      "availableForSale": true,
+      "category": null,
+      "collections": {
+        "edges": [
+          {
+            "node": {
+              "handle": "neutral-collection"
+            }
+          }
+        ]
+      },
+      "compareAtPriceRange": null,
+      "description": "A neutral synthetic product used only for deterministic platform verification.",
+      "descriptionHtml": "<p>A neutral synthetic product used only for deterministic platform verification.</p>",
+      "encodedVariantAvailability": null,
+      "encodedVariantExistence": null,
+      "featuredImage": null,
+      "handle": "neutral-product",
+      "id": "gid://shopify/Product/1000",
+      "media": {
+        "edges": []
+      },
+      "options": [
+        {
+          "id": "gid://shopify/ProductOption/1002",
+          "name": "Title",
+          "optionValues": [
+            {
+              "firstSelectableVariant": {
+                "image": null
+              },
+              "id": "gid://shopify/ProductOptionValue/1003",
+              "name": "Default Title",
+              "swatch": null
+            }
+          ]
+        }
+      ],
+      "priceRange": {
+        "maxVariantPrice": {
+          "amount": "24.00",
+          "currencyCode": "USD"
+        },
+        "minVariantPrice": {
+          "amount": "24.00",
+          "currencyCode": "USD"
+        }
+      },
+      "selectedOrFirstAvailableVariant": {
+        "availableForSale": true,
+        "compareAtPrice": null,
+        "id": "gid://shopify/ProductVariant/1001",
+        "image": null,
+        "price": {
+          "amount": "24.00",
+          "currencyCode": "USD"
+        },
+        "selectedOptions": [
+          {
+            "name": "Title",
+            "value": "Default Title"
+          }
+        ],
+        "title": "Default Title"
+      },
+      "seo": {
+        "description": null,
+        "title": null
+      },
+      "tags": [],
+      "title": "Neutral Product",
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "variants": {
+        "edges": [
+          {
+            "node": {
+              "availableForSale": true,
+              "compareAtPrice": null,
+              "id": "gid://shopify/ProductVariant/1001",
+              "image": null,
+              "price": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "selectedOptions": [
+                {
+                  "name": "Title",
+                  "value": "Default Title"
+                }
+              ],
+              "title": "Default Title"
+            }
+          }
+        ]
+      },
+      "variantsCount": {
+        "count": 1
+      },
+      "vendor": "Fixture Supply"
+    }
+  },
+  "21:getProductById": {
+    "node": {
+      "availableForSale": true,
+      "category": null,
+      "collections": {
+        "edges": [
+          {
+            "node": {
+              "handle": "neutral-collection"
+            }
+          }
+        ]
+      },
+      "compareAtPriceRange": null,
+      "description": "A neutral synthetic product used only for deterministic platform verification.",
+      "descriptionHtml": "<p>A neutral synthetic product used only for deterministic platform verification.</p>",
+      "encodedVariantAvailability": null,
+      "encodedVariantExistence": null,
+      "featuredImage": null,
+      "handle": "neutral-product",
+      "id": "gid://shopify/Product/1000",
+      "media": {
+        "edges": []
+      },
+      "options": [
+        {
+          "id": "gid://shopify/ProductOption/1002",
+          "name": "Title",
+          "optionValues": [
+            {
+              "firstSelectableVariant": {
+                "image": null
+              },
+              "id": "gid://shopify/ProductOptionValue/1003",
+              "name": "Default Title",
+              "swatch": null
+            }
+          ]
+        }
+      ],
+      "priceRange": {
+        "maxVariantPrice": {
+          "amount": "24.00",
+          "currencyCode": "USD"
+        },
+        "minVariantPrice": {
+          "amount": "24.00",
+          "currencyCode": "USD"
+        }
+      },
+      "selectedOrFirstAvailableVariant": {
+        "availableForSale": true,
+        "compareAtPrice": null,
+        "id": "gid://shopify/ProductVariant/1001",
+        "image": null,
+        "price": {
+          "amount": "24.00",
+          "currencyCode": "USD"
+        },
+        "selectedOptions": [
+          {
+            "name": "Title",
+            "value": "Default Title"
+          }
+        ],
+        "title": "Default Title"
+      },
+      "seo": {
+        "description": null,
+        "title": null
+      },
+      "tags": [],
+      "title": "Neutral Product",
+      "updatedAt": "2026-01-01T00:00:00Z",
+      "variants": {
+        "edges": [
+          {
+            "node": {
+              "availableForSale": true,
+              "compareAtPrice": null,
+              "id": "gid://shopify/ProductVariant/1001",
+              "image": null,
+              "price": {
+                "amount": "24.00",
+                "currencyCode": "USD"
+              },
+              "selectedOptions": [
+                {
+                  "name": "Title",
+                  "value": "Default Title"
+                }
+              ],
+              "title": "Default Title"
+            }
+          }
+        ]
+      },
+      "variantsCount": {
+        "count": 1
+      },
+      "vendor": "Fixture Supply"
+    }
+  },
+  "22:getProductById": {
+    "node": null
+  },
+  "23:getProductVariant": {
+    "node": null
+  },
+  "24:getProductVariantWithBundles": {
+    "node": null
+  },
+  "25:getProductsByIds": {
+    "nodes": []
+  },
+  "26:nodeHandles": {
+    "nodes": []
+  },
+  "27:complementaryProducts": {
+    "productRecommendations": []
+  },
+  "28:relatedProducts": {
+    "productRecommendations": []
+  },
+  "29:getMenu": {
+    "menu": null
+  },
+  "30:getPage": {
+    "page": null
+  },
+  "31:getBlogs": {
+    "blogs": {
+      "nodes": [
+        {
+          "handle": "journal",
+          "id": "gid://shopify/Blog/2000",
+          "seo": {
+            "description": "Neutral fixture articles.",
+            "title": "Journal"
+          },
+          "title": "Journal"
+        }
+      ]
+    }
+  },
+  "32:getBlog": {
+    "blog": {
+      "handle": "journal",
+      "id": "gid://shopify/Blog/2000",
+      "seo": {
+        "description": "Neutral fixture articles.",
+        "title": "Journal"
+      },
+      "title": "Journal",
+      "articles": {
+        "nodes": [
+          {
+            "authorV2": {
+              "name": "Fixture Editor"
+            },
+            "blog": {
+              "handle": "journal",
+              "title": "Journal"
+            },
+            "contentHtml": "<p>Neutral fixture article content.</p>",
+            "excerpt": "A neutral synthetic article used for deterministic verification.",
+            "handle": "neutral-article",
+            "id": "gid://shopify/Article/2001",
+            "image": null,
+            "publishedAt": "2026-01-01T00:00:00Z",
+            "seo": {
+              "description": null,
+              "title": null
+            },
+            "tags": [],
+            "title": "Neutral Article"
+          }
+        ],
+        "pageInfo": {
+          "endCursor": null,
+          "hasNextPage": false,
+          "hasPreviousPage": false,
+          "startCursor": null
+        }
+      }
+    }
+  },
+  "33:getBlog": {
+    "blog": null
+  },
+  "34:getArticle": {
+    "blog": {
+      "articleByHandle": {
+        "authorV2": {
+          "name": "Fixture Editor"
+        },
+        "blog": {
+          "handle": "journal",
+          "title": "Journal"
+        },
+        "contentHtml": "<p>Neutral fixture article content.</p>",
+        "excerpt": "A neutral synthetic article used for deterministic verification.",
+        "handle": "neutral-article",
+        "id": "gid://shopify/Article/2001",
+        "image": null,
+        "publishedAt": "2026-01-01T00:00:00Z",
+        "seo": {
+          "description": null,
+          "title": null
+        },
+        "tags": [],
+        "title": "Neutral Article"
+      }
+    }
+  },
+  "35:getArticle": {
+    "blog": {
+      "articleByHandle": null
+    }
+  },
+  "36:getArticle": {
+    "blog": null
+  },
+  "37:getBlogSitemap": {
+    "blogs": {
+      "nodes": [
+        {
+          "handle": "journal"
+        }
+      ],
+      "pageInfo": {
+        "endCursor": null,
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": null
+      }
+    }
+  },
+  "38:getArticleSitemap": {
+    "articles": {
+      "nodes": [
+        {
+          "blog": {
+            "handle": "journal"
+          },
+          "handle": "neutral-article",
+          "publishedAt": "2026-01-01T00:00:00Z"
+        }
+      ],
+      "pageInfo": {
+        "endCursor": null,
+        "hasNextPage": false,
+        "hasPreviousPage": false,
+        "startCursor": null
+      }
+    }
+  },
+  "39:getShopPolicies": {
+    "shop": {
+      "contactInformation": null,
+      "legalNotice": null,
+      "privacyPolicy": null,
+      "refundPolicy": null,
+      "shippingPolicy": null,
+      "termsOfSale": null,
+      "termsOfService": null
+    }
+  },
+  "40:shopAnalytics": {
+    "localization": {
+      "country": {
+        "currency": {
+          "isoCode": "USD"
+        }
+      }
+    },
+    "shop": {
+      "id": "gid://shopify/Shop/100"
+    }
+  },
+  "41:predictiveSearch": {
+    "predictiveSearch": {
+      "articles": [],
+      "collections": [],
+      "pages": [],
+      "products": [],
+      "queries": []
+    }
+  },
+  "42:getSitemapPagesCount": {
+    "sitemap": {
+      "pagesCount": {
+        "count": 0
+      }
+    }
+  },
+  "43:getSitemapPage": {
+    "sitemap": {
+      "resources": {
+        "hasNextPage": false,
+        "items": []
+      }
+    }
+  },
+  "44:getCart": {
+    "cart": null
+  },
+  "45:getCartDeliveryOptions": {
+    "cart": null
+  },
+  "46:getCartSelectableAddresses": {
+    "cart": null
+  }
+}

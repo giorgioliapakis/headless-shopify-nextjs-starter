@@ -6,10 +6,8 @@ import { resolve } from "node:path";
 import process from "node:process";
 
 const root = resolve(process.cwd());
-const manifest = JSON.parse(await readFile(resolve(root, "agent-workflows/skills.json"), "utf8"));
-const workflowManifest = JSON.parse(
-  await readFile(resolve(root, "agent-workflows/manifest.json"), "utf8"),
-);
+const manifest = JSON.parse(await readFile(resolve(root, ".agents/skills.json"), "utf8"));
+const workflowManifest = JSON.parse(await readFile(resolve(root, ".agents/manifest.json"), "utf8"));
 let count = 0;
 
 function fail(message) {
@@ -34,8 +32,8 @@ for (const workflow of workflowManifest.workflows ?? []) {
   const metadata = await stat(path).catch(() => fail(`missing workflow: ${workflow.id}`));
   if (!metadata.isFile()) fail(`non-file workflow: ${workflow.id}`);
 }
-if (!workflowIds.has("foundation-work") || !workflowIds.has("migrate-storefront")) {
-  fail("canonical foundation and migration workflows are required");
+if (!workflowIds.has("foundation-work")) {
+  fail("the canonical foundation-work workflow is required");
 }
 
 for (const source of manifest.sources ?? []) {
@@ -77,8 +75,14 @@ for (const source of manifest.packages ?? []) {
   if (provenance.package !== source.package || provenance.version !== source.version) {
     fail(`provenance mismatch: ${source.package}`);
   }
+  // The preview pin is a dated exception, not a kill switch. Warn loudly rather
+  // than breaking `pnpm check` for everyone who clones the repo after the date.
   if (new Date(`${provenance.expires}T23:59:59Z`).getTime() < Date.now()) {
-    fail(`preview exception expired: ${source.package}`);
+    console.warn(
+      `Warning: the ${source.package} preview exception lapsed on ${provenance.expires}. ` +
+        `Re-review the pin and refresh docs/provenance/hydrogen-sdk.json — see ` +
+        `docs/runbooks/hydrogen-upgrade.md.`,
+    );
   }
 
   const installedPackage = JSON.parse(

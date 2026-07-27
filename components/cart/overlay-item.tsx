@@ -4,6 +4,7 @@ import { MinusIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { useId } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn, formatPrice } from "@/lib/utils";
@@ -21,12 +22,30 @@ export function OverlayItem({ item, locale }: OverlayItemProps) {
   const pending = useCart((state) => state.pending.lines.has(item.id));
   const errors = useCart((state) => state.errors.lines.get(item.id));
   const t = useTranslations("cart");
+  const tProduct = useTranslations("product");
+  const fieldId = useId();
+  const errorId = `${fieldId}-error`;
   const merchandise = item.merchandise;
   const productTitle = merchandise?.product.title ?? merchandise?.title ?? t("cartItemsLabel");
   const productHref = merchandise?.product.handle
     ? `/products/${merchandise.product.handle}`
     : undefined;
   const image = merchandise?.image;
+
+  // Fields are optional in the Storefront response; only an explicit `false` means sold out.
+  const soldOut = merchandise?.availableForSale === false;
+  const quantityAvailable = merchandise?.quantityAvailable ?? null;
+  const atQuantityCap =
+    !soldOut && typeof quantityAvailable === "number" && item.quantity >= quantityAvailable;
+
+  const messages = [...(errors?.userErrors ?? []), ...(errors?.warnings ?? [])].map(
+    (error) => error.message,
+  );
+  if (soldOut) messages.unshift(tProduct("outOfStock"));
+  else if (atQuantityCap && quantityAvailable !== null) {
+    messages.unshift(tProduct("stockLeft", { stock: String(quantityAvailable) }));
+  }
+  const hasMessages = messages.length > 0;
 
   return (
     <li
@@ -43,7 +62,7 @@ export function OverlayItem({ item, locale }: OverlayItemProps) {
               src={image.url}
               alt={image.altText ?? productTitle}
               fill
-              className="object-cover"
+              className={cn("object-cover", soldOut && "opacity-50")}
               sizes="64px"
             />
           ) : null}
@@ -91,8 +110,14 @@ export function OverlayItem({ item, locale }: OverlayItemProps) {
 
           <input
             {...register("quantity", { interactive: true, value: item.quantity })}
+            id={fieldId}
             aria-label={t("itemQuantity")}
-            className="inline-flex rounded-full bg-muted w-10.5 h-7 px-2 text-center text-xs font-medium text-foreground"
+            aria-invalid={hasMessages || undefined}
+            aria-describedby={hasMessages ? errorId : undefined}
+            min={1}
+            max={quantityAvailable ?? undefined}
+            disabled={soldOut}
+            className="inline-flex rounded-full bg-muted w-10.5 h-7 px-2 text-center text-xs font-medium text-foreground disabled:opacity-50"
           />
 
           <Button
@@ -100,6 +125,7 @@ export function OverlayItem({ item, locale }: OverlayItemProps) {
             variant="secondary"
             size="icon"
             className="size-7 rounded-full"
+            disabled={soldOut || atQuantityCap}
             aria-label={t("increaseQuantity")}
             {...register("increase")}
           >
@@ -117,9 +143,9 @@ export function OverlayItem({ item, locale }: OverlayItemProps) {
             <Trash2Icon className="size-4" />
           </Button>
         </form>
-        {errors && (errors.userErrors.length > 0 || errors.warnings.length > 0) ? (
-          <p role="alert" className="text-xs text-destructive">
-            {[...errors.userErrors, ...errors.warnings].map((error) => error.message).join(" ")}
+        {hasMessages ? (
+          <p id={errorId} role="alert" className="text-xs text-destructive">
+            {messages.join(" ")}
           </p>
         ) : null}
       </div>

@@ -4,12 +4,12 @@ import { cn } from "@/lib/utils";
 
 interface DiscountBadgeProps extends React.ComponentProps<"span"> {
   percent: number;
-  variant?: "green" | "blue";
+  variant?: "positive" | "info";
 }
 
 export function DiscountBadge({
   percent,
-  variant = "green",
+  variant = "positive",
   className,
   ...props
 }: DiscountBadgeProps) {
@@ -17,8 +17,8 @@ export function DiscountBadge({
     <span
       className={cn(
         "inline-flex items-center rounded-full px-2 py-0.5 font-mono text-xs font-medium tabular-nums",
-        variant === "green" && "bg-positive/15 text-positive",
-        variant === "blue" && "bg-blue-500/15 text-blue-600",
+        variant === "positive" && "bg-positive/15 text-positive",
+        variant === "info" && "bg-info/15 text-info",
         className,
       )}
       {...props}

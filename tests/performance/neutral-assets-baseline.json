@@ -1,15 +1,16 @@
 {
   "schemaVersion": 1,
-  "recordedAt": "2026-07-16",
+  "recordedAt": "2026-07-27",
   "fixture": "neutral",
   "environment": {
-    "node": "24.17.0",
+    "node": "24.18.0",
     "pnpm": "11.5.0",
     "next": "16.2.10"
   },
+  "rationale": "Deliberate +15.2 KB gzip against the 2026-07-16 baseline (371339 -> 386556), well inside the 450000 ceiling. Attributable to shipped user-facing behaviour: dark-mode pre-paint and theme toggle, cart live regions and unavailable-line handling, PDP quantity selector and add-to-cart pending state, breadcrumb trail, collection results announcer, infinite-scroll retry, and the added route error boundaries. The largest chunk and total CSS both went down. The /styleguide route is development-only and is not part of this measurement.",
   "measurements": {
-    "totalClientJavaScriptGzipBytes": 371339,
-    "largestClientChunkGzipBytes": 72485,
-    "totalCssGzipBytes": 21140
+    "totalClientJavaScriptGzipBytes": 386556,
+    "largestClientChunkGzipBytes": 72481,
+    "totalCssGzipBytes": 19037
   }
 }

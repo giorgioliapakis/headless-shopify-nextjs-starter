@@ -1,0 +1,73 @@
+Headless Shopify Next.js Starter
+Copyright (c) 2026 Headless Shopify Next.js Starter contributors
+
+This product includes software developed by third parties, listed below.
+All included third-party material is MIT licensed. Redistributions of this
+project must retain this NOTICE file alongside the LICENSE.
+
+================================================================================
+Storefront runtime — Vercel Shop
+================================================================================
+
+Portions of the storefront runtime are derived from the `apps/template` subtree
+of https://github.com/vercel/shop at commit
+04a29f8276598e58ec28e74218f38601f6203470.
+
+Copyright (c) Vercel, Inc.
+Licensed under the MIT License.
+
+The per-file manifest, including source and current checksums, is
+docs/provenance/vercel-shop.json.
+
+The import excludes the customer-facing AI assistant, headless customer
+accounts and their supporting authentication code, and upstream binary
+branding. That is a product boundary, not a judgement about those features.
+
+================================================================================
+Agent skills — Shopify Hydrogen
+================================================================================
+
+.agents/skills/hydrogen-* (14 skills) are copied unmodified from the
+`skills/` directory of the @shopify/hydrogen npm package, version
+0.0.0-preview-8a708a8-20260708155454.
+
+Copyright 2023-present, Shopify Inc.
+Licensed under the MIT License.
+
+Source: https://github.com/Shopify/hydrogen
+Manifest: .agents/skills.json
+
+================================================================================
+Agent skills — Vercel Labs
+================================================================================
+
+.agents/skills/vercel-react-best-practices
+.agents/skills/vercel-composition-patterns
+.agents/skills/web-design-guidelines
+
+Copied from https://github.com/vercel-labs/agent-skills at commit
+f8a72b9603728bb92a217a879b7e62e43ad76c81.
+
+Copyright (c) Vercel, Inc.
+Licensed under the MIT License.
+
+================================================================================
+Agent skills — shadcn/ui
+================================================================================
+
+.agents/skills/shadcn
+
+Copyright (c) shadcn
+Licensed under the MIT License.
+
+Source: https://github.com/shadcn-ui/ui
+
+================================================================================
+UI components — shadcn/ui and Base UI
+================================================================================
+
+components/ui/* are source-owned components generated from shadcn/ui
+(https://github.com/shadcn-ui/ui, MIT, Copyright (c) shadcn) and built on
+Base UI (https://github.com/mui/base-ui, MIT, Copyright (c) Material UI SAS).
+
+These are intended to be edited in place; they carry no upstream update path.

@@ -12,7 +12,6 @@ export type ShopifyProxyRoute =
   | "redirect-candidate";
 
 const APPLICATION_ROUTE_PREFIXES = [
-  "/api/draft",
   "/api/health",
   "/api/readiness",
   "/api/webhooks/shopify",

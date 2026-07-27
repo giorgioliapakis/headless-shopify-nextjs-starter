@@ -9,6 +9,7 @@ import { CollectionResultsGrid } from "@/components/collections/results-grid";
 import { CollectionsSortSelect } from "@/components/collections/sort-select";
 import { SortSelectFallback } from "@/components/collections/sort-select-fallback";
 import { CollectionToolbar } from "@/components/collections/toolbar";
+import { BreadcrumbTrail } from "@/components/commerce/breadcrumb-trail";
 import { BreadcrumbSchema } from "@/components/schema/breadcrumb-schema";
 import { CollectionSchema } from "@/components/schema/collection-schema";
 import { Container } from "@/components/ui/container";
@@ -114,6 +115,7 @@ function CollectionHeader({
     <>
       <BreadcrumbSchema items={breadcrumbItems} />
       <CollectionSchema collection={{ handle, title, description, updatedAt }} />
+      <BreadcrumbTrail items={breadcrumbItems} />
       <div>
         <h1 className="text-3xl sm:text-4xl md:text-5xl">
           <Link href={`/collections/${handle}`}>{title}</Link>

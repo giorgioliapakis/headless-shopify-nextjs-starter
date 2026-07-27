@@ -1,4 +1,5 @@
 import { neutralHomeRecipe } from "@/config/presets/neutral-home";
+import { neutralLandingRecipes } from "@/config/presets/neutral-landing";
 import { neutralThemePreset } from "@/config/presets/neutral-theme";
 import type { SectionRecipe } from "@/config/schema/sections";
 import type { LandingPageConfig } from "@/config/schema/shop";
@@ -27,7 +28,14 @@ export interface ShopConfig {
     speedInsights: { enabled: boolean };
     vercel: { enabled: boolean };
   };
-  navigation: { footer: MenuItem[]; nav: MenuItem[] };
+  navigation: {
+    /** Rendered when the Shopify menu named by `menuHandles.footer` is missing or empty. */
+    footer: MenuItem[];
+    /** Online Store > Navigation menu handles pulled from the merchant's own store. */
+    menuHandles: { footer: string; nav: string };
+    /** Rendered when the Shopify menu named by `menuHandles.nav` is missing or empty. */
+    nav: MenuItem[];
+  };
   pdp: {
     bundles: { enabled: boolean };
     complementaryProducts: { enabled: boolean };
@@ -59,6 +67,8 @@ export const shopConfig = {
   },
   navigation: {
     footer: [],
+    // Shopify's default handles. Point these at whichever menus the store publishes.
+    menuHandles: { footer: "footer", nav: "main-menu" },
     nav: [
       {
         id: "default-nav-shop",
@@ -74,7 +84,10 @@ export const shopConfig = {
     complementaryProducts: { enabled: false },
     relatedProducts: { enabled: false },
   },
-  recipes: { home: neutralHomeRecipe, landing: {} as Record<string, LandingPageConfig> },
+  recipes: {
+    home: neutralHomeRecipe,
+    landing: neutralLandingRecipes as Record<string, LandingPageConfig>,
+  },
   site: {
     name: process.env.NEXT_PUBLIC_SITE_NAME ?? "Your Store",
     socialLinks: [],

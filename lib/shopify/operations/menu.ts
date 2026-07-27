@@ -1,10 +1,10 @@
 import { gql } from "@shopify/hydrogen";
 import { cacheLife, cacheTag } from "next/cache";
 
-import { assertStorefrontOk } from "../errors";
+import { assertStorefrontOk, withFallback } from "../errors";
 import { storefront } from "../storefront";
 import { type ShopifyMenuResponse, transformShopifyMenu } from "../transforms/menu";
-import type { Menu } from "../types/menu";
+import type { Menu, MenuItem } from "../types/menu";
 
 const MENU_ITEM_FIELDS_FRAGMENT = gql(`
   fragment MenuItemFields on MenuItem {
@@ -54,4 +54,24 @@ export async function getMenu({ handle }: { handle: string }): Promise<Menu | nu
   assertStorefrontOk(response, "getMenu");
 
   return transformShopifyMenu(response.data.menu);
+}
+
+/** A menu that exists but has no items is as useless as a missing one — both fall back. */
+export function resolveMenuItems(menu: Menu | null, fallback: MenuItem[]): MenuItem[] {
+  return menu && menu.items.length > 0 ? menu.items : fallback;
+}
+
+/**
+ * Resolves the merchant's own Shopify menu, falling back to the statically configured
+ * items when the store has no menu under `handle` (or the Storefront API is unavailable).
+ * This is what makes "point it at your store" surface the merchant's navigation.
+ */
+export async function getMenuItems({
+  fallback,
+  handle,
+}: {
+  fallback: MenuItem[];
+  handle: string;
+}): Promise<MenuItem[]> {
+  return resolveMenuItems(await withFallback(getMenu({ handle }), null), fallback);
 }

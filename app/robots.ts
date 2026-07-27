@@ -10,6 +10,7 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
         disallow: [
           "/cart",
+          "/styleguide",
           "/account",
           "/login",
           "/search",

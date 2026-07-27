@@ -60,3 +60,29 @@ test("core PDP survives blocked third-party browser requests", async ({ page, ba
     ),
   ).toBe(true);
 });
+
+test("the cart drawer opens from the header and from the Shopify standard action", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const trigger = page.getByRole("button", { name: /cart/i });
+  await expect(trigger).toBeVisible();
+  await trigger.click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toBeHidden();
+
+  await page.evaluate(async () => {
+    await window.Shopify?.actions?.openCart();
+  });
+  await expect(page.getByRole("dialog")).toBeVisible();
+});
+
+test("/cart shows the empty state, never a live checkout button, once the cart is empty", async ({
+  page,
+}) => {
+  await page.goto("/cart");
+  await expect(page.locator("h1")).toHaveCount(1);
+  await expect(page.getByText(/your cart is empty/i)).toBeVisible();
+  await expect(page.getByRole("link", { name: /go to checkout/i })).toHaveCount(0);
+});

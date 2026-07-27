@@ -1,17 +1,24 @@
 # Storefront capability contract
 
-This document is the honest current-state inventory for the neutral starter. It distinguishes shipped
-foundation behavior from optional packs and roadmap work. A downstream merchant migration must generate
-its own evidence-backed compatibility report; this file is not proof that an arbitrary Shopify store can
-cut over safely.
+A current-state inventory of what this starter actually does. If something is not listed as Core here,
+do not assume it works.
+
+The same inventory is machine-readable in `lib/commerce/capabilities.ts` and mirrored for coding agents
+in `.agents/capability-map.json`. Keep all three in sync — an entry here that the code does not implement
+is a bug, not a roadmap note.
 
 Status vocabulary:
 
-- **Core** — implemented in the neutral runtime and expected in every generated storefront.
-- **Conditional** — implemented behind configuration and included only when discovery finds a consumer.
-- **Planned** — part of the approved platform plan but not yet safe to claim as available.
-- **Hosted** — intentionally handed off to Shopify rather than rebuilt in Next.js.
-- **Unsupported** — an explicit boundary until a separate adapter and proof exist.
+- **Core** — implemented and available in every storefront built from this starter.
+- **Conditional** — implemented, but off until you configure it.
+- **Planned** — an agreed boundary with no safe implementation yet.
+- **Hosted** — deliberately handed off to Shopify rather than rebuilt in Next.js.
+- **Unsupported** — needs a provider-specific adapter you write yourself.
+
+A capability is not "supported" because a dependency is installed. To be Core it needs an explicit
+capability ID and status, its configuration and environment names, at least one route or component
+consumer, a cache/data classification, tests for both enabled and disabled behaviour, and documented
+unsupported cases.
 
 ## Shopper routes
 
@@ -58,7 +65,7 @@ surfaces. Draft mode and the Shopify webhook handler are server endpoints, not s
 | Predictive search                               | Core        | Bounded Shopify predictive results power the navigation search surface.                                              |
 | First-party consent-aware analytics contract    | Conditional | Disabled by default; page/product/collection/search/cart and confirmed cart-delta events use Hydrogen's consent bus. |
 | Headless customer accounts                      | Planned     | Optional pack only; hosted accounts remain default.                                                                  |
-| Reviews, loyalty, wishlists and external search | Unsupported | Require provider-specific downstream adapters and parity evidence.                                                   |
+| Reviews, loyalty, wishlists and external search | Unsupported | Require a provider-specific adapter you write yourself.                                                              |
 
 ## Cache ownership and invalidation
 
@@ -105,13 +112,41 @@ observability remains a migration target.
 
 ## Customization ownership
 
-The foundation owns semantic Tailwind tokens, Base UI behavior, commerce domain types and generic
-primitives. A downstream store owns brand values, licensed assets, copy and page composition. Versioned
-theme and section schemas, contrast validation, the registry and neutral recipes are implemented; this
-is an agent-operated source contract, not a hidden no-code editor. See `docs/customization/`.
+The starter owns semantic tokens, Base UI behaviour, commerce domain types and generic primitives. You
+own your brand values, licensed assets, copy and page composition. Versioned theme and section schemas,
+contrast validation, the section registry and the default recipes are implemented. This is a source
+contract you and your agent edit — not a hidden no-code editor. See
+[`docs/customization/`](../customization/design-tokens.md).
 
-## Definition of full-featured
+## Conditional packs
 
-“Full-featured” means the invariant core is complete and optional packs have explicit dependencies,
-disabled-cost tests and proving consumers. It does not mean every Shopify app is bundled, that checkout is
-custom, or that unproven discovery output is safe to launch.
+`analytics.shopify` turns on with `NEXT_PUBLIC_SHOPIFY_ANALYTICS_ENABLED=true`. It uses Hydrogen's
+default privacy banner, a bounded consent bootstrap and confirmed cart deltas. The purchase event still
+belongs to Shopify checkout.
+
+`markets` turns on when you publish more than one verified locale in `lib/i18n/index.ts`. Bundles,
+complementary products and recommendations are switched in `shop.config.ts`. Hosted accounts need
+`NEXT_PUBLIC_SHOPIFY_ACCOUNT_URL`.
+
+Native Shopify selling plans are Core, not a pack: the product page shows approved plans, passes
+`sellingPlanId` through Hydrogen, and preserves the plan label in the cart. Provider-specific
+subscription portals and cancellation flows are adapters you write.
+
+## Third-party apps
+
+Reviews, loyalty, wishlists, forms and newsletters, subscription portals and third-party search each
+need a named adapter that you write. Before building one, establish which provider you are on, the
+behaviour you need, what browser scripts it injects, who owns the data, its consent category, its
+webhook and API requirements, and how it should fail.
+
+The starter deliberately does not ship provider-neutral UI for these, because a generic stub silently
+drops those contracts and looks like it works.
+
+A disabled capability must not read credentials, create browser globals, make requests, or emit
+analytics. When you add one, update the TypeScript registry, the JSON mirror, this document and the
+tests together.
+
+## What "full-featured" means here
+
+The core is complete and the optional packs have explicit dependencies, tests for their disabled cost,
+and a real consumer. It does not mean every Shopify app is bundled, or that checkout is custom.

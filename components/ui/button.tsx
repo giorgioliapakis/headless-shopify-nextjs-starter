@@ -1,7 +1,6 @@
 import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
-import { isValidElement, type ReactElement } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -12,7 +11,7 @@ const buttonVariants = cva(
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
-          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 focus-visible:ring-destructive/20",
         outline: "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground",
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
@@ -34,27 +33,18 @@ const buttonVariants = cva(
   },
 );
 
-interface ButtonProps
-  extends useRender.ComponentProps<"button">, VariantProps<typeof buttonVariants> {
-  /** @deprecated Pass `render={<El />}` instead. Kept for back-compat with Radix-era call sites. */
-  asChild?: boolean;
-}
+type ButtonProps = useRender.ComponentProps<"button"> & VariantProps<typeof buttonVariants>;
 
-function Button({ asChild = false, className, render, size, variant, ...props }: ButtonProps) {
-  const asChildRender =
-    !render && asChild && isValidElement(props.children)
-      ? (props.children as ReactElement)
-      : undefined;
-
+function Button({ className, render, size, variant, ...props }: ButtonProps) {
   return useRender({
     defaultTagName: "button",
-    render: render ?? asChildRender,
+    render,
     state: { slot: "button" },
     props: mergeProps<"button">(
       {
         className: cn(buttonVariants({ variant, size, className })),
       },
-      asChildRender ? { ...props, children: undefined } : props,
+      props,
     ),
   });
 }

@@ -37,9 +37,10 @@ describe("commerce capability manifest", () => {
   });
 
   it("keeps the coding-agent JSON mirror aligned with the executable registry", async () => {
-    const document = JSON.parse(
-      await readFile(resolve("agent-workflows/capability-map.json"), "utf8"),
-    ) as { capabilities: Array<{ id: string; status: string }>; schemaVersion: number };
+    const document = JSON.parse(await readFile(resolve(".agents/capability-map.json"), "utf8")) as {
+      capabilities: Array<{ id: string; status: string }>;
+      schemaVersion: number;
+    };
     const executable = getCapabilityManifest(disabledFeatures).map(({ id, status }) => ({
       id,
       status,
