@@ -1,7 +1,6 @@
 import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
-import { isValidElement, type ReactElement } from "react";
 import type * as React from "react";
 
 import { Separator } from "@/components/ui/separator";
@@ -39,20 +38,12 @@ function ButtonGroup({
   );
 }
 
-interface ButtonGroupTextProps extends useRender.ComponentProps<"div"> {
-  /** @deprecated Pass `render={<El />}` instead. Kept for back-compat with Radix-era call sites. */
-  asChild?: boolean;
-}
+type ButtonGroupTextProps = useRender.ComponentProps<"div">;
 
-function ButtonGroupText({ asChild = false, className, render, ...props }: ButtonGroupTextProps) {
-  const asChildRender =
-    !render && asChild && isValidElement(props.children)
-      ? (props.children as ReactElement)
-      : undefined;
-
+function ButtonGroupText({ className, render, ...props }: ButtonGroupTextProps) {
   return useRender({
     defaultTagName: "div",
-    render: render ?? asChildRender,
+    render,
     props: mergeProps<"div">(
       {
         className: cn(
@@ -60,7 +51,7 @@ function ButtonGroupText({ asChild = false, className, render, ...props }: Butto
           className,
         ),
       },
-      asChildRender ? { ...props, children: undefined } : props,
+      props,
     ),
   });
 }

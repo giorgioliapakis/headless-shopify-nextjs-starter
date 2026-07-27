@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or idea
+    url: https://github.com/giorgioliapakis/headless-shopify-nextjs-starter/discussions
+    about: Setup help, architecture questions and feature ideas belong in Discussions.
+  - name: Security vulnerability
+    url: https://github.com/giorgioliapakis/headless-shopify-nextjs-starter/security/advisories/new
+    about: Report privately. Never open a public issue for a vulnerability.

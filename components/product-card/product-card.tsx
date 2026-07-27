@@ -16,6 +16,12 @@ import {
   ProductCardTitle,
 } from "./components";
 
+/**
+ * Cards in the first grid row render above the fold on a desktop viewport. Giving them
+ * `priority` keeps the LCP candidate out of the lazy-loading queue.
+ */
+export const ABOVE_THE_FOLD_CARDS = 4;
+
 export interface ProductCardProps {
   product: ProductCardType;
   locale: Locale;
@@ -24,6 +30,8 @@ export interface ProductCardProps {
   outOfStockText?: string;
   sizes?: string;
   className?: string;
+  /** Set on the cards above the fold so the LCP image is not lazily loaded. */
+  priority?: boolean;
 }
 
 export async function ProductCard({
@@ -34,6 +42,7 @@ export async function ProductCard({
   outOfStockText,
   sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw",
   className,
+  priority = false,
 }: ProductCardProps) {
   const isFeatured = variant === "featured";
   const t = isFeatured ? await getTranslations("product") : null;
@@ -56,6 +65,7 @@ export async function ProductCard({
             outOfStock={!product.availableForSale}
             outOfStockText={outOfStockText}
             aspectRatio={aspectRatio}
+            priority={priority}
           />
           <ProductCardContent>
             <ProductCardTitle>{product.title}</ProductCardTitle>
@@ -66,7 +76,7 @@ export async function ProductCard({
               compareAtAmount={product.compareAtPrice?.amount}
               compareAtCurrencyCode={product.compareAtPrice?.currencyCode}
               locale={locale}
-              discountVariant={isFeatured ? "blue" : "green"}
+              discountVariant={isFeatured ? "info" : "positive"}
             />
           </ProductCardContent>
         </ProductCardImageContainer>

@@ -2,7 +2,11 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { Suspense } from "react";
 
-import { ProductCard, ProductCardSkeleton } from "@/components/product-card/product-card";
+import {
+  ABOVE_THE_FOLD_CARDS,
+  ProductCard,
+  ProductCardSkeleton,
+} from "@/components/product-card/product-card";
 import type { Locale } from "@/lib/i18n";
 import { searchIndexProducts } from "@/lib/shopify/operations/products";
 import { cn } from "@/lib/utils";
@@ -87,12 +91,14 @@ async function ProductsGridContent({
 
   return (
     <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
-      {products.map((product) => (
+      {products.map((product, index) => (
         <ProductCard
           key={product.id}
           product={product}
           locale={locale}
           outOfStockText={outOfStockText}
+          // The first row is above the fold; eager-loading it keeps the LCP image out of the lazy queue.
+          priority={index < ABOVE_THE_FOLD_CARDS}
         />
       ))}
     </div>

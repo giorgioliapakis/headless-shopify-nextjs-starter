@@ -1,15 +1,18 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-export async function Empty() {
-  const t = await getTranslations("cart");
+/** Body-only empty state — the page heading is owned by `Header` so `/cart` keeps a single `h1`. */
+export function EmptyCart() {
+  const t = useTranslations("cart");
 
   return (
-    <div className="flex flex-col items-center justify-center gap-5 py-10 px-5">
-      <h1 className="text-2xl sm:text-3xl">{t("empty")}</h1>
+    <div className="flex flex-col items-center justify-center gap-5 px-5 py-10 text-center">
+      <p className="text-lg text-muted-foreground">{t("empty")}</p>
       <Link
         href="/"
-        className="inline-flex items-center justify-center h-12 px-8 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+        className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-8 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
       >
         {t("continueShopping")}
       </Link>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRef } from "react";
 
@@ -14,6 +15,7 @@ export function MarketSelector({
   currentLocale: string;
   markets: readonly StorefrontMarket[];
 }) {
+  const t = useTranslations("footer");
   const formRef = useRef<HTMLFormElement>(null);
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -22,7 +24,7 @@ export function MarketSelector({
   return (
     <form ref={formRef} action={switchMarketAction} className="flex items-center gap-2">
       <label htmlFor="storefront-market" className="text-sm text-muted-foreground">
-        Country / region
+        {t("countryRegion")}
       </label>
       <input
         type="hidden"

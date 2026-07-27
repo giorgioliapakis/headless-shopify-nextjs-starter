@@ -31,7 +31,7 @@ Markets, analytics, bundles, complementary products and recommendations are cond
 accounts remain a handoff. Arbitrary app blocks, provider portals and renderable metaobject landing pages
 are not generic zero-configuration promises; see the [capability contract](storefront-capabilities.md).
 
-Hydrogen package compatibility does not prove merchant compatibility. Each downstream store must verify
+Hydrogen package compatibility does not prove that your store is compatible. Verify
 its published catalogue shape, markets, apps, URLs, content, media, accessibility, performance and
 checkout handoff against a production-like preview.
 

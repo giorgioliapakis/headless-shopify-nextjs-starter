@@ -1,36 +1,43 @@
 # Storefront capability contract
 
-This document is the honest current-state inventory for the neutral starter. It distinguishes shipped
-foundation behavior from optional packs and roadmap work. A downstream merchant migration must generate
-its own evidence-backed compatibility report; this file is not proof that an arbitrary Shopify store can
-cut over safely.
+A current-state inventory of what this starter actually does. If something is not listed as Core here,
+do not assume it works.
+
+The same inventory is machine-readable in `lib/commerce/capabilities.ts` and mirrored for coding agents
+in `.agents/capability-map.json`. Keep all three in sync — an entry here that the code does not implement
+is a bug, not a roadmap note.
 
 Status vocabulary:
 
-- **Core** — implemented in the neutral runtime and expected in every generated storefront.
-- **Conditional** — implemented behind configuration and included only when discovery finds a consumer.
-- **Planned** — part of the approved platform plan but not yet safe to claim as available.
-- **Hosted** — intentionally handed off to Shopify rather than rebuilt in Next.js.
-- **Unsupported** — an explicit boundary until a separate adapter and proof exist.
+- **Core** — implemented and available in every storefront built from this starter.
+- **Conditional** — implemented, but off until you configure it.
+- **Planned** — an agreed boundary with no safe implementation yet.
+- **Hosted** — deliberately handed off to Shopify rather than rebuilt in Next.js.
+- **Unsupported** — needs a provider-specific adapter you write yourself.
+
+A capability is not "supported" because a dependency is installed. To be Core it needs an explicit
+capability ID and status, its configuration and environment names, at least one route or component
+consumer, a cache/data classification, tests for both enabled and disabled behaviour, and documented
+unsupported cases.
 
 ## Shopper routes
 
-| Surface           | Route contract             | Status | Current behavior                                                                                      |
-| ----------------- | -------------------------- | ------ | ----------------------------------------------------------------------------------------------------- |
-| Home              | `/`                        | Core   | Server-rendered section composition using neutral configuration.                                      |
-| Product detail    | `/products/[handle]`       | Core   | Metadata, variant URL state, gallery, options, add/buy actions, related-products flag and hard 404.   |
-| Collection index  | `/collections`             | Core   | Published collection navigation.                                                                      |
-| Collection detail | `/collections/[handle]`    | Core   | Metadata, filters, sorting, pagination and hard 404.                                                  |
-| All products      | `/collections/all`         | Core   | Catalogue listing behavior.                                                                           |
-| Search            | `/search`                  | Core   | Storefront product search, filters, sorting and pagination.                                           |
-| Content page      | `/pages/[handle]`          | Core   | Shopify page content, metadata and hard 404.                                                          |
-| Policy            | `/policies/[handle]`       | Core   | Shopify policy content, metadata and hard 404.                                                        |
-| Cart              | `/cart`                    | Core   | Hydrogen request-bound cart, warnings, discounts, progressive line forms and hosted checkout handoff. |
-| Customer account  | configured external URL    | Hosted | No local account session by default.                                                                  |
-| Checkout          | Shopify `cart.checkoutUrl` | Hosted | No custom checkout.                                                                                   |
-| Blog/article      | `/blogs/[handle]/**`       | Core   | Shopify-backed listing/article routes, pagination, metadata, Article schema, sitemap and hard 404.    |
-| Landing pages     | `/landing/[handle]`        | Core   | Versioned metadata/indexing and section recipes; empty until merchant config supplies approved pages. |
-| Unknown path      | any unmatched URL          | Core   | Safe redirect lookup for paths outside the app manifest, otherwise a static hard 404.                 |
+| Surface           | Route contract             | Status | Current behavior                                                                                                                                               |
+| ----------------- | -------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Home              | `/`                        | Core   | Server-rendered section composition using neutral configuration.                                                                                               |
+| Product detail    | `/products/[handle]`       | Core   | Metadata, variant URL state, gallery, options, add/buy actions, related-products flag and hard 404.                                                            |
+| Collection index  | `/collections`             | Core   | Published collection navigation.                                                                                                                               |
+| Collection detail | `/collections/[handle]`    | Core   | Metadata, filters, sorting, pagination and hard 404.                                                                                                           |
+| All products      | `/collections/all`         | Core   | Catalogue listing behavior.                                                                                                                                    |
+| Search            | `/search`                  | Core   | Storefront product search, filters, sorting and pagination.                                                                                                    |
+| Content page      | `/pages/[handle]`          | Core   | Shopify page content, metadata and hard 404.                                                                                                                   |
+| Policy            | `/policies/[handle]`       | Core   | Shopify policy content, metadata and hard 404.                                                                                                                 |
+| Cart              | `/cart`                    | Core   | Hydrogen request-bound cart, warnings, discounts, progressive line forms and hosted checkout handoff. Streamed, so it needs JavaScript to display — see below. |
+| Customer account  | configured external URL    | Hosted | No local account session by default.                                                                                                                           |
+| Checkout          | Shopify `cart.checkoutUrl` | Hosted | No custom checkout.                                                                                                                                            |
+| Blog/article      | `/blogs/[handle]/**`       | Core   | Shopify-backed listing/article routes, pagination, metadata, Article schema, sitemap and hard 404.                                                             |
+| Landing pages     | `/landing/[handle]`        | Core   | Versioned metadata/indexing and section recipes; empty until merchant config supplies approved pages.                                                          |
+| Unknown path      | any unmatched URL          | Core   | Safe redirect lookup for paths outside the app manifest, otherwise a static hard 404.                                                                          |
 
 The app also exposes neutral SEO/agent representations: `robots.txt`, a sharded sitemap, `llms.txt`,
 dynamic default Open Graph imagery and markdown representations for product, collection and search
@@ -58,7 +65,19 @@ surfaces. Draft mode and the Shopify webhook handler are server endpoints, not s
 | Predictive search                               | Core        | Bounded Shopify predictive results power the navigation search surface.                                              |
 | First-party consent-aware analytics contract    | Conditional | Disabled by default; page/product/collection/search/cart and confirmed cart-delta events use Hydrogen's consent bus. |
 | Headless customer accounts                      | Planned     | Optional pack only; hosted accounts remain default.                                                                  |
-| Reviews, loyalty, wishlists and external search | Unsupported | Require provider-specific downstream adapters and parity evidence.                                                   |
+| Reviews, loyalty, wishlists and external search | Unsupported | Require a provider-specific adapter you write yourself.                                                              |
+
+## JavaScript requirements
+
+Catalogue and content routes render fully server-side and are readable with JavaScript disabled.
+Adding to cart also works without it: the product form is a native `POST`.
+
+`/cart` is the exception. It is per-shopper, so `cacheComponents` requires the cart read to sit
+inside a Suspense boundary, and React swaps a Suspense fallback in with an inline script. With
+scripts disabled that fallback is the final render, so the page shows its heading, an explanation
+and a link back to the catalogue rather than the line items. Everything else degrades gracefully:
+collection pagination falls back to plain links, and the header cart icon is a real anchor to
+`/cart`.
 
 ## Cache ownership and invalidation
 
@@ -105,13 +124,41 @@ observability remains a migration target.
 
 ## Customization ownership
 
-The foundation owns semantic Tailwind tokens, Base UI behavior, commerce domain types and generic
-primitives. A downstream store owns brand values, licensed assets, copy and page composition. Versioned
-theme and section schemas, contrast validation, the registry and neutral recipes are implemented; this
-is an agent-operated source contract, not a hidden no-code editor. See `docs/customization/`.
+The starter owns semantic tokens, Base UI behaviour, commerce domain types and generic primitives. You
+own your brand values, licensed assets, copy and page composition. Versioned theme and section schemas,
+contrast validation, the section registry and the default recipes are implemented. This is a source
+contract you and your agent edit — not a hidden no-code editor. See
+[`docs/customization/`](../customization/design-tokens.md).
 
-## Definition of full-featured
+## Conditional packs
 
-“Full-featured” means the invariant core is complete and optional packs have explicit dependencies,
-disabled-cost tests and proving consumers. It does not mean every Shopify app is bundled, that checkout is
-custom, or that unproven discovery output is safe to launch.
+`analytics.shopify` turns on with `NEXT_PUBLIC_SHOPIFY_ANALYTICS_ENABLED=true`. It uses Hydrogen's
+default privacy banner, a bounded consent bootstrap and confirmed cart deltas. The purchase event still
+belongs to Shopify checkout.
+
+`markets` turns on when you publish more than one verified locale in `lib/i18n/index.ts`. Bundles,
+complementary products and recommendations are switched in `shop.config.ts`. Hosted accounts need
+`NEXT_PUBLIC_SHOPIFY_ACCOUNT_URL`.
+
+Native Shopify selling plans are Core, not a pack: the product page shows approved plans, passes
+`sellingPlanId` through Hydrogen, and preserves the plan label in the cart. Provider-specific
+subscription portals and cancellation flows are adapters you write.
+
+## Third-party apps
+
+Reviews, loyalty, wishlists, forms and newsletters, subscription portals and third-party search each
+need a named adapter that you write. Before building one, establish which provider you are on, the
+behaviour you need, what browser scripts it injects, who owns the data, its consent category, its
+webhook and API requirements, and how it should fail.
+
+The starter deliberately does not ship provider-neutral UI for these, because a generic stub silently
+drops those contracts and looks like it works.
+
+A disabled capability must not read credentials, create browser globals, make requests, or emit
+analytics. When you add one, update the TypeScript registry, the JSON mirror, this document and the
+tests together.
+
+## What "full-featured" means here
+
+The core is complete and the optional packs have explicit dependencies, tests for their disabled cost,
+and a real consumer. It does not mean every Shopify app is bundled, or that checkout is custom.

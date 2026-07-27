@@ -1,3 +1,5 @@
+import { unstable_rethrow } from "next/navigation";
+
 import type { GraphQLFormattedError } from "@/lib/shopify/types/graphql";
 
 interface StorefrontResponse<T> {
@@ -25,7 +27,10 @@ export function assertStorefrontOk<T>(
 export async function withFallback<T>(promise: Promise<T>, fallback: T): Promise<T> {
   try {
     return await promise;
-  } catch {
+  } catch (error) {
+    // Next signals control flow (notFound/redirect/dynamic-render aborts) by throwing; swallowing
+    // those would strand the render instead of degrading a single Storefront read.
+    unstable_rethrow(error);
     return fallback;
   }
 }

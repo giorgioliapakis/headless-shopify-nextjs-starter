@@ -6,6 +6,7 @@ import {
   ProductGridPendingOverlay,
 } from "@/components/collections/filter-pending-context";
 import { InfiniteProductGrid } from "@/components/collections/infinite-product-grid";
+import { ResultsAnnouncer } from "@/components/collections/results-announcer";
 import { ProductCard } from "@/components/product-card/product-card";
 import { ProductsGridSkeleton } from "@/components/product/products-grid";
 import type { Locale } from "@/lib/i18n";
@@ -32,12 +33,14 @@ export interface SearchResultsData {
 }
 
 export async function getSearchResultsData({
+  after,
   query,
   sort,
   collection,
   locale,
   activeFilters,
 }: {
+  after?: string;
   query?: string;
   sort?: string;
   collection?: string;
@@ -47,6 +50,7 @@ export async function getSearchResultsData({
   const shopifyFilters = buildProductFiltersFromParams(activeFilters);
   const [results, facets] = await Promise.all([
     fetchSearchIndexProducts({
+      cursor: after,
       query,
       collection,
       sortKey: sort,
@@ -112,6 +116,7 @@ async function SearchResultsGridRender({
   if (products.length === 0) {
     return (
       <div className="text-center py-10">
+        <ResultsAnnouncer count={0} />
         <h2 className="text-2xl mb-2">{t("noResults")}</h2>
         <p className="text-muted-foreground">
           {query ? t("noResultsQuery", { query }) : t("noResultsAvailable")}
@@ -122,6 +127,7 @@ async function SearchResultsGridRender({
 
   return (
     <FilterPendingScope>
+      <ResultsAnnouncer count={products.length} />
       <ProductGridPendingOverlay>
         <InfiniteProductGrid
           initialProducts={products}

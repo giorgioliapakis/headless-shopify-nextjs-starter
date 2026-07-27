@@ -70,6 +70,8 @@ interface ProductCardImageProps {
   outOfStockText?: string;
   aspectRatio?: ProductCardAspectRatio;
   className?: string;
+  /** Set on the cards above the fold so the LCP image is not lazily loaded. */
+  priority?: boolean;
 }
 
 function ProductCardImage({
@@ -80,6 +82,7 @@ function ProductCardImage({
   outOfStockText,
   aspectRatio = "square",
   className,
+  priority = false,
 }: ProductCardImageProps) {
   return (
     <div
@@ -88,12 +91,19 @@ function ProductCardImage({
       className={cn("relative overflow-hidden", aspectRatioClasses, className)}
     >
       {src ? (
-        <Image src={src} alt={alt} fill className="object-cover" sizes={sizes} />
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="object-cover"
+          sizes={sizes}
+          priority={priority}
+        />
       ) : (
         <ImagePlaceholder className="size-full" />
       )}
       {outOfStock && (
-        <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+        <div className="absolute inset-0 bg-overlay/60 flex items-center justify-center">
           <span className="text-destructive-foreground font-medium text-xs px-2 py-1 bg-destructive rounded">
             {outOfStockText}
           </span>
@@ -134,7 +144,7 @@ interface ProductCardPriceProps {
   compareAtAmount?: string;
   compareAtCurrencyCode?: string;
   locale: string;
-  discountVariant?: "green" | "blue";
+  discountVariant?: "positive" | "info";
   className?: string;
 }
 
@@ -150,7 +160,7 @@ function ProductCardPrice({
   compareAtAmount,
   compareAtCurrencyCode,
   locale,
-  discountVariant = "green",
+  discountVariant = "positive",
   className,
 }: ProductCardPriceProps) {
   const priceNum = parseFloat(amount);

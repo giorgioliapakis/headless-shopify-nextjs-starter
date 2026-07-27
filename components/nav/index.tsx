@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import { Container } from "@/components/ui/container";
+import { getMenuItems } from "@/lib/shopify/operations/menu";
 import { shopConfig } from "@/shop.config";
 
 import { CartIcon, CartIconFallback } from "./cart";
@@ -12,8 +13,13 @@ import { QuickLinks } from "./quick-links";
 import { SearchModal } from "./search-modal";
 
 export async function Nav({ locale: _locale }: { locale: string }) {
-  const t = await getTranslations("nav");
-  const items = shopConfig.navigation.nav;
+  const [t, items] = await Promise.all([
+    getTranslations("nav"),
+    getMenuItems({
+      fallback: shopConfig.navigation.nav,
+      handle: shopConfig.navigation.menuHandles.nav,
+    }),
+  ]);
 
   return (
     <nav
@@ -34,8 +40,8 @@ export async function Nav({ locale: _locale }: { locale: string }) {
               <span className="sr-only">{t("account")}</span>
             </a>
           )}
-          <Suspense fallback={<CartIconFallback />}>
-            <CartIcon />
+          <Suspense fallback={<CartIconFallback label={t("cart")} />}>
+            <CartIcon label={t("cart")} />
           </Suspense>
         </div>
       </Container>

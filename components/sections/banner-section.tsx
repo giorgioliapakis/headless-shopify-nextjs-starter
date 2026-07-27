@@ -1,107 +1,108 @@
-import type { StaticImageData } from "next/image";
 import Image from "next/image";
 import Link from "next/link";
 
 import { AutoPlayVideo } from "@/components/ui/auto-play-video";
 import { Button } from "@/components/ui/button";
-import type { BannerSection as BannerSectionType } from "@/lib/types";
+import { Container } from "@/components/ui/container";
+import type { SectionDefinition } from "@/config/schema/sections";
 import { cn } from "@/lib/utils";
 
-interface BannerSectionProps {
-  hero: BannerSectionType;
-  headingLevel?: "h1" | "h2";
-}
+type BannerSectionDefinition = Extract<SectionDefinition, { type: "banner" }>;
 
-export function BannerSection({ hero, headingLevel = "h1" }: BannerSectionProps) {
-  const Heading = headingLevel;
-  const video = hero.backgroundVideo;
-  const image = hero.backgroundImage;
-  const isStatic = image && typeof image === "object" && "src" in image;
-  const hasMedia = Boolean(video || image);
+const HEIGHTS = {
+  compact: "md:aspect-[4/1]",
+  standard: "md:aspect-[3/1]",
+  tall: "md:aspect-[2/1]",
+} as const;
+
+/**
+ * Full-bleed media banner: the one section that paints edge to edge and puts copy over video or a
+ * still.
+ *
+ * Copy on media never follows the page background — it sits on a scrim that is dark in both colour
+ * schemes — so it uses the dedicated `overlay` / `overlay-foreground` pair from the theme contract
+ * instead of a literal white.
+ */
+export function BannerSection({ section }: { section: BannerSectionDefinition }) {
+  const Heading = section.headingLevel;
+  const media = section.video ?? section.image;
 
   return (
-    <section className="relative w-full overflow-hidden">
-      <div className={cn("relative grid", hasMedia && "bg-foreground")}>
-        <div className="col-start-1 row-start-1 hidden md:block md:aspect-[3/1]" />
+    <section id={section.id} className="relative w-full overflow-hidden">
+      <div
+        className={cn(
+          "relative grid",
+          media ? "bg-overlay text-overlay-foreground" : "bg-muted text-foreground",
+        )}
+      >
+        <div className={cn("col-start-1 row-start-1 hidden md:block", HEIGHTS[section.height])} />
 
-        {video ? (
-          <>
-            <AutoPlayVideo
-              src={video.url}
-              previewImage={
-                video.previewImage
-                  ? {
-                      src: video.previewImage.url,
-                      alt: video.previewImage.alt,
-                    }
-                  : null
-              }
-              className="absolute inset-0 h-full w-full object-cover"
-              priorityImage
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
-          </>
-        ) : isStatic ? (
-          <>
-            <Image
-              src={image as StaticImageData}
-              alt="Hero background"
-              fill
-              className="object-cover"
-              placeholder="blur"
-              priority
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
-          </>
-        ) : image ? (
-          <>
-            <Image
-              src={(image as { url: string }).url}
-              alt={(image as { alt: string }).alt}
-              fill
-              className="object-cover"
-              priority
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
-          </>
+        {section.video ? (
+          <AutoPlayVideo
+            src={section.video.src}
+            previewImage={
+              section.video.poster
+                ? { src: section.video.poster.src, alt: section.video.poster.alt }
+                : null
+            }
+            className="absolute inset-0 size-full object-cover"
+            priorityImage
+            sizes="100vw"
+          />
+        ) : section.image ? (
+          <Image
+            src={section.image.src}
+            alt={section.image.alt}
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+          />
         ) : null}
 
-        <div className="relative col-start-1 row-start-1 flex items-center justify-center px-5 py-10 lg:px-10">
-          <div className="flex flex-col items-center text-center gap-2.5">
-            <Heading
-              className={cn(
-                "text-3xl md:text-5xl max-w-3xl",
-                hasMedia ? "text-white" : "text-foreground",
-              )}
-            >
-              {hero.headline}
-            </Heading>
-            {hero.subheadline && (
-              <p
-                className={cn(
-                  "text-sm md:text-base max-w-xl",
-                  hasMedia ? "text-white" : "text-foreground",
-                )}
-              >
-                {hero.subheadline}
-              </p>
+        {media ? (
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-linear-to-t from-overlay/75 via-overlay/30 to-overlay/10"
+          />
+        ) : null}
+
+        <Container
+          className={cn(
+            "relative col-start-1 row-start-1 flex items-center py-section",
+            section.align === "center" ? "justify-center" : "justify-start",
+          )}
+        >
+          <div
+            className={cn(
+              "flex flex-col gap-stack",
+              section.align === "center" ? "items-center text-center" : "items-start text-left",
             )}
-            {hero.ctaText && hero.ctaLink && (
+          >
+            {section.eyebrow ? (
+              <p className="text-sm font-medium uppercase tracking-widest opacity-80">
+                {section.eyebrow}
+              </p>
+            ) : null}
+            <Heading className="max-w-3xl text-3xl font-medium leading-tight md:text-5xl">
+              {section.headline}
+            </Heading>
+            {section.subheadline ? (
+              <p className="max-w-xl text-sm opacity-90 md:text-base">{section.subheadline}</p>
+            ) : null}
+            {section.action ? (
               <Button
-                asChild
                 className={cn(
                   "h-11 px-5",
-                  hasMedia && "bg-background text-foreground hover:bg-background/90",
+                  media && "bg-overlay-foreground text-overlay hover:bg-overlay-foreground/90",
                 )}
+                render={<Link href={section.action.href} prefetch={false} />}
               >
-                <Link href={hero.ctaLink}>{hero.ctaText}</Link>
+                {section.action.label}
               </Button>
-            )}
+            ) : null}
           </div>
-        </div>
+        </Container>
       </div>
     </section>
   );

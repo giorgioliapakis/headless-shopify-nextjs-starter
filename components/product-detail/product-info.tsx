@@ -1,42 +1,11 @@
 import type * as React from "react";
 
 import type { SelectedOptions } from "@/lib/product";
-import type { ProductOption, ProductVariant } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import type { ProductOption } from "@/lib/types";
 
 import { AboutItem } from "./about-item";
 import { ColorPicker, type ProductTranslator } from "./color-picker";
 import { OptionPicker } from "./option-picker";
-import { ProductPrice } from "./product-price";
-
-interface ProductInfoHeaderProps extends React.ComponentProps<"div"> {
-  selectedVariant: ProductVariant | undefined;
-  title: string;
-  locale: string;
-}
-
-function ProductInfoHeader({
-  selectedVariant,
-  title,
-  locale,
-  className,
-  ...props
-}: ProductInfoHeaderProps) {
-  return (
-    <div data-slot="product-info-header" className={className} {...props}>
-      <h1 className={cn("text-foreground", "text-3xl")}>{title}</h1>
-
-      {selectedVariant && (
-        <ProductPrice
-          amount={selectedVariant.price.amount}
-          currencyCode={selectedVariant.price.currencyCode}
-          compareAtAmount={selectedVariant.compareAtPrice?.amount}
-          locale={locale}
-        />
-      )}
-    </div>
-  );
-}
 
 interface ProductInfoOptionsProps extends React.ComponentProps<"div"> {
   availableValues: Map<string, Set<string>>;
@@ -127,4 +96,4 @@ function ProductInfoDescription({
   );
 }
 
-export { ProductInfoDescription, ProductInfoHeader, ProductInfoOptions };
+export { ProductInfoDescription, ProductInfoOptions };

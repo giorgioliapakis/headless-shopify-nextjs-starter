@@ -1,7 +1,6 @@
 import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
-import { isValidElement, type ReactElement } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -24,26 +23,18 @@ const badgeVariants = cva(
   },
 );
 
-interface BadgeProps extends useRender.ComponentProps<"span">, VariantProps<typeof badgeVariants> {
-  /** @deprecated Pass `render={<El />}` instead. Kept for back-compat with Radix-era call sites. */
-  asChild?: boolean;
-}
+type BadgeProps = useRender.ComponentProps<"span"> & VariantProps<typeof badgeVariants>;
 
-function Badge({ asChild = false, className, render, variant, ...props }: BadgeProps) {
-  const asChildRender =
-    !render && asChild && isValidElement(props.children)
-      ? (props.children as ReactElement)
-      : undefined;
-
+function Badge({ className, render, variant, ...props }: BadgeProps) {
   return useRender({
     defaultTagName: "span",
-    render: render ?? asChildRender,
+    render,
     state: { slot: "badge" },
     props: mergeProps<"span">(
       {
         className: cn(badgeVariants({ variant }), className),
       },
-      asChildRender ? { ...props, children: undefined } : props,
+      props,
     ),
   });
 }

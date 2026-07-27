@@ -1,0 +1,61 @@
+name: Bug report
+description: Something in the storefront does not work as documented.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Never paste credentials, customer data, product exports or theme exports.**
+        Reproduce against `pnpm dev:demo` where you can — it removes your store from the picture.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you expected, and what you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. pnpm dev:demo
+        2. Go to /collections/all
+        3. ...
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: How were you running it?
+      options:
+        - pnpm dev:demo (no credentials)
+        - pnpm dev against my own Shopify store
+        - Production build
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Commit SHA, Node version, pnpm version, OS, browser.
+      placeholder: |
+        Commit: abc1234
+        Node: 24.x
+        pnpm: 11.5.0
+        OS: macOS 15
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Relevant output
+      description: Redacted terminal output or console errors. This is rendered as code.
+      render: shell
+  - type: checkboxes
+    id: hygiene
+    attributes:
+      label: Confirmation
+      options:
+        - label: This report contains no credentials, customer data or store exports.
+          required: true

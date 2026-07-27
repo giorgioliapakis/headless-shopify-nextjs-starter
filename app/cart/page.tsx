@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 
-import { CartItemsList } from "@/components/cart-page/cart-items-list";
-import { Empty } from "@/components/cart-page/empty-cart";
-import { Header } from "@/components/cart-page/header";
+import { CartUnavailable } from "@/components/cart-page/cart-unavailable";
+import { CartView } from "@/components/cart-page/cart-view";
 import { PageSkeleton } from "@/components/cart-page/skeletons";
-import { Summary } from "@/components/cart-page/summary";
-import { CartProvider } from "@/components/cart/hydrogen";
-import { CartWarnings } from "@/components/cart/warnings";
 import { RelatedProductsSection } from "@/components/product/related-products-section";
 import { Container } from "@/components/ui/container";
 import { Page } from "@/components/ui/page";
@@ -17,8 +12,7 @@ import { Sections } from "@/components/ui/sections";
 import type { Locale } from "@/lib/i18n";
 import { getLocale } from "@/lib/params";
 import { buildAlternates } from "@/lib/seo";
-import { withFallback } from "@/lib/shopify/errors";
-import { getHydrogenCartEnvelope } from "@/lib/shopify/hydrogen/cart-server";
+import { loadCartEnvelope } from "@/lib/shopify/hydrogen/cart-server";
 import { shopConfig } from "@/shop.config";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -44,46 +38,34 @@ export default async function CartPage() {
 }
 
 async function CartContent({ locale }: { locale: Locale }) {
-  const [cartData, messages] = await Promise.all([
-    withFallback(getHydrogenCartEnvelope(), { cart: null }),
-    getMessages(),
-  ]);
-  const cart = cartData.cart;
+  const [result, t] = await Promise.all([loadCartEnvelope(), getTranslations("cart")]);
+
+  // A failed lookup is not an empty cart — render an explicit error/retry surface instead.
+  if (result.status === "unavailable") {
+    return (
+      <Page>
+        <Container>
+          <Sections>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl">{t("shoppingCart")}</h1>
+            <CartUnavailable />
+          </Sections>
+        </Container>
+      </Page>
+    );
+  }
+
+  const cart = result.data.cart;
+  const firstLineHandle = cart?.lines.nodes[0]?.merchandise?.product.handle;
 
   return (
-    <NextIntlClientProvider messages={{ cart: messages.cart }}>
-      <CartProvider initialData={cartData}>
-        {!cart || cart.totalQuantity === 0 ? (
-          <Empty />
-        ) : (
-          <Page>
-            <Container>
-              <Sections>
-                <Header />
-                <CartWarnings />
-                <div className="grid gap-5 lg:grid-cols-12">
-                  <div className="lg:col-span-8 xl:col-span-9">
-                    <CartItemsList locale={locale} />
-                  </div>
-                  <aside className="lg:col-span-4 xl:col-span-3">
-                    <div className="lg:sticky lg:top-20">
-                      <Summary locale={locale} />
-                    </div>
-                  </aside>
-                </div>
-                {shopConfig.pdp.relatedProducts.enabled &&
-                cart.lines.nodes[0]?.merchandise?.product.handle ? (
-                  <RelatedProductsSection
-                    handle={cart.lines.nodes[0].merchandise.product.handle}
-                    limit={4}
-                    locale={locale}
-                  />
-                ) : null}
-              </Sections>
-            </Container>
-          </Page>
-        )}
-      </CartProvider>
-    </NextIntlClientProvider>
+    <CartView
+      initialCart={cart}
+      locale={locale}
+      relatedProducts={
+        shopConfig.pdp.relatedProducts.enabled && firstLineHandle ? (
+          <RelatedProductsSection handle={firstLineHandle} limit={4} locale={locale} />
+        ) : null
+      }
+    />
   );
 }

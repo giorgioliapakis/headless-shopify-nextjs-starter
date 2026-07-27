@@ -24,6 +24,7 @@ import { Container } from "@/components/ui/container";
 import { Page } from "@/components/ui/page";
 import { Sections } from "@/components/ui/sections";
 import { Skeleton } from "@/components/ui/skeleton";
+import { parseCursorParam } from "@/lib/collections/server";
 import { getLocale } from "@/lib/params";
 import { buildAlternates, buildOpenGraph } from "@/lib/seo";
 import { parseFiltersFromSearchParams } from "@/lib/utils";
@@ -73,6 +74,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
   const searchResultsDataPromise = (async () => {
     const resolved = await searchParams;
     return getSearchResultsData({
+      after: parseCursorParam(resolved.after),
       query: resolved.q as string | undefined,
       sort: resolved.sort as string | undefined,
       collection: resolved.collection as string | undefined,

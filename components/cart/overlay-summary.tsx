@@ -19,7 +19,7 @@ export function OverlaySummary({ cart, locale, pending }: OverlaySummaryProps) {
 
   return (
     <div className="grid gap-2.5">
-      <DiscountForm cart={cart} locale={locale} />
+      <DiscountForm cart={cart} />
       <CartNoteForm note={cart.note} />
       <div aria-label={t("estimatedTotal")}>
         <div className="flex items-baseline justify-between">

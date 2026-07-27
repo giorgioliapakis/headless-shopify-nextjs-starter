@@ -10,7 +10,7 @@ export function ErrorBoundaryContent({ reset }: { reset: () => void }) {
   const t = useTranslations("common");
 
   return (
-    <div className="flex flex-col items-center justify-center px-5 py-10 text-center lg:py-10">
+    <div className="flex flex-col items-center justify-center px-gutter py-section text-center">
       <div className="mb-6 flex justify-center">
         <div className="rounded-full bg-muted p-5">
           <AlertCircleIcon className="h-12 w-12 text-muted-foreground" />
@@ -18,10 +18,10 @@ export function ErrorBoundaryContent({ reset }: { reset: () => void }) {
       </div>
       <h1 className="mb-2 text-2xl lg:text-3xl">{t("error")}</h1>
       <p className="mb-8 max-w-md text-muted-foreground">{t("errorDesc")}</p>
-      <div className="flex flex-col gap-2.5 sm:flex-row">
+      <div className="flex flex-col gap-inline sm:flex-row">
         <Button onClick={reset}>{t("tryAgain")}</Button>
-        <Button variant="outline" asChild>
-          <Link href="/">{t("goHome")}</Link>
+        <Button render={<Link href="/" />} variant="outline">
+          {t("goHome")}
         </Button>
       </div>
     </div>

@@ -1,7 +1,6 @@
 import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
-import { isValidElement, type ReactElement } from "react";
 import type * as React from "react";
 
 import { cn } from "@/lib/utils";
@@ -33,26 +32,18 @@ function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
   );
 }
 
-interface BreadcrumbLinkProps extends useRender.ComponentProps<"a"> {
-  /** @deprecated Pass `render={<El />}` instead. Kept for back-compat with Radix-era call sites. */
-  asChild?: boolean;
-}
+type BreadcrumbLinkProps = useRender.ComponentProps<"a">;
 
-function BreadcrumbLink({ asChild = false, className, render, ...props }: BreadcrumbLinkProps) {
-  const asChildRender =
-    !render && asChild && isValidElement(props.children)
-      ? (props.children as ReactElement)
-      : undefined;
-
+function BreadcrumbLink({ className, render, ...props }: BreadcrumbLinkProps) {
   return useRender({
     defaultTagName: "a",
-    render: render ?? asChildRender,
+    render,
     state: { slot: "breadcrumb-link" },
     props: mergeProps<"a">(
       {
         className: cn("hover:text-foreground transition-colors", className),
       },
-      asChildRender ? { ...props, children: undefined } : props,
+      props,
     ),
   });
 }

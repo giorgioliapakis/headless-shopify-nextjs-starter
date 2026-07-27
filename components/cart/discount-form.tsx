@@ -3,6 +3,7 @@
 import type { CartData } from "@shopify/hydrogen";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useId } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +13,6 @@ import { useCart, useCartForm } from "./hydrogen";
 
 interface DiscountFormProps {
   cart: CartData;
-  locale?: string;
 }
 
 export function DiscountForm({ cart }: DiscountFormProps) {
@@ -24,15 +24,22 @@ export function DiscountForm({ cart }: DiscountFormProps) {
     ...group.userErrors,
     ...group.warnings,
   ]);
+  // Mounted twice when the drawer opens on top of /cart, so ids must be instance-scoped.
+  const inputId = useId();
+  const errorId = `${inputId}-error`;
+  const hasError = messages.length > 0;
 
   return (
     <div className="grid gap-2.5">
       <form {...formProps()} className="flex gap-2.5">
         <Input
+          id={inputId}
           type="text"
           {...register("discountCode", { defaultValue: "" })}
           placeholder={t("discountCode")}
           aria-label={t("discountCode")}
+          aria-invalid={hasError || undefined}
+          aria-describedby={hasError ? errorId : undefined}
           autoComplete="off"
           spellCheck={false}
           className="flex-1"
@@ -42,8 +49,8 @@ export function DiscountForm({ cart }: DiscountFormProps) {
         </Button>
       </form>
 
-      {messages.length > 0 ? (
-        <p role="alert" className="text-xs text-destructive">
+      {hasError ? (
+        <p id={errorId} role="alert" className="text-xs text-destructive">
           {messages.map((message) => message.message).join(" ")}
         </p>
       ) : null}

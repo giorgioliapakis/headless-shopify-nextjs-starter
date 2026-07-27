@@ -24,6 +24,16 @@ describe("storefront response security", () => {
     ).toBe(false);
   });
 
+  it("allows eval only in development, where React's dev build requires it", () => {
+    const development = new Map(
+      storefrontSecurityHeaders(false).map(({ key, value }) => [key.toLowerCase(), value]),
+    );
+    expect(development.get("content-security-policy")).toContain("'unsafe-eval'");
+    // Every other guarantee must hold identically in both environments.
+    expect(development.get("content-security-policy")).toContain("object-src 'none'");
+    expect(development.get("content-security-policy")).toContain("frame-ancestors 'none'");
+  });
+
   it("appends bounded Server-Timing values without identifiers", () => {
     const headers = new Headers({ "server-timing": "app;dur=1.0" });
     appendServerTiming(headers, "shopify_route", 12.345, 'cart";token=secret');

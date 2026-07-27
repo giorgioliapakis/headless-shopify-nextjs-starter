@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 
+import { BreadcrumbTrail } from "@/components/commerce/breadcrumb-trail";
 import { BundleComponents, BundleParents } from "@/components/product-detail/bundle-components";
 import { BuyButtons, type BuyButtonVariant } from "@/components/product-detail/buy-buttons";
 import { ComplementaryProducts } from "@/components/product-detail/complementary-products";
@@ -64,12 +65,7 @@ export function ProductDetailSection({
         availableForSale={product.availableForSale}
         price={product.priceRange.minVariantPrice}
       />
-      <BreadcrumbSchema
-        items={[
-          { name: shopConfig.site.name, path: "/" },
-          { name: product.title, path: `/products/${product.handle}` },
-        ]}
-      />
+      <ProductBreadcrumbs product={product} />
       <div className="grid gap-10 lg:grid-cols-10 lg:items-start lg:gap-5">
         <ProductMediaArea product={product} selectedOptionsPromise={selectedOptionsPromise} />
         <ProductInfoArea
@@ -79,6 +75,21 @@ export function ProductDetailSection({
           locale={locale}
         />
       </div>
+    </>
+  );
+}
+
+/** One item list feeds both the JSON-LD and the visible trail, so they can never drift. */
+function ProductBreadcrumbs({ product }: { product: ProductDetails }) {
+  const items = [
+    { name: shopConfig.site.name, path: "/" },
+    { name: product.title, path: `/products/${product.handle}` },
+  ];
+
+  return (
+    <>
+      <BreadcrumbSchema items={items} />
+      <BreadcrumbTrail items={items} />
     </>
   );
 }

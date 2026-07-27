@@ -28,7 +28,7 @@ const root = resolve(process.cwd());
 const packageRoot = resolve(root, "node_modules/@shopify/hydrogen");
 const sourceRoot = resolve(packageRoot, "skills");
 const destinationRoot = resolve(root, ".agents/skills");
-const manifestPath = resolve(root, "agent-workflows/skills.json");
+const manifestPath = resolve(root, ".agents/skills.json");
 
 function fail(message) {
   throw new Error(`Hydrogen skill sync failed: ${message}`);
@@ -90,6 +90,12 @@ for (const target of EXPECTED_SKILLS) {
   files.sort((left, right) => left.path.localeCompare(right.path));
   importedSkills.push({ sourcePath: `skills/${target}`, target, files });
 }
+
+// MIT section 2: the copyright notice must travel with the copied files.
+await copyFile(
+  resolve(root, "node_modules", PACKAGE_NAME, "LICENSE.md"),
+  resolve(destinationRoot, "LICENSE.hydrogen.md"),
+);
 
 const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
 manifest.packages = [

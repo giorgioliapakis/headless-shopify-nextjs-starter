@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const recipeSectionTypes = [
   "announcement",
+  "banner",
   "hero",
   "rich-text",
   "media-text",
@@ -25,20 +26,36 @@ const linkSchema = z
   .object({ href: z.string().startsWith("/"), label: z.string().trim().min(1).max(80) })
   .strict();
 
-const contentCardSchema = z
-  .object({
-    body: z.string().trim().max(500).optional(),
-    href: z.string().startsWith("/").optional(),
-    title: z.string().trim().min(1).max(120),
-  })
-  .strict();
-
+/**
+ * Media must be a local, repository-relative path. The repo scanner rejects committed binaries, so
+ * a starter checkout ships with no media at all and every media slot degrades to a labelled
+ * placeholder rather than a broken image.
+ */
 const localMediaSchema = z
   .object({
     alt: z.string().trim().max(240),
     height: z.number().int().positive().max(10_000),
     src: z.string().startsWith("/"),
     width: z.number().int().positive().max(10_000),
+  })
+  .strict();
+
+const localVideoSchema = z
+  .object({
+    poster: z
+      .object({ alt: z.string().trim().max(240), src: z.string().startsWith("/") })
+      .strict()
+      .optional(),
+    src: z.string().startsWith("/"),
+  })
+  .strict();
+
+const contentCardSchema = z
+  .object({
+    body: z.string().trim().max(500).optional(),
+    href: z.string().startsWith("/").optional(),
+    media: localMediaSchema.optional(),
+    title: z.string().trim().min(1).max(120),
   })
   .strict();
 
@@ -49,6 +66,23 @@ export const sectionDefinitionSchema = z.discriminatedUnion("type", [
       type: z.literal("announcement"),
       message: z.string().trim().min(1).max(180),
       link: linkSchema.optional(),
+    })
+    .strict(),
+  z
+    .object({
+      ...commonSectionShape,
+      type: z.literal("banner"),
+      eyebrow: z.string().trim().max(80).optional(),
+      headline: z.string().trim().min(1).max(140),
+      subheadline: z.string().trim().max(300).optional(),
+      action: linkSchema.optional(),
+      /** Still image behind the copy. Ignored when `video` is set. */
+      image: localMediaSchema.optional(),
+      video: localVideoSchema.optional(),
+      align: z.enum(["start", "center"]).default("center"),
+      height: z.enum(["compact", "standard", "tall"]).default("standard"),
+      /** Renders the copy as an `h1`. Exactly one banner or hero per page should own the h1. */
+      headingLevel: z.enum(["h1", "h2"]).default("h2"),
     })
     .strict(),
   z
@@ -98,6 +132,8 @@ export const sectionDefinitionSchema = z.discriminatedUnion("type", [
       heading: z.string().trim().min(1).max(140),
       collections: z.array(contentCardSchema).min(1).max(12),
       columns: z.union([z.literal(2), z.literal(3), z.literal(4)]).default(3),
+      /** Card media aspect ratio. `none` keeps the older text-only card. */
+      aspect: z.enum(["none", "square", "portrait", "landscape"]).default("portrait"),
     })
     .strict(),
   z
@@ -115,6 +151,9 @@ export const sectionDefinitionSchema = z.discriminatedUnion("type", [
       type: z.literal("editorial-grid"),
       heading: z.string().trim().min(1).max(140),
       items: z.array(contentCardSchema).min(1).max(12),
+      aspect: z.enum(["none", "square", "portrait", "landscape"]).default("landscape"),
+      /** Chrome copy lives in the recipe so a merchant can localise it without a code change. */
+      readMoreLabel: z.string().trim().min(1).max(60).default("Read more"),
     })
     .strict(),
   z
@@ -160,6 +199,19 @@ export const sectionDefinitionSchema = z.discriminatedUnion("type", [
       heading: z.string().trim().min(1).max(140),
       body: z.string().trim().max(500).optional(),
       action: z.string().url().nullable(),
+      /**
+       * Form chrome. These are the only user-visible strings the section renders that do not come
+       * from merchant content, so they are configurable here instead of hard-coded in English.
+       */
+      emailLabel: z.string().trim().min(1).max(80).default("Email address"),
+      emailPlaceholder: z.string().trim().min(1).max(80).default("you@example.com"),
+      submitLabel: z.string().trim().min(1).max(60).default("Subscribe"),
+      unavailableNote: z
+        .string()
+        .trim()
+        .min(1)
+        .max(200)
+        .default("Connect an approved newsletter provider to enable signup."),
     })
     .strict(),
   z
@@ -192,6 +244,8 @@ export const sectionRecipeSchema = z
     });
   });
 
+export type LocalMedia = z.infer<typeof localMediaSchema>;
 export type SectionDefinition = z.infer<typeof sectionDefinitionSchema>;
 export type SectionRecipe = z.infer<typeof sectionRecipeSchema>;
 export type SectionType = SectionDefinition["type"];
+export type CardAspect = "none" | "square" | "portrait" | "landscape";

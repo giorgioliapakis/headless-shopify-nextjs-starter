@@ -1,5 +1,3 @@
-import type { StaticImageData } from "next/image";
-
 import type { Locale } from "@/lib/i18n";
 
 export type SearchParamsPromise = Promise<Record<string, string | string[] | undefined>>;
@@ -303,16 +301,6 @@ export interface MarketingImage {
 export interface MarketingVideo {
   previewImage?: MarketingImage | null;
   url: string;
-}
-
-export interface BannerSection {
-  backgroundImage?: MarketingImage | StaticImageData | null;
-  backgroundVideo?: MarketingVideo | null;
-  ctaLink: string | null;
-  ctaText: string | null;
-  headline: string;
-  id: string;
-  subheadline: string | null;
 }
 
 export interface CustomerProfile {

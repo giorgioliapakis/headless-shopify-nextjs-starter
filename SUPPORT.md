@@ -1,10 +1,18 @@
 # Support
 
-This project is an experimental alpha, not a managed migration service. Use GitHub Discussions for setup,
-architecture and supported-capability questions; use issues for reproducible bugs with synthetic data.
-Follow `SECURITY.md` for vulnerabilities.
+This is a community open-source starter, not a managed service or a migration agency.
 
-Include the exact commit, Node/pnpm/Hydrogen versions, operating system, command, redacted output and a
-minimal neutral reproduction. Do not attach theme exports, crawl evidence, product/customer data or any
-credential. Provider-specific app integrations, merchant cutovers and production incidents remain the
-merchant team's responsibility unless a separate support agreement says otherwise.
+- **Questions** about setup, architecture or what the storefront supports — GitHub Discussions.
+- **Bugs** you can reproduce — GitHub Issues.
+- **Vulnerabilities** — follow `SECURITY.md`. Never a public issue.
+
+## Filing a good bug report
+
+Include the exact commit, your Node and pnpm versions, the OS, the command you ran, and the redacted
+output. Reproduce it against `pnpm dev:demo` where you can — that removes your store from the
+equation and lets anyone reproduce it.
+
+Do not attach theme exports, product or customer data, crawl output, or any credential.
+
+Running a real storefront on this — your Shopify configuration, your deployment, your launch — is
+yours to own. Start with `docs/` and the Discussions tab.

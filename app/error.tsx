@@ -1,12 +1,13 @@
 "use client";
 
-import { ErrorBoundaryContent } from "@/components/ui/error-boundary-content";
+import { RouteError } from "@/components/error/route-error";
 
 export default function LocaleError({
+  error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  return <ErrorBoundaryContent reset={reset} />;
+  return <RouteError error={error} reset={reset} />;
 }
