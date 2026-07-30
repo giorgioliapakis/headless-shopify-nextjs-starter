@@ -4,6 +4,9 @@ A production-shaped headless Shopify storefront on Next.js 16 — every standard
 design system, and a demo mode that runs without a Shopify account.
 
 Point it at your store, or hand it to a coding agent and let it build.
+**[Browse the live demo →](https://headless-shopify-nextjs.vercel.app)**
+
+![Product page in dark mode: gallery, variant picker with sold-out states, Shop Pay and add to cart](docs/media/product-dark.png)
 
 ```bash
 git clone https://github.com/giorgioliapakis/headless-shopify-nextjs-starter
@@ -14,6 +17,11 @@ pnpm dev:demo
 
 That runs the full storefront on generated demo data — no credentials, no Shopify account. Open
 [localhost:3000](http://localhost:3000) to browse it, and `/styleguide` to see the design system.
+
+Or deploy the same credential-free demo straight to Vercel — set the four demo values from
+[`.env.example`](.env.example) when prompted:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgiorgioliapakis%2Fheadless-shopify-nextjs-starter&env=SHOPIFY_STOREFRONT_FIXTURE,PUBLIC_STORE_DOMAIN,PUBLIC_STOREFRONT_API_TOKEN,SHOPIFY_API_VERSION&envDescription=Demo%20fixture%20values%20from%20.env.example%20boot%20a%20credential-free%20demo%20store&envLink=https%3A%2F%2Fgithub.com%2Fgiorgioliapakis%2Fheadless-shopify-nextjs-starter%2Fblob%2Fmain%2F.env.example)
 
 ## What you get
 

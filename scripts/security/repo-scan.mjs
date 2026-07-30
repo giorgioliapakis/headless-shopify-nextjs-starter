@@ -30,7 +30,9 @@ const binaryExtensions = new Set([
 ]);
 
 // Binary assets must be added here deliberately, with a reviewed licence.
-const allowedBinaryPaths = new Set();
+// docs/media screenshots are self-generated captures of the built-in demo
+// fixture (invented, repo-owned content) — no third-party rights involved.
+const allowedBinaryPaths = new Set(["docs/media/home-light.png", "docs/media/product-dark.png"]);
 
 const forbiddenPathPatterns = [/(^|\/)\.env(?:\..+)?$/, /(^|\/)(?:theme|store)-export(?:\/|\.|$)/i];
 
