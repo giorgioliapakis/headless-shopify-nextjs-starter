@@ -11,6 +11,11 @@ export type ShopifyProxyRoute =
   | "next"
   | "redirect-candidate";
 
+/**
+ * Every user-facing route segment under `app/` must appear here so a
+ * merchant-configured Shopify URL redirect can never shadow a live page.
+ * `tests/unit/shopify/routing-manifest.test.ts` fails when this drifts.
+ */
 const APPLICATION_ROUTE_PREFIXES = [
   "/api/health",
   "/api/readiness",
@@ -18,6 +23,9 @@ const APPLICATION_ROUTE_PREFIXES = [
   "/blogs",
   "/cart",
   "/collections",
+  "/demo-checkout",
+  "/demo-image",
+  "/landing",
   "/llms.txt",
   "/md",
   "/og-default.png",
@@ -28,6 +36,7 @@ const APPLICATION_ROUTE_PREFIXES = [
   "/search",
   "/sitemap",
   "/sitemap.xml",
+  "/styleguide",
 ] as const;
 
 export function isKnownApplicationPath(pathname: string): boolean {
