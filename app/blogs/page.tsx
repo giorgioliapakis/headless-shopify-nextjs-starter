@@ -1,9 +1,11 @@
+import { NewspaperIcon } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { Suspense } from "react";
 
 import { Container } from "@/components/ui/container";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Page } from "@/components/ui/page";
 import { Sections } from "@/components/ui/sections";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -49,7 +51,7 @@ async function BlogList() {
   const blogs = await getBlogs(locale);
 
   if (blogs.length === 0) {
-    return <p className="text-muted-foreground">{t("empty")}</p>;
+    return <EmptyState className="py-10" icon={NewspaperIcon} title={t("empty")} />;
   }
 
   return (

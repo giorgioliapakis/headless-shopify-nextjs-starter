@@ -32,7 +32,7 @@ export function ProductPrice({
           amount={compareAtAmount}
           currencyCode={currencyCode}
           locale={locale}
-          className="text-xl line-through text-foreground/35"
+          className="text-xl line-through text-muted-foreground"
         />
       )}
       {discountPercent && <DiscountBadge percent={discountPercent} />}

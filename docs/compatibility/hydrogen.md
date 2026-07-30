@@ -41,6 +41,11 @@ checkout handoff against a production-like preview.
 - Next controls public caching; personalized cart/account data is never placed in a public/shared cache.
 - Product selection uses URL-addressable server rendering and progressive Hydrogen cart forms rather
   than requiring a client-side product provider for the entire PDP.
+- Collection and search browsing serializes filter/sort state through app-owned URL parameters resolved
+  server-side, rather than Hydrogen's collection store and `sort_by` serializers. The URL contract is
+  this app's, not Liquid's.
+- Predictive search is served by a same-origin server action instead of Hydrogen's packaged
+  predictive-search route handlers; result links still carry Shopify `trackingParameters`.
 - The public migration crawler accepts no credentials. Protected Admin discovery belongs to the external
   allowlisted credential broker described in the trust-boundary document.
 - WebMCP/browser-agent storefront exposure is disabled until it has an independent privacy, abuse,

@@ -56,7 +56,16 @@ describe("Hydrogen request lifecycle", () => {
   });
 
   it("only classifies paths outside the explicit application manifest for redirect lookup", () => {
-    for (const path of ["/", "/products/neutral-shirt", "/collections/all", "/sitemap.xml"]) {
+    for (const path of [
+      "/",
+      "/products/neutral-shirt",
+      "/collections/all",
+      "/sitemap.xml",
+      "/landing/summer",
+      "/styleguide",
+      "/demo-checkout",
+      "/demo-image/foo.png",
+    ]) {
       expect(isKnownApplicationPath(path)).toBe(true);
       expect(classifyShopifyProxyRoute(path)).toBe("next");
     }

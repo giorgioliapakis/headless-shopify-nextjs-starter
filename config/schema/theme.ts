@@ -57,6 +57,12 @@ export const TEXT_CONTRAST_PAIRS = [
   ["primary", "primaryForeground"],
   ["secondary", "secondaryForeground"],
   ["muted", "mutedForeground"],
+  // `text-muted-foreground` is the repo-wide idiom for secondary copy and it is painted on plain
+  // page, card and popover surfaces far more often than on `bg-muted`, so it has to hold AA against
+  // all of them — not only against its namesake fill.
+  ["background", "mutedForeground"],
+  ["card", "mutedForeground"],
+  ["popover", "mutedForeground"],
   ["accent", "accentForeground"],
   ["destructive", "destructiveForeground"],
   ["positive", "positiveForeground"],

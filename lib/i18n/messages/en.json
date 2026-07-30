@@ -21,6 +21,7 @@
     "discount": "Discount",
     "discountCode": "Discount code",
     "discountNotApplicable": "Not applicable",
+    "dismissWarnings": "Dismiss cart notice",
     "empty": "Your cart is empty",
     "estimatedTotal": "Estimated total",
     "increaseQuantity": "Increase quantity",
@@ -28,6 +29,7 @@
     "itemQuantity": "Item quantity",
     "orderNote": "Order note",
     "orderNotePlaceholder": "Add delivery instructions or a note for the store",
+    "orphanedLineError": "Something went wrong updating an item that is no longer in your cart.",
     "proceedToCheckout": "Proceed to Checkout",
     "removeDiscount": "Remove discount",
     "removeItem": "Remove item",
@@ -105,6 +107,7 @@
     "quantity": "Quantity",
     "recommendations": "You May Also Like",
     "selectVariantLabel": "Select {name}: {value}",
+    "soldOutVariantLabel": "Select {name}: {value} (sold out)",
     "stockLeft": "({stock} left)",
     "unavailableVariantLabel": "{name}: {value} (unavailable)",
     "viewAll": "View All"

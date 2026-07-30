@@ -78,7 +78,7 @@ function FilterSidebarResultsCount({
   return (
     <div
       data-slot="filter-sidebar-results-count"
-      className={cn("flex items-center gap-1.5 text-sm text-foreground/50", className)}
+      className={cn("flex items-center gap-1.5 text-sm text-muted-foreground", className)}
       {...props}
     >
       <SearchIcon className="size-3.5" />

@@ -1,3 +1,4 @@
+import { SearchXIcon } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 
@@ -9,6 +10,7 @@ import { InfiniteProductGrid } from "@/components/collections/infinite-product-g
 import { ResultsAnnouncer } from "@/components/collections/results-announcer";
 import { ProductCard } from "@/components/product-card/product-card";
 import { ProductsGridSkeleton } from "@/components/product/products-grid";
+import { EmptyState } from "@/components/ui/empty-state";
 import type { Locale } from "@/lib/i18n";
 import { loadMoreSearchProducts } from "@/lib/search/action";
 import {
@@ -115,12 +117,15 @@ async function SearchResultsGridRender({
 
   if (products.length === 0) {
     return (
-      <div className="text-center py-10">
+      <div className="py-10">
         <ResultsAnnouncer count={0} />
-        <h2 className="text-2xl mb-2">{t("noResults")}</h2>
-        <p className="text-muted-foreground">
-          {query ? t("noResultsQuery", { query }) : t("noResultsAvailable")}
-        </p>
+        <EmptyState
+          className="p-0"
+          icon={SearchXIcon}
+          title={t("noResults")}
+          titleAs="h2"
+          description={query ? t("noResultsQuery", { query }) : t("noResultsAvailable")}
+        />
       </div>
     );
   }

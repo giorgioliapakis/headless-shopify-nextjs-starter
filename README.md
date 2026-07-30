@@ -20,17 +20,19 @@ That runs the full storefront on generated demo data — no credentials, no Shop
 - **Every Shopify page type**: home, product, collection, collection list, search, cart, blog,
   article, content pages, policies, landing pages, 404 — each with metadata, JSON-LD, error and
   empty states.
-- **A real cart**: lines, quantities, discounts, notes, selling plans, an accessible drawer,
-  optimistic updates, and hosted Shopify checkout.
+- **A real conversion path**: a cart with lines, quantities, discounts, notes and selling plans, an
+  accessible drawer with optimistic updates, Shop Pay, predictive search with Shopify attribution,
+  and hosted Shopify checkout. Adding to cart works with JavaScript disabled.
 - **A design system you can retheme from one file** — semantic tokens for colour, type, spacing,
   radius and motion, with light and dark mode and WCAG contrast validated at config time.
 - **Composable page sections** — a registry of typed, server-rendered sections that home and landing
   pages are built from, so an agent can assemble pages without inventing markup.
 - **SEO and agent surfaces** — `robots.txt`, sharded sitemaps, `llms.txt`, dynamic OG images, and
   markdown representations of products, collections and search.
-- **A quality gate that means something** — types, lint, unit and contract tests, Storefront query
-  budgets, bundle budgets, supply-chain audits, plus Playwright + axe across desktop, mobile and
-  JavaScript-disabled.
+- **Performance and accessibility enforced, not aspired to** — Storefront query budgets, bundle
+  budgets, Lighthouse runs, and Playwright + axe across desktop, mobile and JavaScript-disabled,
+  all failing CI when they slip; types, lint, unit and contract tests and supply-chain audits ride
+  the same `pnpm check` gate.
 - **Pinned agent skills** for Hydrogen, React performance and shadcn, in `.agents/skills/`.
 
 Built on Next.js 16 (App Router, Server Components, Cache Components), React 19, Tailwind CSS 4,

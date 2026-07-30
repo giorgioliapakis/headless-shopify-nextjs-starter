@@ -14,3 +14,4 @@ lib/shopify/types/generated/
 lib/i18n/messages/*.d.json.ts
 test-results/
 *.tsbuildinfo
+.vercel

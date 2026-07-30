@@ -12,7 +12,7 @@ export function AboutItem({ descriptionHtml, className, ...props }: AboutItemPro
 
   return (
     <div
-      className={cn("prose prose-sm text-foreground/80", className)}
+      className={cn("prose prose-sm", className)}
       // oxlint-disable-next-line react/no-danger -- reconstructed through the local rich-text allowlist.
       dangerouslySetInnerHTML={{ __html: sanitizeShopifyHtml(descriptionHtml) }}
       {...props}

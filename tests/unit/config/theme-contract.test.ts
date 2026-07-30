@@ -102,6 +102,36 @@ describe("merchant theme contract", () => {
     }
   });
 
+  it("validates mutedForeground against every plain surface it is painted on", () => {
+    // `text-muted-foreground` mostly renders on background, card and popover fills, not on
+    // `bg-muted`. This palette passes the historical muted/mutedForeground pair (5.7:1 on the white
+    // muted fill) but fails on the mid-grey page background (2.6:1) — the exact gap that let
+    // dark-mode secondary copy regress before the extra pairs existed.
+    const result = themeConfigSchema.safeParse({
+      ...neutralThemePreset,
+      colors: {
+        ...neutralThemePreset.colors,
+        light: {
+          ...neutralThemePreset.colors.light,
+          background: "#b0b0b0",
+          muted: "#ffffff",
+          mutedForeground: "#666666",
+        },
+      },
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      // Sanity-check the trap: the namesake pair alone would have accepted this palette.
+      expect(contrastRatio("#ffffff", "#666666")).toBeGreaterThanOrEqual(TEXT_CONTRAST_MINIMUM);
+      const mutedForegroundIssues = result.error.issues.filter(
+        (issue) => issue.path.at(-1) === "mutedForeground",
+      );
+      expect(mutedForegroundIssues.length).toBeGreaterThan(0);
+      expect(mutedForegroundIssues[0]?.message).toContain("background and mutedForeground");
+    }
+  });
+
   it("catches a dark background left with light surfaces", () => {
     // The exact regression the previous seven-token contract could not see: a merchant flips the
     // background to near-black and keeps white cards, near-white hover states and form fields.

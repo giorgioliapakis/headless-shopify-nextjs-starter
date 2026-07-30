@@ -1,8 +1,10 @@
+import { LayoutGridIcon } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { CollectionCard } from "@/components/collections/collection-card";
 import { Container } from "@/components/ui/container";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Page } from "@/components/ui/page";
 import { Sections } from "@/components/ui/sections";
 import { getLocale } from "@/lib/params";
@@ -58,7 +60,7 @@ export default async function CollectionsPage() {
               ))}
             </div>
           ) : (
-            <p className="text-muted-foreground">{t("empty")}</p>
+            <EmptyState className="py-10" icon={LayoutGridIcon} title={t("empty")} />
           )}
         </Sections>
       </Container>

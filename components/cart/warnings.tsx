@@ -1,21 +1,29 @@
 "use client";
 
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, X } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 import { useCart } from "@/components/cart/hydrogen";
+
+import { collectOrphanedLineMessages, isBannerDismissed } from "./warnings-model";
 
 export function CartWarnings() {
   const cartErrors = useCart((state) => state.errors.cart);
   const networkErrors = useCart((state) => state.errors.network);
+  const lineErrors = useCart((state) => state.errors.lines);
+  const lines = useCart((state) => state.data.lines.nodes);
+  const lastUpdatedAt = useCart((state) => state.errors.lastUpdatedAt);
+  const [dismissedAt, setDismissedAt] = useState(0);
   const t = useTranslations("cart");
   const messages = [
     ...cartErrors.userErrors.map((error) => error.message),
     ...cartErrors.warnings.map((warning) => warning.message),
     ...networkErrors.map((error) => error.message),
+    ...collectOrphanedLineMessages(lineErrors, lines, t("orphanedLineError")),
   ];
 
-  if (messages.length === 0) return null;
+  if (messages.length === 0 || isBannerDismissed(lastUpdatedAt, dismissedAt)) return null;
 
   return (
     <div
@@ -33,6 +41,14 @@ export function CartWarnings() {
             ))}
           </ul>
         </div>
+        <button
+          type="button"
+          onClick={() => setDismissedAt(lastUpdatedAt)}
+          aria-label={t("dismissWarnings")}
+          className="shrink-0 -m-1 rounded-sm p-1 hover:bg-amber-100 dark:hover:bg-amber-900/40"
+        >
+          <X className="size-4" aria-hidden="true" />
+        </button>
       </div>
     </div>
   );

@@ -266,12 +266,16 @@ export interface PredictiveSearchProduct {
   id: string;
   price: Money;
   title: string;
+  /** Search-attributed link built via Hydrogen; carries Shopify `trackingParameters`. */
+  url: string;
   vendor?: string;
 }
 
 export interface SearchSuggestion {
   styledText: string;
   text: string;
+  /** Search-attributed link built via Hydrogen; carries Shopify `trackingParameters`. */
+  url: string;
 }
 
 export interface ShopPolicy {
@@ -283,6 +287,8 @@ export interface ShopPolicy {
 export interface PredictiveSearchCollection {
   handle: string;
   title: string;
+  /** Search-attributed link built via Hydrogen; carries Shopify `trackingParameters`. */
+  url: string;
 }
 
 export interface PredictiveSearchResult {

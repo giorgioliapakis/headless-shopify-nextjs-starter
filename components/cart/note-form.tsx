@@ -8,7 +8,14 @@ import { cn } from "@/lib/utils";
 
 import { useCart, useCartForm } from "./hydrogen";
 
-export function CartNoteForm({ note }: { note?: string | null }) {
+export function CartNoteForm({
+  note,
+  labelHidden = false,
+}: {
+  note?: string | null;
+  /** Hide the visible label (kept for screen readers) when a disclosure trigger already labels the form. */
+  labelHidden?: boolean;
+}) {
   const t = useTranslations("cart");
   const { formProps, register } = useCartForm();
   const pending = useCart((state) => state.pending.note);
@@ -21,7 +28,10 @@ export function CartNoteForm({ note }: { note?: string | null }) {
 
   return (
     <form {...formProps()} className={cn("grid gap-2", pending && "opacity-60")}>
-      <label htmlFor={noteId} className="text-sm font-medium text-foreground">
+      <label
+        htmlFor={noteId}
+        className={cn("text-sm font-medium text-foreground", labelHidden && "sr-only")}
+      >
         {t("orderNote")}
       </label>
       <textarea
