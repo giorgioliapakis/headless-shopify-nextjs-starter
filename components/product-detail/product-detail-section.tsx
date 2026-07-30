@@ -29,7 +29,6 @@ import {
   hasColorImagePartitioning,
   type SelectedOptions,
 } from "@/lib/product";
-import { getAvailableOptionValues } from "@/lib/shopify/encoded-variants";
 import type { ProductDetails, ProductVariant } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { shopConfig } from "@/shop.config";
@@ -183,7 +182,6 @@ async function ProductInfoArea({
   const uniformPrice = product.hasUniformPricing;
   const uniformStock = product.allVariantsInStock;
   const singleVariant = product.variantsCount === 1;
-  const availableValues = getAvailableOptionValues(options, product.encodedVariantAvailability);
   const eagerSelection = singleVariant
     ? { selectedOptions: defaultSelectedOptions(product), selectedVariant: product.defaultVariant }
     : null;
@@ -212,7 +210,8 @@ async function ProductInfoArea({
 
       {eagerSelection ? (
         <ProductInfoOptions
-          availableValues={availableValues}
+          encodedVariantExistence={product.encodedVariantExistence}
+          encodedVariantAvailability={product.encodedVariantAvailability}
           options={options}
           selectedOptions={eagerSelection.selectedOptions}
           handle={handle}
@@ -222,7 +221,8 @@ async function ProductInfoArea({
         <Suspense
           fallback={
             <ProductInfoOptions
-              availableValues={availableValues}
+              encodedVariantExistence={product.encodedVariantExistence}
+              encodedVariantAvailability={product.encodedVariantAvailability}
               options={options}
               selectedOptions={{}}
               handle={handle}
@@ -232,7 +232,8 @@ async function ProductInfoArea({
           }
         >
           <ResolvedProductInfoOptions
-            availableValues={availableValues}
+            encodedVariantExistence={product.encodedVariantExistence}
+            encodedVariantAvailability={product.encodedVariantAvailability}
             options={options}
             handle={handle}
             selectedOptionsPromise={selectedOptionsPromise}
@@ -311,13 +312,15 @@ async function ResolvedProductPrice({
 }
 
 async function ResolvedProductInfoOptions({
-  availableValues,
+  encodedVariantExistence,
+  encodedVariantAvailability,
   options,
   handle,
   selectedOptionsPromise,
   t,
 }: {
-  availableValues: Map<string, Set<string>>;
+  encodedVariantExistence: string | undefined;
+  encodedVariantAvailability: string | undefined;
   options: ProductDetails["options"];
   handle: string;
   selectedOptionsPromise: Promise<SelectedOptions>;
@@ -326,7 +329,8 @@ async function ResolvedProductInfoOptions({
   const selectedOptions = await selectedOptionsPromise;
   return (
     <ProductInfoOptions
-      availableValues={availableValues}
+      encodedVariantExistence={encodedVariantExistence}
+      encodedVariantAvailability={encodedVariantAvailability}
       options={options}
       selectedOptions={selectedOptions}
       handle={handle}

@@ -1,6 +1,7 @@
 import type * as React from "react";
 
 import type { SelectedOptions } from "@/lib/product";
+import { getOptionValueStates } from "@/lib/shopify/encoded-variants";
 import type { ProductOption } from "@/lib/types";
 
 import { AboutItem } from "./about-item";
@@ -8,7 +9,8 @@ import { ColorPicker, type ProductTranslator } from "./color-picker";
 import { OptionPicker } from "./option-picker";
 
 interface ProductInfoOptionsProps extends React.ComponentProps<"div"> {
-  availableValues: Map<string, Set<string>>;
+  encodedVariantExistence: string | undefined;
+  encodedVariantAvailability: string | undefined;
   options: ProductOption[];
   selectedOptions: SelectedOptions;
   handle: string;
@@ -17,7 +19,8 @@ interface ProductInfoOptionsProps extends React.ComponentProps<"div"> {
 }
 
 function ProductInfoOptions({
-  availableValues,
+  encodedVariantExistence,
+  encodedVariantAvailability,
   options,
   selectedOptions,
   handle,
@@ -33,6 +36,13 @@ function ProductInfoOptions({
   const isShopifyDefaultOption = (opt: ProductOption) =>
     opt.name === "Title" && opt.values.length === 1 && opt.values[0]?.name === "Default Title";
   const isSingleValueOption = (opt: ProductOption) => opt.values.length === 1;
+
+  const valueStates = getOptionValueStates(
+    options,
+    selectedOptions,
+    encodedVariantExistence,
+    encodedVariantAvailability,
+  );
 
   const renderable = options.filter((opt) => !isShopifyDefaultOption(opt));
   const singleValueOptions = renderable.filter(isSingleValueOption);
@@ -56,7 +66,7 @@ function ProductInfoOptions({
             key={colorOption.id}
             option={colorOption}
             selectedValue={selectedOptions[colorOption.name] ?? ""}
-            available={availableValues.get(colorOption.name)}
+            valueStates={valueStates.get(colorOption.name)}
             handle={handle}
             selectedOptions={selectedOptions}
             t={t}
@@ -69,9 +79,10 @@ function ProductInfoOptions({
             key={option.id}
             option={option}
             selectedValue={selectedOptions[option.name] ?? ""}
-            available={availableValues.get(option.name)}
+            valueStates={valueStates.get(option.name)}
             handle={handle}
             selectedOptions={selectedOptions}
+            t={t}
           />
         ))}
       </div>

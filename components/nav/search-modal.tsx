@@ -87,7 +87,7 @@ function SearchDialogContent({ onClose }: { onClose: () => void }) {
 
     const product = results.products[activeIndex - queriesLen];
     if (product) {
-      navigate(`/products/${product.handle}`);
+      navigate(product.url);
     }
   }
 
@@ -284,7 +284,7 @@ function ProductResult({
       role="option"
       aria-selected={active}
       data-active={active}
-      onClick={() => onNavigate(`/products/${product.handle}`)}
+      onClick={() => onNavigate(product.url)}
       className="flex w-full items-center gap-3 px-4 py-2.5 hover:bg-accent/50 data-[active=true]:bg-accent/50 transition-colors text-left cursor-pointer"
     >
       {product.featuredImage ? (

@@ -26,6 +26,7 @@ const PREDICTIVE_SEARCH_QUERY = gql(
         handle
         vendor
         availableForSale
+        trackingParameters
         featuredImage {
           ...ImageFields
         }
@@ -43,10 +44,12 @@ const PREDICTIVE_SEARCH_QUERY = gql(
       collections {
         handle
         title
+        trackingParameters
       }
       queries {
         text
         styledText
+        trackingParameters
       }
     }
   }
@@ -85,5 +88,5 @@ export async function predictiveSearch({
     return { products: [], collections: [], queries: [] };
   }
 
-  return transformPredictiveSearchResult(data.predictiveSearch);
+  return transformPredictiveSearchResult(data.predictiveSearch, query);
 }

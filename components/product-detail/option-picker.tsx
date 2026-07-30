@@ -1,24 +1,30 @@
 import Link from "next/link";
 import type * as React from "react";
 
+import type { ProductTranslator } from "@/components/product-detail/color-picker";
 import { buildOptionUrl, type SelectedOptions } from "@/lib/product";
+import type { OptionValueState } from "@/lib/shopify/encoded-variants";
 import type { ProductOption } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface OptionPickerProps extends React.ComponentProps<"div"> {
   option: ProductOption;
   selectedValue: string;
-  available: Set<string> | undefined;
+  valueStates: Map<string, OptionValueState> | undefined;
   handle: string;
   selectedOptions: SelectedOptions;
+  t: ProductTranslator;
 }
+
+const FAIL_OPEN: OptionValueState = { exists: true, available: true };
 
 export function OptionPicker({
   option,
   selectedValue,
-  available,
+  valueStates,
   handle,
   selectedOptions,
+  t,
   className,
   ...props
 }: OptionPickerProps) {
@@ -29,17 +35,19 @@ export function OptionPicker({
         {option.values.map((value) => {
           const isSelected = selectedValue === value.name;
 
-          const isAvailable = !available || available.has(value.name);
+          const { exists, available } = valueStates?.get(value.name) ?? FAIL_OPEN;
+          const isSoldOut = exists && !available;
 
           const href = buildOptionUrl(handle, selectedOptions, option.name, value.name);
 
           const classes = cn(
             "grid px-5 py-2 text-center text-sm rounded-lg transition-all border",
-            !isAvailable
-              ? "font-normal border-dashed border-border text-muted-foreground/50 line-through cursor-not-allowed"
+            !exists
+              ? "font-normal border-dashed border-border text-muted-foreground/50 cursor-not-allowed"
               : isSelected
                 ? "font-medium border-foreground text-foreground starting:border-border starting:text-muted-foreground"
                 : "font-normal border-border text-muted-foreground hover:border-foreground hover:text-foreground",
+            isSoldOut && "line-through",
           );
 
           // Invisible medium-weight twin reserves the bold width so pills don't shift on selection.
@@ -52,16 +60,29 @@ export function OptionPicker({
             </>
           );
 
-          if (!isAvailable) {
+          // The combination does not exist in the variant matrix — truly non-interactive.
+          if (!exists) {
             return (
-              <span key={value.id} className={classes}>
+              <span key={value.id} aria-disabled="true" className={classes}>
                 {label}
               </span>
             );
           }
 
+          // Sold-out combinations stay navigable so buyers can view the variant.
           return (
-            <Link key={value.id} href={href} scroll={false} className={classes}>
+            <Link
+              key={value.id}
+              href={href}
+              scroll={false}
+              className={classes}
+              aria-current={isSelected ? "true" : undefined}
+              aria-label={
+                isSoldOut
+                  ? t("soldOutVariantLabel", { name: option.name, value: value.name })
+                  : undefined
+              }
+            >
               {label}
             </Link>
           );
