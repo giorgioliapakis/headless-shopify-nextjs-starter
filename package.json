@@ -2,6 +2,16 @@
   "name": "headless-shopify-nextjs-starter",
   "version": "0.1.0",
   "private": true,
+  "description": "Production-shaped headless Shopify storefront on Next.js 16 with a credential-free demo mode",
+  "homepage": "https://headless-shopify-nextjs.vercel.app",
+  "bugs": {
+    "url": "https://github.com/giorgioliapakis/headless-shopify-nextjs-starter/issues"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/giorgioliapakis/headless-shopify-nextjs-starter.git"
+  },
   "scripts": {
     "dev": "next dev",
     "dev:demo": "node scripts/demo/dev.mjs",
