@@ -41,7 +41,7 @@ unsupported cases.
 
 The app also exposes neutral SEO/agent representations: `robots.txt`, a sharded sitemap, `llms.txt`,
 dynamic default Open Graph imagery and markdown representations for product, collection and search
-surfaces. Draft mode and the Shopify webhook handler are server endpoints, not shopper capabilities.
+surfaces. The Shopify webhook handler is a server endpoint, not a shopper capability.
 
 ## Commerce and content operations
 
@@ -64,7 +64,7 @@ surfaces. Draft mode and the Shopify webhook handler are server endpoints, not s
 | Selling plans/subscriptions                     | Core        | Native Shopify allocations, required-plan handling, pricing and cart lines; app portals vary.                        |
 | Predictive search                               | Core        | Bounded Shopify predictive results power the navigation search surface.                                              |
 | First-party consent-aware analytics contract    | Conditional | Disabled by default; page/product/collection/search/cart and confirmed cart-delta events use Hydrogen's consent bus. |
-| Headless customer accounts                      | Planned     | Optional pack only; hosted accounts remain default.                                                                  |
+| Headless customer accounts                      | Planned     | No account pack ships today; hosted accounts are the supported path.                                                 |
 | Reviews, loyalty, wishlists and external search | Unsupported | Require a provider-specific adapter you write yourself.                                                              |
 
 ## JavaScript requirements
@@ -107,8 +107,8 @@ bounded, warning aliases. The public token is read-only storefront access; it is
 private buyer-context token. A real `PRIVATE_STOREFRONT_API_TOKEN` from the Headless channel is required
 before a private client is created.
 
-Optional configuration includes the public site name/base URL, hosted account URL, webhook secret, draft
-mode secret, debug logging and per-feature flags in `shop.config.ts`. Shopify analytics remains off until
+Optional configuration includes the public site name/base URL, hosted account URL, webhook secret,
+debug logging and per-feature flags in `shop.config.ts`. Shopify analytics remains off until
 `analytics.shopify.enabled` is deliberately set; its default-banner mode does not override Hydrogen's
 Customer Privacy consent decision. Migration-only Admin access belongs
 in the external credential broker and must not be placed in the storefront environment or repository.
