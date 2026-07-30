@@ -1,21 +1,26 @@
 "use client";
 
+import { ShoppingCartIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 
 /** Body-only empty state — the page heading is owned by `Header` so `/cart` keeps a single `h1`. */
 export function EmptyCart() {
   const t = useTranslations("cart");
 
   return (
-    <div className="flex flex-col items-center justify-center gap-5 px-5 py-10 text-center">
-      <p className="text-lg text-muted-foreground">{t("empty")}</p>
-      <Link
-        href="/"
-        className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-8 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-      >
-        {t("continueShopping")}
-      </Link>
-    </div>
+    <EmptyState
+      className="px-5 py-10"
+      icon={ShoppingCartIcon}
+      title={t("empty")}
+      action={
+        <Button className="h-12 px-8" render={<Link href="/" />}>
+          {t("continueShopping")}
+        </Button>
+      }
+    />
   );
 }

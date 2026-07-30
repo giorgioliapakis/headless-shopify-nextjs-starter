@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRightIcon, SearchIcon, StarIcon } from "lucide-react";
+import { ChevronRightIcon, InboxIcon, SearchIcon, StarIcon } from "lucide-react";
 import { useState } from "react";
 
 import { DiscountBadge } from "@/components/product/discount-badge";
@@ -46,6 +46,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { EmptyState } from "@/components/ui/empty-state";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { ImagePlaceholder } from "@/components/ui/image-placeholder";
 import { Input } from "@/components/ui/input";
@@ -183,6 +184,19 @@ export function PrimitiveGallery() {
           <Badge variant="destructive">destructive</Badge>
           <DiscountBadge percent={20} />
           <DiscountBadge percent={35} variant="info" />
+        </Specimen>
+
+        <Specimen
+          name="EmptyState"
+          description="Zero-result and empty surfaces: optional icon, title, copy and action."
+        >
+          <EmptyState
+            className="w-full py-10"
+            icon={InboxIcon}
+            title="Nothing here yet"
+            description="Supporting copy stays muted while the title carries the foreground colour."
+            action={<Button variant="outline">Browse products</Button>}
+          />
         </Specimen>
 
         <Specimen name="Card" description="The default surface for grouped content.">
