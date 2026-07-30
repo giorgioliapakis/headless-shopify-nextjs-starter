@@ -35,7 +35,7 @@ export function ColorPicker({
 }: ColorPickerProps) {
   return (
     <div className={cn("grid gap-2.5", className)} {...props}>
-      <p className="text-sm font-medium text-foreground/70">
+      <p className="text-sm font-medium text-muted-foreground">
         {option.name}: <span className="text-foreground">{selectedValue}</span>
       </p>
       <div className="flex flex-wrap gap-2.5">

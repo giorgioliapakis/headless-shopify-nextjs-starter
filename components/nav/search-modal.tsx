@@ -125,7 +125,7 @@ function SearchDialogContent({ onClose }: { onClose: () => void }) {
           <DialogTitle className="sr-only">{t("search")}</DialogTitle>
           <div className="bg-background rounded-xl shadow-lg overflow-hidden duration-200">
             <form onSubmit={handleSubmit} className="flex items-center gap-3 px-4 py-3">
-              <Search className="size-4 shrink-0 text-foreground/40" />
+              <Search className="size-4 shrink-0 text-muted-foreground" />
               <input
                 ref={inputRef}
                 type="text"
@@ -141,7 +141,7 @@ function SearchDialogContent({ onClose }: { onClose: () => void }) {
                   activeIndex >= 0 ? `search-modal-item-${activeIndex}` : undefined
                 }
                 autoComplete="off"
-                className="flex-1 min-w-0 bg-transparent text-base text-foreground placeholder:text-foreground/40 focus:outline-none"
+                className="flex-1 min-w-0 bg-transparent text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
               />
               {query.trim() && (
                 <button
@@ -153,12 +153,12 @@ function SearchDialogContent({ onClose }: { onClose: () => void }) {
                       inputRef.current.focus();
                     }
                   }}
-                  className="shrink-0 text-sm text-foreground/60 hover:text-foreground transition-colors"
+                  className="shrink-0 text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {t("searchClear")}
                 </button>
               )}
-              <DialogPrimitive.Close className="shrink-0 flex items-center justify-center rounded-full text-foreground/40 hover:text-foreground transition-colors">
+              <DialogPrimitive.Close className="shrink-0 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground transition-colors">
                 <X className="size-4" />
                 <span className="sr-only">Close</span>
               </DialogPrimitive.Close>
@@ -192,7 +192,7 @@ function SearchDialogContent({ onClose }: { onClose: () => void }) {
 
                     {results.products.length > 0 && (
                       <div>
-                        <div className="px-4 pt-3 pb-1.5 text-xs font-medium text-foreground/50 uppercase tracking-wider">
+                        <div className="px-4 pt-3 pb-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           {t("predictiveSearch.products")}
                         </div>
                         {results.products.map((product, i) => (
@@ -209,7 +209,7 @@ function SearchDialogContent({ onClose }: { onClose: () => void }) {
                     {results.products.length === 0 &&
                       results.collections.length === 0 &&
                       results.queries.length === 0 && (
-                        <div className="px-4 py-6 text-center text-sm text-foreground/50">
+                        <div className="px-4 py-6 text-center text-sm text-muted-foreground">
                           {t("predictiveSearch.noResults", { query })}
                         </div>
                       )}
@@ -304,7 +304,7 @@ function ProductResult({
           amount={product.price.amount}
           currencyCode={product.price.currencyCode}
           locale={locale}
-          className="text-sm text-foreground/70"
+          className="text-sm text-muted-foreground"
         />
       </div>
     </button>

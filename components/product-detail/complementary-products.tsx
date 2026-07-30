@@ -22,7 +22,7 @@ export async function ComplementaryProducts({
 
   return (
     <div className="grid gap-2.5" data-slot="complementary-products">
-      <h2 className="font-medium text-foreground/70 text-sm">{title}</h2>
+      <h2 className="font-medium text-muted-foreground text-sm">{title}</h2>
       <ul className="grid gap-2.5">
         {complementary.slice(0, limit).map((product: ProductCard) => (
           <li key={product.id}>
@@ -42,7 +42,7 @@ export async function ComplementaryProducts({
                 <ImagePlaceholder className="size-12 shrink-0 rounded-md" />
               )}
               <span className="min-w-0 flex-1 truncate font-medium text-sm">{product.title}</span>
-              <span className="shrink-0 text-foreground/50 text-sm">
+              <span className="shrink-0 text-muted-foreground text-sm">
                 {formatPrice(product.price, locale)}
               </span>
             </Link>

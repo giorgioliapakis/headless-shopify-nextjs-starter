@@ -15,7 +15,12 @@ type SectionOf<T extends SectionDefinition["type"]> = Extract<SectionDefinition,
 
 function sectionTone(tone: SectionDefinition["tone"]): string {
   if (tone === "muted") return "bg-muted text-foreground";
-  if (tone === "contrast") return "bg-foreground text-background";
+  if (tone === "contrast") {
+    // The contrast tone flips ink and surface, so `text-muted-foreground` inside the band must be
+    // remapped too: a mix of the flipped ink over the flipped surface keeps secondary copy muted
+    // while staying WCAG AA against `bg-foreground` in both schemes.
+    return "bg-foreground text-background [--muted-foreground:color-mix(in_srgb,var(--background)_78%,var(--foreground))]";
+  }
   return "bg-background text-foreground";
 }
 
@@ -112,12 +117,14 @@ export function HeroRecipeSection({ section }: { section: SectionOf<"hero"> }) {
       >
         <div className="grid gap-stack">
           {section.eyebrow ? (
-            <p className="text-sm font-medium uppercase tracking-widest opacity-70">
+            <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
               {section.eyebrow}
             </p>
           ) : null}
           <h1 className="text-4xl font-medium leading-tight sm:text-6xl">{section.heading}</h1>
-          {section.body ? <p className="max-w-2xl text-lg opacity-75">{section.body}</p> : null}
+          {section.body ? (
+            <p className="max-w-2xl text-lg text-muted-foreground">{section.body}</p>
+          ) : null}
         </div>
         {section.primaryAction || section.secondaryAction ? (
           <div className="flex flex-wrap gap-inline">
@@ -207,7 +214,7 @@ export function LogoListSection({ section }: { section: SectionOf<"logo-list"> }
         {section.heading ? <h2 className="text-2xl">{section.heading}</h2> : null}
         <ul className="flex flex-wrap items-center justify-center gap-x-10 gap-y-stack" role="list">
           {section.logos.map((logo) => (
-            <li key={logo} className="text-lg font-medium opacity-70">
+            <li key={logo} className="text-lg font-medium text-muted-foreground">
               {logo}
             </li>
           ))}
@@ -244,7 +251,9 @@ export function CollectionGridSection({ section }: { section: SectionOf<"collect
               <CardMedia aspect={section.aspect} media={collection.media} />
               <div className="grid gap-1">
                 <h3 className="text-xl">{collection.title}</h3>
-                {collection.body ? <p className="opacity-70">{collection.body}</p> : null}
+                {collection.body ? (
+                  <p className="text-muted-foreground">{collection.body}</p>
+                ) : null}
               </div>
             </Link>
           ))}
@@ -284,7 +293,7 @@ export function EditorialGridSection({ section }: { section: SectionOf<"editoria
             <article key={item.title} className="group grid content-start gap-3">
               <CardMedia aspect={section.aspect} media={item.media} />
               <h3 className="text-xl">{item.title}</h3>
-              {item.body ? <p className="opacity-70">{item.body}</p> : null}
+              {item.body ? <p className="text-muted-foreground">{item.body}</p> : null}
               {item.href ? (
                 <Link
                   href={item.href}
@@ -335,7 +344,7 @@ export function FaqSection({ section }: { section: SectionOf<"faq"> }) {
               <summary className="cursor-pointer font-medium marker:text-muted-foreground">
                 {item.question}
               </summary>
-              <p className="pt-3 leading-7 opacity-75">{item.answer}</p>
+              <p className="pt-3 leading-7 text-muted-foreground">{item.answer}</p>
             </details>
           ))}
         </div>
@@ -350,7 +359,7 @@ export function NewsletterSection({ section }: { section: SectionOf<"newsletter"
     <SectionShell id={section.id} tone={section.tone}>
       <div className="mx-auto grid max-w-2xl gap-stack text-center">
         <SectionHeading>{section.heading}</SectionHeading>
-        {section.body ? <p className="opacity-75">{section.body}</p> : null}
+        {section.body ? <p className="text-muted-foreground">{section.body}</p> : null}
         {section.action ? (
           <form
             action={section.action}
