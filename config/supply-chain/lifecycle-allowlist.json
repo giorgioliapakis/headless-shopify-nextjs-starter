@@ -18,12 +18,6 @@
       "version": "0.28.1",
       "scripts": { "postinstall": "node install.js" },
       "reason": "Validates the exact pinned platform binary used by the dependency toolchain."
-    },
-    {
-      "name": "sharp",
-      "version": "0.34.5",
-      "scripts": { "install": "node install/check.js || npm run build" },
-      "reason": "Validates or builds the exact pinned image-processing binary used by Next.js."
     }
   ]
 }
