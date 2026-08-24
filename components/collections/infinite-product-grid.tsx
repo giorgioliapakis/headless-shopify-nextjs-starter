@@ -153,7 +153,6 @@ export function InfiniteProductGrid<TParams>({
           {nextPageHref && (
             <Link
               href={nextPageHref}
-              prefetch={false}
               // Crawlable fallback: keeps page 2+ reachable without JavaScript and for crawlers.
               className={hasError || isLoading ? "text-sm underline" : "sr-only"}
             >
@@ -180,7 +179,7 @@ function ClientProductCard({
     : `/products/${product.handle}`;
 
   return (
-    <Link href={href} prefetch={false}>
+    <Link href={href}>
       <ProductCardRoot>
         <ProductCardImageContainer>
           <ProductCardImage

@@ -48,7 +48,7 @@ export function CartIconClient({
 
   if (!hasHydrated) {
     return (
-      <Link href="/cart" prefetch={false} className={TRIGGER_CLASS}>
+      <Link href="/cart" className={TRIGGER_CLASS}>
         <TriggerContents label={label} quantity={quantity} />
       </Link>
     );

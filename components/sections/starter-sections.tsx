@@ -86,11 +86,7 @@ export function AnnouncementSection({ section }: { section: SectionOf<"announcem
         {section.link ? (
           <>
             {" "}
-            <Link
-              className="font-medium underline underline-offset-4"
-              href={section.link.href}
-              prefetch={false}
-            >
+            <Link className="font-medium underline underline-offset-4" href={section.link.href}>
               {section.link.label}
             </Link>
           </>
@@ -129,16 +125,13 @@ export function HeroRecipeSection({ section }: { section: SectionOf<"hero"> }) {
         {section.primaryAction || section.secondaryAction ? (
           <div className="flex flex-wrap gap-inline">
             {section.primaryAction ? (
-              <Button
-                render={<Link href={section.primaryAction.href} prefetch={false} />}
-                size="lg"
-              >
+              <Button render={<Link href={section.primaryAction.href} />} size="lg">
                 {section.primaryAction.label}
               </Button>
             ) : null}
             {section.secondaryAction ? (
               <Button
-                render={<Link href={section.secondaryAction.href} prefetch={false} />}
+                render={<Link href={section.secondaryAction.href} />}
                 size="lg"
                 variant="outline"
               >
@@ -193,10 +186,7 @@ export function MediaTextSection({ section }: { section: SectionOf<"media-text">
           <SectionHeading>{section.heading}</SectionHeading>
           <p className="leading-7 opacity-80">{section.body}</p>
           {section.action ? (
-            <Button
-              render={<Link href={section.action.href} prefetch={false} />}
-              className="justify-self-start"
-            >
+            <Button render={<Link href={section.action.href} />} className="justify-self-start">
               {section.action.label}
             </Button>
           ) : null}
@@ -240,7 +230,6 @@ export function CollectionGridSection({ section }: { section: SectionOf<"collect
             <Link
               key={collection.title}
               href={collection.href ?? "/collections"}
-              prefetch={false}
               className={cn(
                 "group grid gap-3 rounded-xl transition-transform hover:-translate-y-0.5",
                 "outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
@@ -295,11 +284,7 @@ export function EditorialGridSection({ section }: { section: SectionOf<"editoria
               <h3 className="text-xl">{item.title}</h3>
               {item.body ? <p className="text-muted-foreground">{item.body}</p> : null}
               {item.href ? (
-                <Link
-                  href={item.href}
-                  prefetch={false}
-                  className="font-medium underline underline-offset-4"
-                >
+                <Link href={item.href} className="font-medium underline underline-offset-4">
                   {section.readMoreLabel}
                   <span className="sr-only">: {item.title}</span>
                 </Link>

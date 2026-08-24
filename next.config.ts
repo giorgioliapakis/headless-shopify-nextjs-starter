@@ -32,6 +32,7 @@ const developmentOnlyPageExtensions =
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  partialPrefetching: true,
   pageExtensions: ["tsx", "ts", "jsx", "js", ...developmentOnlyPageExtensions],
   images: {
     deviceSizes: [1080, 1920],

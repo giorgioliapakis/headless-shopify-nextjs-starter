@@ -25,10 +25,10 @@ export default function DemoCheckoutPage() {
         </p>
       </div>
       <div className="flex gap-4">
-        <Link className="underline underline-offset-4" href="/cart" prefetch={false}>
+        <Link className="underline underline-offset-4" href="/cart">
           Back to cart
         </Link>
-        <Link className="underline underline-offset-4" href="/" prefetch={false}>
+        <Link className="underline underline-offset-4" href="/">
           Continue browsing
         </Link>
       </div>

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "nextReference": {
     "package": "next",
-    "version": "16.2.10",
+    "version": "16.3.2",
     "path": "node_modules/next/dist/docs",
     "rationale": "Next.js moved reference skills into version-matched bundled documentation."
   },

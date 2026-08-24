@@ -96,7 +96,7 @@ export function BannerSection({ section }: { section: BannerSectionDefinition })
                   "h-11 px-5",
                   media && "bg-overlay-foreground text-overlay hover:bg-overlay-foreground/90",
                 )}
-                render={<Link href={section.action.href} prefetch={false} />}
+                render={<Link href={section.action.href} />}
               >
                 {section.action.label}
               </Button>

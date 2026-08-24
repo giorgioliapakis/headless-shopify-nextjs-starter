@@ -7,7 +7,7 @@ date: 2026-07-13
 
 ## Decision
 
-The starter targets Node 24, pnpm 11.5.0, Next.js 16.2.10, React 19.2.7, Tailwind CSS 4.3.2,
+The starter targets Node 24, pnpm 11.5.0, Next.js 16.3.2, React 19.2.7, Tailwind CSS 4.3.2,
 Base UI 1.6.0, and Shopify Storefront API 2026-07. Dependencies are exact rather than ranged.
 
 Vercel Shop commit `04a29f8276598e58ec28e74218f38601f6203470` is the audited runtime source. Its

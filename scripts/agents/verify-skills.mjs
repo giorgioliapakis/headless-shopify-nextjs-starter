@@ -16,7 +16,7 @@ function fail(message) {
 }
 
 if (manifest.schemaVersion !== 1) fail("unsupported manifest schema");
-if (manifest.nextReference?.version !== "16.2.10") fail("Next.js reference version drifted");
+if (manifest.nextReference?.version !== "16.3.2") fail("Next.js reference version drifted");
 if (workflowManifest.schemaVersion !== 1) fail("unsupported workflow manifest schema");
 
 const workflowIds = new Set();
