@@ -28,7 +28,7 @@ export async function Nav({ locale: _locale }: { locale: string }) {
     >
       <Container className="flex h-16 items-center gap-2.5 md:gap-5">
         <MobileMenu items={items} />
-        <Link className="flex shrink-0 items-center" href="/" prefetch={false}>
+        <Link className="flex shrink-0 items-center" href="/">
           <span className="text-xl leading-4">{shopConfig.site.name}</span>
         </Link>
         <QuickLinks items={items} />

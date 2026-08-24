@@ -18,7 +18,6 @@ export function CartIconFallback({ label }: { label: string }) {
   return (
     <Link
       href="/cart"
-      prefetch={false}
       className="flex items-center justify-center gap-1.5 text-foreground transition-colors hover:text-foreground/80"
     >
       <HandbagIcon className="size-5" aria-hidden="true" />

@@ -11,7 +11,7 @@ hosted checkout.
 | ---------------- | ------------------------------------------------------------------------------------ |
 | Hydrogen package | Exact `0.0.0-preview-8a708a8-20260708155454`; moving preview tags forbidden          |
 | Storefront API   | `2026-07`, enforced at runtime and GraphQL validation                                |
-| Next.js          | `16.2.10`, App Router, React Server Components and Cache Components                  |
+| Next.js          | `16.3.2`, App Router, React Server Components and Cache Components                   |
 | Runtime          | Node 24, pnpm 11.5.0, Vercel first                                                   |
 | Transport        | Request-scoped Hydrogen Storefront client behind app-owned operations                |
 | Cart             | Hydrogen cart handlers/forms/provider with one hardened standard cart cookie         |
