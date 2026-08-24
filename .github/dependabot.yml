@@ -7,6 +7,12 @@ updates:
     groups:
       runtime:
         patterns: ["next", "react", "react-dom", "@base-ui/*", "tailwindcss", "@tailwindcss/*"]
+    ignore:
+      # @types/node tracks the Node runtime major. The starter targets Node 24
+      # (`engines.node`, and `node-version` in CI), so a types-only major bump
+      # would type-check against APIs the runtime does not have.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
