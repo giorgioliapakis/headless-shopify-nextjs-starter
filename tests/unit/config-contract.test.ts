@@ -9,8 +9,8 @@ describe("platform contract", () => {
     const dependencies = packageJson.dependencies as Record<string, string>;
 
     expect(dependencies.next).toBe("16.3.2");
-    expect(dependencies.react).toBe("19.2.7");
-    expect(dependencies["@base-ui/react"]).toBe("1.6.0");
+    expect(dependencies.react).toBe("19.2.8");
+    expect(dependencies["@base-ui/react"]).toBe("1.7.0");
     expect(dependencies["@shopify/hydrogen"]).toBe("0.0.0-preview-8a708a8-20260708155454");
     expect(dependencies["@ai-sdk/react"]).toBeUndefined();
     expect(
