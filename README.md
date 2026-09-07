@@ -4,7 +4,7 @@ A production-shaped headless Shopify storefront on Next.js 16 — every standard
 design system, and a demo mode that runs without a Shopify account.
 
 Point it at your store, or hand it to a coding agent and let it build.
-**[Browse the live demo →](https://headless-shopify-nextjs.vercel.app)**
+**[Browse the live demo →](https://headless-shopify-nextjs-starter.vercel.app)**
 
 ![Product page in dark mode: gallery, variant picker with sold-out states, Shop Pay and add to cart](docs/media/product-dark.png)
 
